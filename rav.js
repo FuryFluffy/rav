@@ -98,6 +98,9 @@ function _registerHandlebarsHelpers() {
 
   // {{lte a b}} — returns true if a <= b (used for filled dot rendering)
   Handlebars.registerHelper("lte", (a, b) => a <= b);
+
+  // {{add a b}} — adds two numbers (used for dot index comparison)
+  Handlebars.registerHelper("add", (a, b) => a + b);
 }
 
 // ============================================================
