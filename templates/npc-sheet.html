@@ -1,0 +1,115 @@
+{{!-- Rise of Arcane and Valor — NPC Sheet --}}
+<form class="sheet-form" autocomplete="off">
+
+  {{!-- ── HEADER ── --}}
+  <header class="sheet-header">
+    <div class="header-portrait">
+      <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+    </div>
+    <div class="header-fields">
+      <div class="header-name">
+        <input class="name-input" type="text" name="name" value="{{actor.name}}" placeholder="NPC Name"/>
+      </div>
+      <div class="header-meta">
+        <div class="meta-field">
+          <label>Monster Tier</label>
+          <select name="system.monsterTier">
+            <option value="common"    {{#if (eq system.monsterTier "common")}}selected{{/if}}>Common</option>
+            <option value="uncommon"  {{#if (eq system.monsterTier "uncommon")}}selected{{/if}}>Uncommon</option>
+            <option value="rare"      {{#if (eq system.monsterTier "rare")}}selected{{/if}}>Rare</option>
+            <option value="ancient"   {{#if (eq system.monsterTier "ancient")}}selected{{/if}}>Ancient</option>
+            <option value="mythical"  {{#if (eq system.monsterTier "mythical")}}selected{{/if}}>Mythical</option>
+          </select>
+        </div>
+        <div class="meta-field">
+          <label>Order</label>
+          <input type="number" name="system.order" value="{{system.order}}" min="0" max="20"/>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- ── VITALS ── --}}
+  <section class="vitals-bar">
+    <div class="vital-block vital-hp">
+      <label class="vital-label">HP</label>
+      <div class="vital-controls">
+        <button type="button" class="hp-btn vital-btn" data-delta="-1">−</button>
+        <input type="number" name="system.health.value" value="{{system.health.value}}"
+               min="0" max="{{system.health.max}}" class="vital-input"/>
+        <span class="vital-sep">/</span>
+        <span class="vital-max">{{system.health.max}}</span>
+        <button type="button" class="hp-btn vital-btn" data-delta="1">+</button>
+      </div>
+    </div>
+    <div class="vital-block vital-mp">
+      <label class="vital-label">MP</label>
+      <div class="vital-controls">
+        <input type="number" name="system.magic.value" value="{{system.magic.value}}"
+               min="0" max="{{system.magic.max}}" class="vital-input"/>
+        <span class="vital-sep">/</span>
+        <span class="vital-max">{{system.magic.max}}</span>
+      </div>
+    </div>
+  </section>
+
+  {{!-- ── TABS ── --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="stats">Stats</a>
+    <a class="item" data-tab="skills">Skills</a>
+    <a class="item" data-tab="bio">Notes</a>
+  </nav>
+
+  <section class="sheet-body">
+
+    {{!-- ── TAB: STATS ── --}}
+    <div class="tab" data-tab="stats">
+      <div class="attributes-grid">
+        {{#each RAV.attributes as |label key|}}
+        <div class="attribute-box">
+          <label class="attribute-label attribute-roll" data-attribute="{{key}}" title="Roll {{label}}">
+            {{label}}
+          </label>
+          <input type="number" name="system.attributes.{{key}}.value"
+                 value="{{lookup (lookup ../system.attributes key) 'value'}}"
+                 min="1" max="10" class="attribute-value"/>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- ── TAB: SKILLS ── --}}
+    <div class="tab" data-tab="skills">
+      <div class="skills-columns">
+        <div class="skill-group">
+          <h3 class="skill-group-title">Weapons</h3>
+          {{#each system.skills.weapon as |skill key|}}
+          <div class="skill-row">
+            <span class="skill-name npc-skill-roll" data-group="weapon" data-skill="{{key}}">{{skill.label}}</span>
+            <input type="number" name="system.skills.weapon.{{key}}.level"
+                   value="{{skill.level}}" min="0" max="9" class="skill-level"/>
+            <span class="skill-tier tier-{{skill.tier}}">{{tierLabel skill.tier}}</span>
+          </div>
+          {{/each}}
+        </div>
+        <div class="skill-group">
+          <h3 class="skill-group-title">Magic</h3>
+          {{#each system.skills.magic as |skill key|}}
+          <div class="skill-row">
+            <span class="skill-name npc-skill-roll" data-group="magic" data-skill="{{key}}">{{skill.label}}</span>
+            <input type="number" name="system.skills.magic.{{key}}.level"
+                   value="{{skill.level}}" min="0" max="9" class="skill-level"/>
+            <span class="skill-tier tier-{{skill.tier}}">{{tierLabel skill.tier}}</span>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+
+    {{!-- ── TAB: NOTES ── --}}
+    <div class="tab" data-tab="bio">
+      {{editor system.biography target="system.biography" button=true owner=owner editable=editable}}
+    </div>
+
+  </section>
+</form>

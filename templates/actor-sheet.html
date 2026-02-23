@@ -1,0 +1,225 @@
+{{!-- Rise of Arcane and Valor — Character Sheet --}}
+<form class="sheet-form" autocomplete="off">
+
+  {{!-- ── HEADER ── --}}
+  <header class="sheet-header">
+    <div class="header-portrait">
+      <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+    </div>
+    <div class="header-fields">
+      <div class="header-name">
+        <input class="name-input" type="text" name="name" value="{{actor.name}}" placeholder="Character Name"/>
+      </div>
+      <div class="header-meta">
+        <div class="meta-field">
+          <label>Race</label>
+          <input type="text" name="system.race" value="{{system.race}}" placeholder="Race"/>
+        </div>
+        <div class="meta-field">
+          <label>Class</label>
+          <input type="text" name="system.class" value="{{system.class}}" placeholder="Class"/>
+        </div>
+        <div class="meta-field">
+          <label>Level</label>
+          <input type="number" name="system.experience.level" value="{{system.experience.level}}" min="1" max="40"/>
+        </div>
+        <div class="meta-field">
+          <label>EXP</label>
+          <input type="number" name="system.experience.value" value="{{system.experience.value}}" min="0"/>
+        </div>
+        <div class="meta-field">
+          <label>SP</label>
+          <input type="number" name="system.experience.sp" value="{{system.experience.sp}}" min="0"/>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- ── VITALS BAR ── --}}
+  <section class="vitals-bar">
+
+    {{!-- HP --}}
+    <div class="vital-block vital-hp">
+      <label class="vital-label">HP</label>
+      <div class="vital-controls">
+        <button type="button" class="hp-btn vital-btn" data-delta="-1">−</button>
+        <input type="number" name="system.health.value" value="{{system.health.value}}" min="0" max="{{system.health.max}}" class="vital-input"/>
+        <span class="vital-sep">/</span>
+        <span class="vital-max">{{system.health.max}}</span>
+        <button type="button" class="hp-btn vital-btn" data-delta="1">+</button>
+      </div>
+    </div>
+
+    {{!-- MP --}}
+    <div class="vital-block vital-mp">
+      <label class="vital-label">MP</label>
+      <div class="vital-controls">
+        <button type="button" class="mp-btn vital-btn" data-delta="-1">−</button>
+        <input type="number" name="system.magic.value" value="{{system.magic.value}}" min="0" max="{{system.magic.max}}" class="vital-input"/>
+        <span class="vital-sep">/</span>
+        <span class="vital-max">{{system.magic.max}}</span>
+        <button type="button" class="mp-btn vital-btn" data-delta="1">+</button>
+      </div>
+    </div>
+
+    {{!-- LUCK --}}
+    <div class="vital-block vital-luck">
+      <label class="vital-label">Luck</label>
+      <div class="vital-controls">
+        <span class="luck-value">{{system.attributes.luck.value}}</span>
+        <button type="button" class="luck-roll vital-btn" title="Roll d6 for session Luck">🎲</button>
+      </div>
+    </div>
+
+    {{!-- FOOD & GOLD --}}
+    <div class="vital-block">
+      <label class="vital-label">Food</label>
+      <input type="number" name="system.food.value" value="{{system.food.value}}" min="0" max="{{system.food.max}}" class="vital-input small"/>
+    </div>
+    <div class="vital-block">
+      <label class="vital-label">Gold</label>
+      <input type="number" name="system.gold.value" value="{{system.gold.value}}" min="0" class="vital-input small"/>
+    </div>
+
+  </section>
+
+  {{!-- ── ATTRIBUTES ── --}}
+  <section class="attributes-section">
+    <h2 class="section-title">Attributes</h2>
+    <div class="attributes-grid">
+      {{#each RAV.attributes as |label key|}}
+      <div class="attribute-box">
+        <label class="attribute-label attribute-roll" data-attribute="{{key}}" title="Roll {{label}} check">
+          {{label}}
+        </label>
+        <input type="number" name="system.attributes.{{key}}.value"
+               value="{{lookup (lookup ../system.attributes key) 'value'}}"
+               min="1" max="5" class="attribute-value"/>
+        <div class="attribute-dots">
+          {{#times 5}}
+          <span class="dot {{#if (lte (add this 1) (lookup (lookup ../system.attributes key) 'value'))}}filled{{/if}}"></span>
+          {{/times}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </section>
+
+  {{!-- ── TABS ── --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="skills">Skills</a>
+    <a class="item" data-tab="specialties">Specialties</a>
+    <a class="item" data-tab="gear">Gear &amp; Items</a>
+    <a class="item" data-tab="bio">Biography</a>
+  </nav>
+
+  <section class="sheet-body">
+
+    {{!-- ── TAB: SKILLS ── --}}
+    <div class="tab" data-tab="skills">
+      <div class="skills-columns">
+
+        {{!-- Misc Skills --}}
+        <div class="skill-group">
+          <h3 class="skill-group-title">General</h3>
+          {{#each system.skills.misc as |skill key|}}
+          <div class="skill-row">
+            <span class="skill-name skill-roll" data-group="misc" data-skill="{{key}}" title="Roll {{skill.label}}">
+              {{skill.label}}
+            </span>
+            <input type="number" name="system.skills.misc.{{key}}.level"
+                   value="{{skill.level}}" min="0" max="9" class="skill-level"/>
+            <span class="skill-tier tier-{{skill.tier}}">{{tierLabel skill.tier}}</span>
+          </div>
+          {{/each}}
+        </div>
+
+        {{!-- Weapon Skills --}}
+        <div class="skill-group">
+          <h3 class="skill-group-title">Weapons</h3>
+          {{#each system.skills.weapon as |skill key|}}
+          <div class="skill-row">
+            <span class="skill-name skill-roll" data-group="weapon" data-skill="{{key}}" title="Roll {{skill.label}}">
+              {{skill.label}}
+            </span>
+            <input type="number" name="system.skills.weapon.{{key}}.level"
+                   value="{{skill.level}}" min="0" max="9" class="skill-level"/>
+            <span class="skill-tier tier-{{skill.tier}}">{{tierLabel skill.tier}}</span>
+          </div>
+          {{/each}}
+        </div>
+
+        {{!-- Magic Skills --}}
+        <div class="skill-group">
+          <h3 class="skill-group-title">Magic</h3>
+          {{#each system.skills.magic as |skill key|}}
+          <div class="skill-row">
+            <span class="skill-name skill-roll" data-group="magic" data-skill="{{key}}" title="Roll {{skill.label}}">
+              {{skill.label}}
+            </span>
+            <input type="number" name="system.skills.magic.{{key}}.level"
+                   value="{{skill.level}}" min="0" max="9" class="skill-level"/>
+            <span class="skill-tier tier-{{skill.tier}}">{{tierLabel skill.tier}}</span>
+          </div>
+          {{/each}}
+        </div>
+
+      </div>
+    </div>
+
+    {{!-- ── TAB: SPECIALTIES ── --}}
+    <div class="tab" data-tab="specialties">
+      <div class="specialties-grid">
+        {{#each system.specialties as |spec key|}}
+        <div class="spec-row">
+          <span class="spec-name">{{spec.label}}</span>
+          <input type="number" name="system.specialties.{{key}}.level"
+                 value="{{spec.level}}" min="0" max="9" class="skill-level"/>
+          <span class="skill-tier tier-{{spec.tier}}">{{tierLabel spec.tier}}</span>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- ── TAB: GEAR & ITEMS ── --}}
+    <div class="tab" data-tab="gear">
+      <div class="gear-slots">
+        <h3 class="skill-group-title">Equipped Slots</h3>
+        <div class="gear-slot-grid">
+          <div class="gear-slot"><label>Right Arm</label><input type="text" name="system.gear.rightArm" value="{{system.gear.rightArm}}"/></div>
+          <div class="gear-slot"><label>Left Arm</label><input type="text" name="system.gear.leftArm" value="{{system.gear.leftArm}}"/></div>
+          <div class="gear-slot"><label>Head</label><input type="text" name="system.gear.head" value="{{system.gear.head}}"/></div>
+          <div class="gear-slot"><label>Torso</label><input type="text" name="system.gear.torso" value="{{system.gear.torso}}"/></div>
+          <div class="gear-slot"><label>Legs</label><input type="text" name="system.gear.legs" value="{{system.gear.legs}}"/></div>
+          <div class="gear-slot"><label>Necklace</label><input type="text" name="system.gear.necklace" value="{{system.gear.necklace}}"/></div>
+          <div class="gear-slot"><label>Rings</label><input type="text" name="system.gear.rings" value="{{system.gear.rings}}"/></div>
+        </div>
+      </div>
+
+      <div class="items-list">
+        <h3 class="skill-group-title">Inventory</h3>
+        {{#each actor.items as |item|}}
+        <div class="item" data-item-id="{{item.id}}">
+          <img class="item-img" src="{{item.img}}" title="{{item.name}}"/>
+          <span class="item-name">{{item.name}}</span>
+          <span class="item-type">{{item.type}}</span>
+          <div class="item-controls">
+            <a class="item-equip" title="Toggle Equip">⚔</a>
+            <a class="item-edit" title="Edit"><i class="fas fa-edit"></i></a>
+            <a class="item-delete" title="Delete"><i class="fas fa-trash"></i></a>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- ── TAB: BIOGRAPHY ── --}}
+    <div class="tab" data-tab="bio">
+      <div class="bio-section">
+        <label class="bio-label">Character Biography</label>
+        {{editor system.biography target="system.biography" button=true owner=owner editable=editable}}
+      </div>
+    </div>
+
+  </section>
+</form>

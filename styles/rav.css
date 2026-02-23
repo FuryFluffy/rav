@@ -1,0 +1,667 @@
+/* ============================================================
+   Rise of Arcane and Valor — Stylesheet
+   rav.css
+   Dark amber / aged parchment aesthetic to match the world
+   of Tõus and Estonian mythological roots.
+   ============================================================ */
+
+/* ── FONTS ── */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* ── CSS VARIABLES ── */
+.rav.sheet {
+  --rav-bg:           #1a1610;
+  --rav-bg-mid:       #221e16;
+  --rav-bg-light:     #2e2820;
+  --rav-border:       #5c4a2a;
+  --rav-border-light: #7a6240;
+  --rav-gold:         #c9963a;
+  --rav-gold-light:   #e8b95a;
+  --rav-text:         #e8dcc8;
+  --rav-text-dim:     #a8987a;
+  --rav-red:          #c0392b;
+  --rav-blue:         #2980b9;
+  --rav-green:        #27ae60;
+  --rav-purple:       #8e44ad;
+  --rav-success:      #2ecc71;
+  --rav-failure:      #7f8c8d;
+
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 15px;
+  color: var(--rav-text);
+  background: var(--rav-bg);
+}
+
+/* ── SCROLLBAR ── */
+.rav.sheet ::-webkit-scrollbar { width: 6px; }
+.rav.sheet ::-webkit-scrollbar-track { background: var(--rav-bg); }
+.rav.sheet ::-webkit-scrollbar-thumb { background: var(--rav-border); border-radius: 3px; }
+
+/* ── BASE FORM ── */
+.rav.sheet .sheet-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--rav-bg);
+}
+
+/* ── HEADER ── */
+.rav.sheet .sheet-header {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: var(--rav-bg-mid);
+  border-bottom: 2px solid var(--rav-border);
+}
+
+.rav.sheet .header-portrait {
+  flex-shrink: 0;
+}
+
+.rav.sheet .profile-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border: 2px solid var(--rav-border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rav.sheet .header-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rav.sheet .name-input {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--rav-gold-light);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rav-border);
+  width: 100%;
+  padding: 2px 4px;
+}
+
+.rav.sheet .name-input:focus {
+  outline: none;
+  border-bottom-color: var(--rav-gold);
+}
+
+.rav.sheet .header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rav.sheet .meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rav.sheet .meta-field label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--rav-text-dim);
+}
+
+.rav.sheet .meta-field input,
+.rav.sheet .meta-field select {
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  color: var(--rav-text);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  width: 80px;
+}
+
+/* ── VITALS BAR ── */
+.rav.sheet .vitals-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 14px;
+  background: var(--rav-bg-mid);
+  border-bottom: 1px solid var(--rav-border);
+  flex-wrap: wrap;
+}
+
+.rav.sheet .vital-block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rav.sheet .vital-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rav-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  min-width: 28px;
+}
+
+.rav.sheet .vital-hp .vital-label  { color: #e74c3c; }
+.rav.sheet .vital-mp .vital-label  { color: #3498db; }
+.rav.sheet .vital-luck .vital-label { color: var(--rav-gold); }
+
+.rav.sheet .vital-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rav.sheet .vital-input {
+  width: 44px;
+  text-align: center;
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  color: var(--rav-text);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 15px;
+}
+
+.rav.sheet .vital-input.small { width: 52px; }
+
+.rav.sheet .vital-sep,
+.rav.sheet .vital-max {
+  color: var(--rav-text-dim);
+  font-size: 13px;
+}
+
+.rav.sheet .vital-btn {
+  background: var(--rav-bg-light);
+  border: 1px solid var(--rav-border);
+  color: var(--rav-text-dim);
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.rav.sheet .vital-btn:hover {
+  border-color: var(--rav-gold);
+  color: var(--rav-gold);
+  background: var(--rav-bg-mid);
+}
+
+.rav.sheet .luck-value {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--rav-gold-light);
+  min-width: 20px;
+  text-align: center;
+}
+
+.rav.sheet .luck-roll { font-size: 16px; cursor: pointer; }
+
+/* ── SECTION TITLES ── */
+.rav.sheet .section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rav-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 8px 0 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--rav-border);
+}
+
+/* ── ATTRIBUTES ── */
+.rav.sheet .attributes-section {
+  padding: 8px 14px;
+  background: var(--rav-bg-mid);
+  border-bottom: 1px solid var(--rav-border);
+}
+
+.rav.sheet .attributes-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rav.sheet .attribute-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  min-width: 80px;
+  transition: border-color 0.15s;
+}
+
+.rav.sheet .attribute-box:hover {
+  border-color: var(--rav-gold);
+}
+
+.rav.sheet .attribute-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rav-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.rav.sheet .attribute-label.attribute-roll:hover {
+  color: var(--rav-gold-light);
+}
+
+.rav.sheet .attribute-value {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--rav-gold-light);
+  background: transparent;
+  border: none;
+  text-align: center;
+  width: 40px;
+}
+
+.rav.sheet .attribute-dots {
+  display: flex;
+  gap: 3px;
+}
+
+.rav.sheet .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--rav-border-light);
+  background: transparent;
+}
+
+.rav.sheet .dot.filled {
+  background: var(--rav-gold);
+  border-color: var(--rav-gold-light);
+}
+
+/* ── TABS ── */
+.rav.sheet .sheet-tabs {
+  display: flex;
+  background: var(--rav-bg-mid);
+  border-bottom: 1px solid var(--rav-border);
+  padding: 0 14px;
+}
+
+.rav.sheet .sheet-tabs .item {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--rav-text-dim);
+  padding: 8px 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.rav.sheet .sheet-tabs .item:hover {
+  color: var(--rav-gold);
+}
+
+.rav.sheet .sheet-tabs .item.active {
+  color: var(--rav-gold-light);
+  border-bottom-color: var(--rav-gold);
+}
+
+/* ── SHEET BODY ── */
+.rav.sheet .sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+}
+
+.rav.sheet .tab { display: none; }
+.rav.sheet .tab.active { display: block; }
+
+/* ── SKILLS ── */
+.rav.sheet .skills-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.rav.sheet .skill-group-title {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rav-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 6px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rav-border);
+}
+
+.rav.sheet .skill-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(92, 74, 42, 0.3);
+}
+
+.rav.sheet .skill-name {
+  flex: 1;
+  font-size: 14px;
+  color: var(--rav-text);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rav.sheet .skill-name.skill-roll:hover,
+.rav.sheet .skill-name.npc-skill-roll:hover {
+  color: var(--rav-gold-light);
+}
+
+.rav.sheet .skill-level {
+  width: 36px;
+  text-align: center;
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  color: var(--rav-text);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 13px;
+}
+
+.rav.sheet .skill-tier {
+  font-size: 11px;
+  font-family: 'Cinzel', serif;
+  min-width: 70px;
+  text-align: right;
+}
+
+.rav.sheet .tier-novice      { color: var(--rav-text-dim); }
+.rav.sheet .tier-expert      { color: #3498db; }
+.rav.sheet .tier-master      { color: var(--rav-purple); }
+.rav.sheet .tier-grandmaster { color: var(--rav-gold-light); }
+
+/* ── SPECIALTIES ── */
+.rav.sheet .specialties-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px 16px;
+}
+
+.rav.sheet .spec-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(92, 74, 42, 0.3);
+}
+
+.rav.sheet .spec-name {
+  flex: 1;
+  font-size: 14px;
+  color: var(--rav-text);
+}
+
+/* ── GEAR ── */
+.rav.sheet .gear-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px 16px;
+  margin-bottom: 16px;
+}
+
+.rav.sheet .gear-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rav.sheet .gear-slot label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--rav-text-dim);
+}
+
+.rav.sheet .gear-slot input {
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  color: var(--rav-text);
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+}
+
+/* ── ITEMS LIST ── */
+.rav.sheet .item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-bottom: 1px solid rgba(92, 74, 42, 0.3);
+  transition: background 0.1s;
+}
+
+.rav.sheet .item:hover {
+  background: var(--rav-bg-light);
+}
+
+.rav.sheet .item-img {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border: 1px solid var(--rav-border);
+  border-radius: 3px;
+}
+
+.rav.sheet .item-name {
+  flex: 1;
+  font-size: 14px;
+}
+
+.rav.sheet .item-type {
+  font-size: 12px;
+  color: var(--rav-text-dim);
+  font-style: italic;
+  min-width: 60px;
+}
+
+.rav.sheet .item-type-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--rav-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rav.sheet .item-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.rav.sheet .item-controls a {
+  color: var(--rav-text-dim);
+  cursor: pointer;
+  font-size: 13px;
+  transition: color 0.15s;
+}
+
+.rav.sheet .item-controls a:hover { color: var(--rav-gold); }
+.rav.sheet .item-delete:hover     { color: var(--rav-red) !important; }
+
+/* ── BIOGRAPHY ── */
+.rav.sheet .bio-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rav.sheet .bio-label {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--rav-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── ITEM SHEET BODY ── */
+.rav.sheet .item-body {
+  padding: 12px 14px;
+  overflow-y: auto;
+}
+
+.rav.sheet .item-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.rav.sheet .field-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rav.sheet .field-row label {
+  min-width: 110px;
+  font-size: 13px;
+  color: var(--rav-text-dim);
+}
+
+.rav.sheet .field-row input,
+.rav.sheet .field-row select,
+.rav.sheet .field-row textarea {
+  flex: 1;
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  color: var(--rav-text);
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+}
+
+.rav.sheet .field-row textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.rav.sheet .field-note {
+  font-size: 12px;
+  color: var(--rav-text-dim);
+  white-space: nowrap;
+}
+
+.rav.sheet .item-description {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rav.sheet .item-description label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--rav-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── CHAT ROLL RESULTS ── */
+.rav-roll {
+  background: #1a1610;
+  border: 1px solid #5c4a2a;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: #e8dcc8;
+}
+
+.rav-roll h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: #c9963a;
+  margin: 0 0 6px;
+  border-bottom: 1px solid #5c4a2a;
+  padding-bottom: 4px;
+}
+
+.rav-roll .dice-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.rav-roll .die {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  border: 2px solid;
+}
+
+.rav-roll .die.success {
+  background: rgba(46, 204, 113, 0.15);
+  border-color: #2ecc71;
+  color: #2ecc71;
+}
+
+.rav-roll .die.failure {
+  background: rgba(127, 140, 141, 0.1);
+  border-color: #4a4a4a;
+  color: #7f8c8d;
+}
+
+.rav-roll .successes {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  color: #e8b95a;
+  margin: 4px 0 0;
+}
+
+/* ── GENERAL INPUTS ── */
+.rav.sheet input[type="number"],
+.rav.sheet input[type="text"],
+.rav.sheet select {
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  color: var(--rav-text);
+  font-family: 'Crimson Pro', serif;
+}
+
+.rav.sheet input:focus,
+.rav.sheet select:focus {
+  outline: none;
+  border-color: var(--rav-gold);
+  box-shadow: 0 0 0 1px rgba(201, 150, 58, 0.3);
+}

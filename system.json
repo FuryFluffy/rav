@@ -1,0 +1,32 @@
+{
+  "id": "rav",
+  "title": "Rise of Arcane and Valor",
+  "description": "A unique d10+ dice pool system set in the world of Tõus, drawing on Estonian mythology.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "authors": [
+    {
+      "name": "Vjatšeslav Paškevitš"
+    }
+  ],
+  "esmodules": [
+    "rav.js"
+  ],
+  "styles": [
+    "styles/rav.css"
+  ],
+  "template": "template.json",
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "socket": false,
+  "url": "",
+  "license": ""
+}

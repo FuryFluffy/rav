@@ -1,0 +1,198 @@
+{
+  "Actor": {
+    "types": ["character", "npc"],
+    "templates": {
+      "base": {
+        "attributes": {
+          "might": { "value": 1 },
+          "agility": { "value": 1 },
+          "endurance": { "value": 1 },
+          "intellect": { "value": 1 },
+          "personality": { "value": 1 },
+          "luck": { "value": 0 }
+        },
+        "health": {
+          "value": 10,
+          "max": 10
+        },
+        "magic": {
+          "value": 10,
+          "max": 10
+        },
+        "food": {
+          "value": 0,
+          "max": 6
+        },
+        "gold": {
+          "value": 0
+        },
+        "experience": {
+          "value": 0,
+          "level": 1,
+          "sp": 25
+        }
+      }
+    },
+    "character": {
+      "templates": ["base"],
+      "biography": "",
+      "race": "",
+      "class": "",
+      "skills": {
+        "misc": {
+          "armor1":     { "label": "Armor",     "level": 0, "tier": "novice" },
+          "armor2":     { "label": "Armor",     "level": 0, "tier": "novice" },
+          "athletics":  { "label": "Athletics", "level": 0, "tier": "novice" },
+          "awareness":  { "label": "Awareness", "level": 0, "tier": "novice" },
+          "craft1":     { "label": "Craft",     "level": 0, "tier": "novice" },
+          "craft2":     { "label": "Craft",     "level": 0, "tier": "novice" },
+          "espionage":  { "label": "Espionage", "level": 0, "tier": "novice" },
+          "knowledge1": { "label": "Knowledge", "level": 0, "tier": "novice" },
+          "knowledge2": { "label": "Knowledge", "level": 0, "tier": "novice" },
+          "speech":     { "label": "Speech",    "level": 0, "tier": "novice" },
+          "staging":    { "label": "Staging",   "level": 0, "tier": "novice" },
+          "survival":   { "label": "Survival",  "level": 0, "tier": "novice" }
+        },
+        "weapon": {
+          "sword":     { "label": "Sword",     "level": 0, "tier": "novice" },
+          "axe":       { "label": "Axe",       "level": 0, "tier": "novice" },
+          "staff":     { "label": "Staff",     "level": 0, "tier": "novice" },
+          "spear":     { "label": "Spear",     "level": 0, "tier": "novice" },
+          "dagger":    { "label": "Dagger",    "level": 0, "tier": "novice" },
+          "mace":      { "label": "Mace",      "level": 0, "tier": "novice" },
+          "unarmed":   { "label": "Unarmed",   "level": 0, "tier": "novice" },
+          "bow":       { "label": "Bow",       "level": 0, "tier": "novice" },
+          "crossbow":  { "label": "Crossbow",  "level": 0, "tier": "novice" },
+          "slings":    { "label": "Slings",    "level": 0, "tier": "novice" }
+        },
+        "magic": {
+          "fire":      { "label": "Fire",           "level": 0, "tier": "novice" },
+          "air":       { "label": "Air",            "level": 0, "tier": "novice" },
+          "water":     { "label": "Water",          "level": 0, "tier": "novice" },
+          "earth":     { "label": "Earth",          "level": 0, "tier": "novice" },
+          "light":     { "label": "Light",          "level": 0, "tier": "novice" },
+          "dark":      { "label": "Dark",           "level": 0, "tier": "novice" },
+          "body":      { "label": "Body",           "level": 0, "tier": "novice" },
+          "mind":      { "label": "Mind",           "level": 0, "tier": "novice" },
+          "spirit":    { "label": "Spirit",         "level": 0, "tier": "novice" },
+          "ancestry":  { "label": "Ancestry",       "level": 0, "tier": "novice" }
+        }
+      },
+      "specialties": {
+        "armorer":          { "label": "Armorer",          "level": 0, "tier": "novice" },
+        "armsmaster":       { "label": "Armsmaster",       "level": 0, "tier": "novice" },
+        "bodybuilding":     { "label": "Bodybuilding",     "level": 0, "tier": "novice" },
+        "caster":           { "label": "Caster",           "level": 0, "tier": "novice" },
+        "learning":         { "label": "Learning",         "level": 0, "tier": "novice" },
+        "meditation":       { "label": "Meditation",       "level": 0, "tier": "novice" },
+        "relicKnowledge":   { "label": "Relic Knowledge",  "level": 0, "tier": "novice" },
+        "monsterKnowledge": { "label": "Monster Knowledge","level": 0, "tier": "novice" },
+        "alchemy":          { "label": "Alchemy",          "level": 0, "tier": "novice" },
+        "tinkering":        { "label": "Tinkering",        "level": 0, "tier": "novice" },
+        "repair":           { "label": "Repair",           "level": 0, "tier": "novice" },
+        "perception":       { "label": "Perception",       "level": 0, "tier": "novice" },
+        "investigation":    { "label": "Investigation",    "level": 0, "tier": "novice" },
+        "appraisal":        { "label": "Appraisal",        "level": 0, "tier": "novice" },
+        "disarmTrap":       { "label": "Disarm Trap",      "level": 0, "tier": "novice" },
+        "forgeDocument":    { "label": "Forge Document",   "level": 0, "tier": "novice" },
+        "pickLock":         { "label": "Pick Lock",        "level": 0, "tier": "novice" },
+        "eloquence":        { "label": "Eloquence",        "level": 0, "tier": "novice" },
+        "merchant":         { "label": "Merchant",         "level": 0, "tier": "novice" },
+        "performance":      { "label": "Performance",      "level": 0, "tier": "novice" },
+        "forage":           { "label": "Forage",           "level": 0, "tier": "novice" },
+        "tracking":         { "label": "Tracking",         "level": 0, "tier": "novice" }
+      },
+      "gear": {
+        "rightArm":  "",
+        "leftArm":   "",
+        "head":      "",
+        "torso":     "",
+        "legs":      "",
+        "necklace":  "",
+        "rings":     ""
+      }
+    },
+    "npc": {
+      "templates": ["base"],
+      "biography": "",
+      "order": 0,
+      "skills": {
+        "weapon": {
+          "sword":    { "label": "Sword",    "level": 0, "tier": "novice" },
+          "axe":      { "label": "Axe",      "level": 0, "tier": "novice" },
+          "staff":    { "label": "Staff",    "level": 0, "tier": "novice" },
+          "spear":    { "label": "Spear",    "level": 0, "tier": "novice" },
+          "dagger":   { "label": "Dagger",   "level": 0, "tier": "novice" },
+          "mace":     { "label": "Mace",     "level": 0, "tier": "novice" },
+          "unarmed":  { "label": "Unarmed",  "level": 0, "tier": "novice" },
+          "bow":      { "label": "Bow",      "level": 0, "tier": "novice" },
+          "crossbow": { "label": "Crossbow", "level": 0, "tier": "novice" },
+          "slings":   { "label": "Slings",   "level": 0, "tier": "novice" }
+        },
+        "magic": {
+          "fire":     { "label": "Fire",     "level": 0, "tier": "novice" },
+          "air":      { "label": "Air",      "level": 0, "tier": "novice" },
+          "water":    { "label": "Water",    "level": 0, "tier": "novice" },
+          "earth":    { "label": "Earth",    "level": 0, "tier": "novice" },
+          "light":    { "label": "Light",    "level": 0, "tier": "novice" },
+          "dark":     { "label": "Dark",     "level": 0, "tier": "novice" },
+          "body":     { "label": "Body",     "level": 0, "tier": "novice" },
+          "mind":     { "label": "Mind",     "level": 0, "tier": "novice" },
+          "spirit":   { "label": "Spirit",   "level": 0, "tier": "novice" },
+          "ancestry": { "label": "Ancestry", "level": 0, "tier": "novice" }
+        },
+        "special": {}
+      },
+      "actions": {},
+      "monsterTier": "common"
+    }
+  },
+  "Item": {
+    "types": ["weapon", "armor", "spell", "specialty", "relic"],
+    "templates": {
+      "base": {
+        "description": "",
+        "equipped": false
+      }
+    },
+    "weapon": {
+      "templates": ["base"],
+      "weaponType": "sword",
+      "damage": 0,
+      "damagePoints": 0,
+      "maxDamagePoints": 5,
+      "broken": false,
+      "property": ""
+    },
+    "armor": {
+      "templates": ["base"],
+      "armorType": "cloth",
+      "damagePoints": 0,
+      "maxDamagePoints": 1,
+      "broken": false,
+      "dodgeBonus": 0,
+      "property": ""
+    },
+    "spell": {
+      "templates": ["base"],
+      "school": "fire",
+      "tier": "novice",
+      "mpCost": 0,
+      "dicePool": "",
+      "effect": ""
+    },
+    "specialty": {
+      "templates": ["base"],
+      "level": 0,
+      "tier": "novice",
+      "effect": ""
+    },
+    "relic": {
+      "templates": ["base"],
+      "rarity": "common",
+      "enchantments": [],
+      "curses": [],
+      "identified": false
+    }
+  }
+}

@@ -1,0 +1,127 @@
+{{!-- Rise of Arcane and Valor — Item Sheet --}}
+<form class="sheet-form" autocomplete="off">
+
+  <header class="sheet-header">
+    <div class="header-portrait">
+      <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    </div>
+    <div class="header-fields">
+      <input class="name-input" type="text" name="name" value="{{item.name}}" placeholder="Item Name"/>
+      <span class="item-type-badge">{{item.type}}</span>
+    </div>
+  </header>
+
+  <section class="item-body">
+
+    {{!-- WEAPON --}}
+    {{#if (eq item.type "weapon")}}
+    <div class="item-fields">
+      <div class="field-row">
+        <label>Weapon Type</label>
+        <input type="text" name="system.weaponType" value="{{system.weaponType}}"/>
+      </div>
+      <div class="field-row">
+        <label>Property</label>
+        <input type="text" name="system.property" value="{{system.property}}"/>
+      </div>
+      <div class="field-row">
+        <label>Damage Points</label>
+        <input type="number" name="system.damagePoints" value="{{system.damagePoints}}" min="0" max="5"/>
+        <span class="field-note">/ 5 before Broken</span>
+      </div>
+      <div class="field-row">
+        <label>Broken</label>
+        <input type="checkbox" name="system.broken" {{#if system.broken}}checked{{/if}}/>
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- ARMOR --}}
+    {{#if (eq item.type "armor")}}
+    <div class="item-fields">
+      <div class="field-row">
+        <label>Armor Type</label>
+        <select name="system.armorType">
+          <option value="cloth"   {{#if (eq system.armorType "cloth")}}selected{{/if}}>Cloth</option>
+          <option value="leather" {{#if (eq system.armorType "leather")}}selected{{/if}}>Leather</option>
+          <option value="chain"   {{#if (eq system.armorType "chain")}}selected{{/if}}>Chain</option>
+          <option value="plate"   {{#if (eq system.armorType "plate")}}selected{{/if}}>Plate</option>
+          <option value="shield-small"   {{#if (eq system.armorType "shield-small")}}selected{{/if}}>Shield (Small)</option>
+          <option value="shield-regular" {{#if (eq system.armorType "shield-regular")}}selected{{/if}}>Shield (Regular)</option>
+          <option value="shield-heavy"   {{#if (eq system.armorType "shield-heavy")}}selected{{/if}}>Shield (Heavy)</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label>Damage Points</label>
+        <input type="number" name="system.damagePoints" value="{{system.damagePoints}}" min="0" max="5"/>
+      </div>
+      <div class="field-row">
+        <label>Broken</label>
+        <input type="checkbox" name="system.broken" {{#if system.broken}}checked{{/if}}/>
+      </div>
+      <div class="field-row">
+        <label>Property</label>
+        <input type="text" name="system.property" value="{{system.property}}"/>
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- SPELL --}}
+    {{#if (eq item.type "spell")}}
+    <div class="item-fields">
+      <div class="field-row">
+        <label>School</label>
+        <input type="text" name="system.school" value="{{system.school}}"/>
+      </div>
+      <div class="field-row">
+        <label>Tier</label>
+        <select name="system.tier">
+          <option value="novice"      {{#if (eq system.tier "novice")}}selected{{/if}}>Novice</option>
+          <option value="expert"      {{#if (eq system.tier "expert")}}selected{{/if}}>Expert</option>
+          <option value="master"      {{#if (eq system.tier "master")}}selected{{/if}}>Master</option>
+          <option value="grandmaster" {{#if (eq system.tier "grandmaster")}}selected{{/if}}>Grand Master</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label>MP Cost</label>
+        <input type="number" name="system.mpCost" value="{{system.mpCost}}" min="0"/>
+      </div>
+      <div class="field-row">
+        <label>Dice Pool</label>
+        <input type="text" name="system.dicePool" value="{{system.dicePool}}" placeholder="e.g. 4d10+2"/>
+      </div>
+      <div class="field-row">
+        <label>Effect</label>
+        <textarea name="system.effect">{{system.effect}}</textarea>
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- RELIC --}}
+    {{#if (eq item.type "relic")}}
+    <div class="item-fields">
+      <div class="field-row">
+        <label>Rarity</label>
+        <select name="system.rarity">
+          <option value="common"    {{#if (eq system.rarity "common")}}selected{{/if}}>Common</option>
+          <option value="uncommon"  {{#if (eq system.rarity "uncommon")}}selected{{/if}}>Uncommon</option>
+          <option value="rare"      {{#if (eq system.rarity "rare")}}selected{{/if}}>Rare</option>
+          <option value="legendary" {{#if (eq system.rarity "legendary")}}selected{{/if}}>Legendary</option>
+          <option value="mythic"    {{#if (eq system.rarity "mythic")}}selected{{/if}}>Mythic</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label>Identified</label>
+        <input type="checkbox" name="system.identified" {{#if system.identified}}checked{{/if}}/>
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- DESCRIPTION (all types) --}}
+    <div class="item-description">
+      <label>Description</label>
+      {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+    </div>
+
+  </section>
+</form>
