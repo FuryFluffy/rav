@@ -27,6 +27,7 @@
     }
   ],
   "socket": false,
-  "url": "",
-  "license": ""
+  "url": "https://github.com/FuryFluffy/rav",
+  "license": "https://github.com/FuryFluffy/rav/blob/main/LICENSE",
+  "download": "https://github.com/FuryFluffy/rav/archive/refs/heads/main.zip"
 }
