@@ -665,3 +665,78 @@
   border-color: var(--rav-gold);
   box-shadow: 0 0 0 1px rgba(201, 150, 58, 0.3);
 }
+
+/* ── TIER LABEL FIX — Grand Master no longer breaks layout ── */
+.rav.sheet .skill-tier {
+  font-size: 10px !important;
+  min-width: 58px !important;
+  max-width: 58px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── UPDATED ROLL DISPLAY ── */
+.rav-roll .roll-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid #5c4a2a;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+.rav-roll .roll-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: #c9963a;
+  font-weight: 600;
+}
+.rav-roll .roll-pool { font-size: 12px; color: #7a6240; }
+
+.rav-roll .roll-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.rav-roll .roll-tag { font-size: 11px; padding: 2px 7px; border-radius: 10px; border: 1px solid; }
+.rav-roll .bonus-tag { color: #3498db; border-color: #2980b9; background: rgba(41,128,185,0.1); }
+.rav-roll .luck-tag  { color: #c9963a; border-color: #7a6240; background: rgba(201,150,58,0.1); }
+.rav-roll .crit-tag  { color: #e8b95a; border-color: #c9963a; background: rgba(232,185,90,0.15); }
+
+.rav-roll .dice-tray { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+
+.rav-roll .die {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 7px;
+  border-radius: 4px;
+  border: 2px solid;
+  font-family: 'Cinzel', serif;
+  position: relative;
+}
+.rav-roll .die.success { background: rgba(46,204,113,0.12); border-color: #2ecc71; }
+.rav-roll .die.failure { background: rgba(127,140,141,0.08); border-color: #3a3a3a; }
+.rav-roll .die.crit    { box-shadow: 0 0 6px rgba(232,185,90,0.4); }
+
+.rav-roll .die-base   { font-size: 13px; color: #7f8c8d; text-decoration: line-through; }
+.rav-roll .die-arrow  { font-size: 11px; color: #5c4a2a; }
+.rav-roll .die-final  { font-size: 16px; font-weight: 700; }
+.rav-roll .die-final.alone { font-size: 18px; }
+.rav-roll .die.success .die-final { color: #2ecc71; }
+.rav-roll .die.failure .die-final { color: #7f8c8d; }
+.rav-roll .die-bonus  { font-size: 10px; color: #3498db; align-self: flex-start; margin-top: 1px; }
+.rav-roll .crit-mark  { position: absolute; top: -6px; right: -4px; font-size: 9px; color: #e8b95a; }
+
+.rav-roll .roll-footer { margin-top: 8px; padding-top: 6px; border-top: 1px solid #3a3020; }
+.rav-roll .roll-successes { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: #e8b95a; }
+
+.rav-roll .luck-reroll-btn {
+  display: block; width: 100%; margin-top: 8px; padding: 5px 10px;
+  background: rgba(201,150,58,0.1); border: 1px solid #7a6240; border-radius: 4px;
+  color: #c9963a; font-family: 'Crimson Pro', serif; font-size: 13px;
+  cursor: pointer; text-align: center; transition: all 0.15s;
+}
+.rav-roll .luck-reroll-btn:hover { background: rgba(201,150,58,0.2); border-color: #c9963a; }
+.rav-roll .luck-reroll-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── DIALOG ── */
+.rav-dialog .dialog-field { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.rav-dialog .dialog-field label { min-width: 130px; font-size: 13px; color: #a8987a; }
+.rav-dialog .luck-field { background: rgba(201,150,58,0.08); border: 1px solid #7a6240; border-radius: 4px; padding: 6px 8px; }

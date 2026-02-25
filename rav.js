@@ -1,6 +1,6 @@
 // ============================================================
 //  Rise of Arcane and Valor — Main System File
-//  rav.js
+//  rav.js  v0.2.0
 // ============================================================
 
 // ============================================================
@@ -21,27 +21,23 @@ const RAV = {
     master:      "Master",
     grandmaster: "Grand Master"
   },
-  // At what skill level each tier unlocks
   tierThresholds: {
     novice:      1,
     expert:      4,
     master:      7,
     grandmaster: 9
   },
-  successThreshold: 7  // A die result of 7+ counts as a success
+  successThreshold: 7
 };
 
 // ============================================================
-//  2. REGISTER THE SYSTEM ON INIT
+//  2. INIT
 // ============================================================
 
 Hooks.once("init", function () {
   console.log("RAV | Initialising Rise of Arcane and Valor system");
-
-  // Store RAV config on the global game object for easy access anywhere
   game.rav = { RAV };
 
-  // Register Actor and Item sheet classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("rav", RAVActorSheet, {
     types: ["character"],
@@ -60,206 +56,192 @@ Hooks.once("init", function () {
     label: "RAV Item Sheet"
   });
 
-  // Register Handlebars helpers used in HTML templates
   _registerHandlebarsHelpers();
 });
 
 // ============================================================
 //  3. HANDLEBARS HELPERS
-//  These are small functions you can call inside your HTML
-//  templates to do things like comparisons and formatting.
 // ============================================================
 
 function _registerHandlebarsHelpers() {
+  Handlebars.registerHelper("eq",  (a, b) => a === b);
+  Handlebars.registerHelper("gt",  (a, b) => a > b);
+  Handlebars.registerHelper("lte", (a, b) => a <= b);
+  Handlebars.registerHelper("add", (a, b) => Number(a) + Number(b));
 
-  // {{eq a b}} — returns true if a equals b
-  Handlebars.registerHelper("eq", (a, b) => a === b);
+  Handlebars.registerHelper("tierLabel", (tier) => RAV.tiers[tier] ?? tier);
 
-  // {{gt a b}} — returns true if a is greater than b
-  Handlebars.registerHelper("gt", (a, b) => a > b);
-
-  // {{tierLabel tier}} — converts "grandmaster" to "Grand Master" etc.
-  Handlebars.registerHelper("tierLabel", (tier) => {
-    return RAV.tiers[tier] ?? tier;
-  });
-
-  // {{capitalize str}} — capitalises first letter
   Handlebars.registerHelper("capitalize", (str) => {
     if (typeof str !== "string") return str;
     return str.charAt(0).toUpperCase() + str.slice(1);
   });
 
-  // {{times n}} — lets you loop n times in a template (used for dot displays)
   Handlebars.registerHelper("times", function (n, block) {
     let result = "";
     for (let i = 0; i < n; i++) result += block.fn(i);
     return result;
   });
 
-  // {{lte a b}} — returns true if a <= b (used for filled dot rendering)
-  Handlebars.registerHelper("lte", (a, b) => a <= b);
-
-  // {{add a b}} — adds two numbers (used for dot index comparison)
-  Handlebars.registerHelper("add", (a, b) => a + b);
+  Handlebars.registerHelper("dotFilled", (index, value) => (index + 1) <= value);
 }
 
 // ============================================================
-//  4. RAV ACTOR SHEET — CHARACTER
+//  4. CHARACTER SHEET
 // ============================================================
 
 class RAVActorSheet extends ActorSheet {
 
-  /** Default size and title of the sheet window */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rav", "sheet", "actor", "character"],
       template: "systems/rav/templates/actor-sheet.html",
-      width: 780,
-      height: 860,
+      width: 800,
+      height: 900,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "skills" }]
     });
   }
 
-  /** Called every time the sheet renders — prepares data for the HTML template */
   getData() {
-    const context = super.getData();
-    const actorData = context.actor;
-
-    // Attach the RAV config so templates can access tier labels etc.
-    context.RAV = RAV;
-    context.system = actorData.system;
-    context.flags = actorData.flags;
-
-    // Pre-calculate HP and MP maximums from Endurance
+    const context  = super.getData();
+    context.RAV    = RAV;
+    context.system = context.actor.system;
+    context.flags  = context.actor.flags;
     this._prepareHealthMagic(context);
-
-    // Determine tier automatically from skill level
     this._prepareTiers(context);
-
     return context;
   }
 
-  /** HP max = 5 + (Endurance × 2), MP max = 5 + (Endurance × 2)
-   *  These match the rulebook's Endurance-based pool description.
-   *  Adjust the formula here if your rulebook specifies different values. */
   _prepareHealthMagic(context) {
-    const endurance = context.system.attributes.endurance.value ?? 1;
-    context.system.health.max = 5 + (endurance * 2);
-    context.system.magic.max  = 5 + (endurance * 2);
+    const end = context.system.attributes.endurance.value ?? 1;
+    context.system.health.max = 5 + (end * 2);
+    context.system.magic.max  = 5 + (end * 2);
   }
 
-  /** Auto-set tier based on skill level so GM doesn't have to manage it manually.
-   *  Tier still requires a teacher to unlock in narrative, but the sheet
-   *  reflects it automatically once the level is set. */
   _prepareTiers(context) {
-    const skillGroups = context.system.skills;
-    for (const group of Object.values(skillGroups)) {
+    for (const group of Object.values(context.system.skills)) {
       for (const skill of Object.values(group)) {
         skill.tier = _tierFromLevel(skill.level);
       }
     }
-    const specialties = context.system.specialties;
-    for (const spec of Object.values(specialties)) {
+    for (const spec of Object.values(context.system.specialties)) {
       spec.tier = _tierFromLevel(spec.level);
     }
   }
 
-  /** Wire up all interactive elements after the sheet HTML is rendered */
   activateListeners(html) {
     super.activateListeners(html);
-
     if (!this.isEditable) return;
 
-    // Roll Luck (d6) for the session
     html.find(".luck-roll").click(this._onRollLuck.bind(this));
-
-    // Roll an attribute (click the attribute label)
     html.find(".attribute-roll").click(this._onRollAttribute.bind(this));
-
-    // Roll a skill check (click the skill name)
     html.find(".skill-roll").click(this._onRollSkill.bind(this));
-
-    // Item controls (equip, edit, delete)
+    html.find(".hp-btn").click(this._onHPChange.bind(this));
+    html.find(".mp-btn").click(this._onMPChange.bind(this));
+    html.find(".item-create").click(this._onItemCreate.bind(this));
     html.find(".item-equip").click(this._onItemEquip.bind(this));
     html.find(".item-edit").click(this._onItemEdit.bind(this));
     html.find(".item-delete").click(this._onItemDelete.bind(this));
 
-    // HP / MP quick adjustment buttons
-    html.find(".hp-btn").click(this._onHPChange.bind(this));
-    html.find(".mp-btn").click(this._onMPChange.bind(this));
+    // Re-render sheet when attribute value changes so dots update
+    html.find(".attribute-value").change(async (event) => {
+      const input = event.currentTarget;
+      const value = Math.clamped(parseInt(input.value) || 1, 1, 5);
+      await this.actor.update({ [input.name]: value });
+    });
   }
 
-  // ----------------------------------------------------------
-  //  ROLL HANDLERS
-  // ----------------------------------------------------------
+  // --- LUCK ---
 
-  /** Roll a d6 to determine Luck points for the session */
   async _onRollLuck(event) {
     event.preventDefault();
     const roll = await new Roll("1d6").evaluate();
     await this.actor.update({ "system.attributes.luck.value": roll.total });
     roll.toMessage({
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      flavor: `🍀 ${this.actor.name} rolls for Luck — ${roll.total} point(s) this session!`
+      flavor:  `🍀 ${this.actor.name} rolls for Luck — <strong>${roll.total}</strong> point(s) this session!`
     });
   }
 
-  /** Pure attribute check — just rolls the attribute's dice pool */
+  // --- ATTRIBUTE ROLL ---
+
   async _onRollAttribute(event) {
     event.preventDefault();
-    const attrKey = event.currentTarget.dataset.attribute;
+    const attrKey   = event.currentTarget.dataset.attribute;
     const attrValue = this.actor.system.attributes[attrKey]?.value ?? 1;
     const attrLabel = RAV.attributes[attrKey] ?? attrKey;
+    const luck      = this.actor.system.attributes.luck.value ?? 0;
 
-    await _rollCheck({
-      actor: this.actor,
-      flavor: `${attrLabel} Check`,
-      dicePool: attrValue,
-      skillBonus: 0,
-      tier: "novice"
+    await _showRollDialog({
+      actor:      this.actor,
+      title:      `${attrLabel} Check`,
+      dicePool:   attrValue,
+      skillLabel: attrLabel,
+      skillLevel: 0,
+      tier:       "novice",
+      luck
     });
   }
 
-  /** Skill check — prompts GM/player to choose which attribute to pair with */
+  // --- SKILL ROLL ---
+
   async _onRollSkill(event) {
     event.preventDefault();
-    const element = event.currentTarget;
-    const group   = element.dataset.group;   // "misc", "weapon", or "magic"
-    const skillKey = element.dataset.skill;
+    const el       = event.currentTarget;
+    const group    = el.dataset.group;
+    const skillKey = el.dataset.skill;
     const skill    = this.actor.system.skills[group][skillKey];
-    const skillLabel = skill.label;
-    const skillLevel = skill.level ?? 0;
-    const tier       = _tierFromLevel(skillLevel);
+    const luck     = this.actor.system.attributes.luck.value ?? 0;
 
-    // Build attribute selector dialog
-    const attrOptions = Object.entries(RAV.attributes)
-      .map(([k, v]) => `<option value="${k}">${v} (${this.actor.system.attributes[k].value}d10)</option>`)
-      .join("");
+    const attrOptions = Object.entries(RAV.attributes).map(([k, v]) => {
+      const dots = this.actor.system.attributes[k].value;
+      return `<option value="${k}">${v} — ${dots}d10</option>`;
+    }).join("");
 
     const content = `
-      <form>
-        <div class="form-group">
-          <label>Attribute to pair with <strong>${skillLabel}</strong>:</label>
+      <form class="rav-dialog">
+        <div class="dialog-field">
+          <label>Attribute</label>
           <select name="attribute">${attrOptions}</select>
         </div>
+        <div class="dialog-field">
+          <label>Skill Level</label>
+          <input type="number" name="skillLevel" value="${skill.level}" min="0" max="9"/>
+        </div>
+        <div class="dialog-field">
+          <label>Tier</label>
+          <span class="tier-${skill.tier}">${RAV.tiers[skill.tier] ?? skill.tier}</span>
+        </div>
+        ${luck > 0 ? `
+        <div class="dialog-field luck-field">
+          <label>🍀 Spend Luck (${luck} remaining)</label>
+          <input type="checkbox" name="useLuck"/>
+        </div>` : ""}
       </form>`;
 
     new Dialog({
-      title: `${skillLabel} Skill Check`,
+      title:   `${skill.label} Check`,
       content,
       buttons: {
         roll: {
           label: "Roll",
           callback: async (html) => {
-            const attrKey   = html.find("[name=attribute]").val();
-            const attrValue = this.actor.system.attributes[attrKey].value ?? 1;
-            const attrLabel = RAV.attributes[attrKey];
+            const attrKey    = html.find("[name=attribute]").val();
+            const skillLevel = parseInt(html.find("[name=skillLevel]").val()) || 0;
+            const useLuck    = html.find("[name=useLuck]").prop("checked");
+            const attrValue  = this.actor.system.attributes[attrKey].value ?? 1;
+            const tier       = _tierFromLevel(skillLevel);
+
+            if (useLuck && luck > 0) {
+              await this.actor.update({ "system.attributes.luck.value": luck - 1 });
+            }
+
             await _rollCheck({
-              actor: this.actor,
-              flavor: `${skillLabel} + ${attrLabel}`,
-              dicePool: attrValue,
+              actor:      this.actor,
+              flavor:     `${skill.label} + ${RAV.attributes[attrKey]}`,
+              dicePool:   attrValue,
               skillLevel,
-              tier
+              tier,
+              useLuck
             });
           }
         },
@@ -269,55 +251,60 @@ class RAVActorSheet extends ActorSheet {
     }).render(true);
   }
 
-  // ----------------------------------------------------------
-  //  HP / MP HANDLERS
-  // ----------------------------------------------------------
+  // --- HP / MP ---
 
   async _onHPChange(event) {
     event.preventDefault();
-    const delta     = parseInt(event.currentTarget.dataset.delta);
-    const current   = this.actor.system.health.value;
-    const max       = this.actor.system.health.max;
-    const newValue  = Math.clamped(current + delta, 0, max);
-    await this.actor.update({ "system.health.value": newValue });
+    const delta   = parseInt(event.currentTarget.dataset.delta);
+    const current = this.actor.system.health.value;
+    const max     = this.actor.system.health.max;
+    await this.actor.update({ "system.health.value": Math.clamped(current + delta, 0, max) });
   }
 
   async _onMPChange(event) {
     event.preventDefault();
-    const delta    = parseInt(event.currentTarget.dataset.delta);
-    const current  = this.actor.system.magic.value;
-    const max      = this.actor.system.magic.max;
-    const newValue = Math.clamped(current + delta, 0, max);
-    await this.actor.update({ "system.magic.value": newValue });
+    const delta   = parseInt(event.currentTarget.dataset.delta);
+    const current = this.actor.system.magic.value;
+    const max     = this.actor.system.magic.max;
+    await this.actor.update({ "system.magic.value": Math.clamped(current + delta, 0, max) });
   }
 
-  // ----------------------------------------------------------
-  //  ITEM HANDLERS
-  // ----------------------------------------------------------
+  // --- ITEMS ---
+
+  async _onItemCreate(event) {
+    event.preventDefault();
+    const type = event.currentTarget.dataset.type ?? "weapon";
+    const name = `New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+    const [item] = await this.actor.createEmbeddedDocuments("Item", [{ name, type, system: {} }]);
+    item.sheet.render(true);
+  }
 
   async _onItemEquip(event) {
     event.preventDefault();
-    const itemId  = event.currentTarget.closest(".item").dataset.itemId;
-    const item    = this.actor.items.get(itemId);
+    const itemId = event.currentTarget.closest(".item-row").dataset.itemId;
+    const item   = this.actor.items.get(itemId);
     await item.update({ "system.equipped": !item.system.equipped });
   }
 
   _onItemEdit(event) {
     event.preventDefault();
-    const itemId = event.currentTarget.closest(".item").dataset.itemId;
-    const item   = this.actor.items.get(itemId);
-    item.sheet.render(true);
+    const itemId = event.currentTarget.closest(".item-row").dataset.itemId;
+    this.actor.items.get(itemId).sheet.render(true);
   }
 
   async _onItemDelete(event) {
     event.preventDefault();
-    const itemId = event.currentTarget.closest(".item").dataset.itemId;
-    await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+    const itemId = event.currentTarget.closest(".item-row").dataset.itemId;
+    await Dialog.confirm({
+      title:   "Delete Item",
+      content: "<p>Are you sure?</p>",
+      yes:     () => this.actor.deleteEmbeddedDocuments("Item", [itemId])
+    });
   }
 }
 
 // ============================================================
-//  5. RAV NPC SHEET
+//  5. NPC SHEET
 // ============================================================
 
 class RAVNPCSheet extends ActorSheet {
@@ -333,17 +320,13 @@ class RAVNPCSheet extends ActorSheet {
   }
 
   getData() {
-    const context = super.getData();
+    const context  = super.getData();
     context.RAV    = RAV;
     context.system = context.actor.system;
-    this._prepareHealthMagic(context);
+    const end = context.system.attributes.endurance.value ?? 1;
+    context.system.health.max = 5 + (end * 2);
+    context.system.magic.max  = 5 + (end * 2);
     return context;
-  }
-
-  _prepareHealthMagic(context) {
-    const endurance = context.system.attributes.endurance.value ?? 1;
-    context.system.health.max = 5 + (endurance * 2);
-    context.system.magic.max  = 5 + (endurance * 2);
   }
 
   activateListeners(html) {
@@ -359,47 +342,27 @@ class RAVNPCSheet extends ActorSheet {
     const attrKey   = event.currentTarget.dataset.attribute;
     const attrValue = this.actor.system.attributes[attrKey]?.value ?? 1;
     const attrLabel = RAV.attributes[attrKey] ?? attrKey;
-    await _rollCheck({
-      actor: this.actor,
-      flavor: `${attrLabel} Check`,
-      dicePool: attrValue,
-      skillLevel: 0,
-      tier: "novice"
-    });
+    await _rollCheck({ actor: this.actor, flavor: `${attrLabel} Check`, dicePool: attrValue, skillLevel: 0, tier: "novice" });
   }
 
   async _onRollNPCSkill(event) {
     event.preventDefault();
-    const element    = event.currentTarget;
-    const group      = element.dataset.group;
-    const skillKey   = element.dataset.skill;
-    const skill      = this.actor.system.skills[group][skillKey];
-    const skillLevel = skill.level ?? 0;
-    const tier       = _tierFromLevel(skillLevel);
-
-    const attrOptions = Object.entries(RAV.attributes)
-      .map(([k, v]) => `<option value="${k}">${v} (${this.actor.system.attributes[k].value}d10)</option>`)
-      .join("");
+    const el       = event.currentTarget;
+    const skill    = this.actor.system.skills[el.dataset.group][el.dataset.skill];
+    const attrOpts = Object.entries(RAV.attributes).map(([k, v]) =>
+      `<option value="${k}">${v} (${this.actor.system.attributes[k].value}d10)</option>`
+    ).join("");
 
     new Dialog({
-      title: `${skill.label} Check`,
-      content: `<form><div class="form-group">
-        <label>Attribute:</label>
-        <select name="attribute">${attrOptions}</select>
-      </div></form>`,
+      title:   `${skill.label} Check`,
+      content: `<form><div class="dialog-field"><label>Attribute</label><select name="attribute">${attrOpts}</select></div></form>`,
       buttons: {
         roll: {
           label: "Roll",
           callback: async (html) => {
             const attrKey   = html.find("[name=attribute]").val();
             const attrValue = this.actor.system.attributes[attrKey].value ?? 1;
-            await _rollCheck({
-              actor: this.actor,
-              flavor: `${skill.label} Check`,
-              dicePool: attrValue,
-              skillLevel,
-              tier
-            });
+            await _rollCheck({ actor: this.actor, flavor: `${skill.label} Check`, dicePool: attrValue, skillLevel: skill.level ?? 0, tier: _tierFromLevel(skill.level) });
           }
         },
         cancel: { label: "Cancel" }
@@ -410,16 +373,15 @@ class RAVNPCSheet extends ActorSheet {
 
   async _onHPChange(event) {
     event.preventDefault();
-    const delta    = parseInt(event.currentTarget.dataset.delta);
-    const current  = this.actor.system.health.value;
-    const max      = this.actor.system.health.max;
-    const newValue = Math.clamped(current + delta, 0, max);
-    await this.actor.update({ "system.health.value": newValue });
+    const delta   = parseInt(event.currentTarget.dataset.delta);
+    const current = this.actor.system.health.value;
+    const max     = this.actor.system.health.max;
+    await this.actor.update({ "system.health.value": Math.clamped(current + delta, 0, max) });
   }
 }
 
 // ============================================================
-//  6. RAV ITEM SHEET
+//  6. ITEM SHEET
 // ============================================================
 
 class RAVItemSheet extends ItemSheet {
@@ -428,8 +390,8 @@ class RAVItemSheet extends ItemSheet {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rav", "sheet", "item"],
       template: "systems/rav/templates/item-sheet.html",
-      width: 480,
-      height: 380
+      width: 500,
+      height: 420
     });
   }
 
@@ -442,203 +404,285 @@ class RAVItemSheet extends ItemSheet {
 }
 
 // ============================================================
-//  7. CORE ROLL ENGINE — the d10+ mechanic
+//  7. ROLL DIALOG
 // ============================================================
 
-/**
- * The heart of the RAV system.
- *
- * How the d10+ mechanic works:
- *   1. Roll [dicePool]d10 based on the chosen Attribute.
- *   2. Apply the skill bonus to the LOWEST die that can benefit most
- *      (or split across dice at Master/Grand Master tier).
- *   3. Count dice with final value >= 7 as successes.
- *   4. Natural 10s trigger a Critical Roll — roll 1 extra d10 each.
- *
- * @param {object} options
- * @param {Actor}  options.actor       The actor making the roll
- * @param {string} options.flavor      Chat message header
- * @param {number} options.dicePool    Number of d10s to roll (from attribute)
- * @param {number} options.skillLevel  Skill level value
- * @param {string} options.tier        "novice" | "expert" | "master" | "grandmaster"
- */
-async function _rollCheck({ actor, flavor, dicePool, skillLevel = 0, tier = "novice" }) {
+async function _showRollDialog({ actor, title, dicePool, skillLabel, skillLevel, tier, luck }) {
+  const attrOptions = Object.entries(RAV.attributes).map(([k, v]) => {
+    const dots = actor.system.attributes[k].value;
+    return `<option value="${k}">${v} — ${dots}d10</option>`;
+  }).join("");
 
-  // --- Step 1: Roll the base dice pool ---
-  const pool = Math.max(1, dicePool);
-  const roll  = await new Roll(`${pool}d10`).evaluate();
-  let results = roll.dice[0].results.map(r => r.result);
+  const content = `
+    <form class="rav-dialog">
+      <div class="dialog-field">
+        <label>Attribute</label>
+        <select name="attribute">${attrOptions}</select>
+      </div>
+      ${luck > 0 ? `
+      <div class="dialog-field luck-field">
+        <label>🍀 Spend Luck (${luck} remaining)</label>
+        <input type="checkbox" name="useLuck"/>
+      </div>` : ""}
+    </form>`;
 
-  // --- Step 2: Handle Critical Rolls (natural 10s get bonus dice) ---
-  let critBonus = [];
-  for (const r of results) {
-    if (r === 10) {
-      const bonusRoll = await new Roll("1d10").evaluate();
-      critBonus.push(...bonusRoll.dice[0].results.map(r => r.result));
+  new Dialog({
+    title,
+    content,
+    buttons: {
+      roll: {
+        label: "Roll",
+        callback: async (html) => {
+          const attrKey   = html.find("[name=attribute]").val();
+          const useLuck   = html.find("[name=useLuck]").prop("checked");
+          const attrValue = actor.system.attributes[attrKey].value ?? 1;
+          if (useLuck && luck > 0) {
+            await actor.update({ "system.attributes.luck.value": luck - 1 });
+          }
+          await _rollCheck({ actor, flavor: `${skillLabel} + ${RAV.attributes[attrKey]}`, dicePool: attrValue, skillLevel, tier, useLuck });
+        }
+      },
+      cancel: { label: "Cancel" }
+    },
+    default: "roll"
+  }).render(true);
+}
+
+// ============================================================
+//  8. CORE ROLL ENGINE
+// ============================================================
+
+async function _rollCheck({ actor, flavor, dicePool, skillLevel = 0, tier = "novice", useLuck = false }) {
+
+  // Step 1: Base roll
+  const pool      = Math.max(1, dicePool);
+  const baseRoll  = await new Roll(`${pool}d10`).evaluate();
+  let baseResults = baseRoll.dice[0].results.map(r => r.result);
+
+  // Step 2: Luck — reroll lowest die
+  if (useLuck) {
+    const lowestIdx        = baseResults.indexOf(Math.min(...baseResults));
+    const luckRoll         = await new Roll("1d10").evaluate();
+    baseResults[lowestIdx] = luckRoll.dice[0].results[0].result;
+  }
+
+  // Step 3: Crits — natural 10s add bonus dice
+  let critCount  = 0;
+  let allResults = [...baseResults];
+  for (let i = 0; i < allResults.length; i++) {
+    if (allResults[i] === 10) {
+      const bonus    = await new Roll("1d10").evaluate();
+      const bonusDie = bonus.dice[0].results[0].result;
+      allResults.push(bonusDie);
+      critCount++;
+      if (bonusDie === 10) {
+        const bonus2 = await new Roll("1d10").evaluate();
+        allResults.push(bonus2.dice[0].results[0].result);
+        critCount++;
+      }
     }
   }
-  // Bonus dice can themselves crit
-  for (const r of critBonus) {
-    if (r === 10) {
-      const bonusRoll = await new Roll("1d10").evaluate();
-      critBonus.push(...bonusRoll.dice[0].results.map(r => r.result));
-    }
-  }
-  results = [...results, ...critBonus];
 
-  // --- Step 3: Apply skill bonus to die results based on tier ---
-  //
-  //  Novice:      add HALF skill level (rounded up) to ONE die
-  //  Expert:      add FULL skill level to ONE die
-  //  Master:      SPLIT skill level across TWO dice
-  //  Grand Master: SPLIT skill level across ANY number of dice
-  //
-  // Strategy: always boost the die closest to 7 (the success threshold)
-  // to maximise the chance of turning near-misses into successes.
-
-  let modifiedResults = [...results];
+  // Step 4: Apply skill bonus
+  let modifiedResults = [...allResults];
+  const bonusApplied  = [];
 
   if (skillLevel > 0) {
     if (tier === "novice") {
       const bonus = Math.ceil(skillLevel / 2);
-      modifiedResults = _applyBonusToOne(modifiedResults, bonus);
-
+      const r = _applyBonusToOne(modifiedResults, bonus);
+      modifiedResults = r.results;
+      bonusApplied.push({ idx: r.idx, amount: r.amount });
     } else if (tier === "expert") {
-      modifiedResults = _applyBonusToOne(modifiedResults, skillLevel);
-
+      const r = _applyBonusToOne(modifiedResults, skillLevel);
+      modifiedResults = r.results;
+      bonusApplied.push({ idx: r.idx, amount: r.amount });
     } else if (tier === "master") {
-      // Split into two roughly equal halves, apply each to best candidate
       const half1 = Math.ceil(skillLevel / 2);
       const half2 = Math.floor(skillLevel / 2);
-      modifiedResults = _applyBonusToOne(modifiedResults, half1);
-      if (half2 > 0) modifiedResults = _applyBonusToOne(modifiedResults, half2);
-
+      const r1 = _applyBonusToOne(modifiedResults, half1);
+      modifiedResults = r1.results;
+      bonusApplied.push({ idx: r1.idx, amount: r1.amount });
+      if (half2 > 0) {
+        const r2 = _applyBonusToOne(modifiedResults, half2);
+        modifiedResults = r2.results;
+        bonusApplied.push({ idx: r2.idx, amount: r2.amount });
+      }
     } else if (tier === "grandmaster") {
-      // Distribute 1 point at a time to each die below 7, then repeat
-      modifiedResults = _applyBonusGreedy(modifiedResults, skillLevel);
+      const r = _applyBonusGreedy(modifiedResults, skillLevel);
+      modifiedResults = r.results;
+      bonusApplied.push(...r.changes);
     }
   }
 
-  // --- Step 4: Count successes (7 or higher) ---
+  // Step 5: Count successes
   const successes = modifiedResults.filter(r => r >= RAV.successThreshold).length;
 
-  // --- Step 5: Build and send chat message ---
-  const diceDisplay = modifiedResults.map((r, i) => {
-    const isSuccess  = r >= RAV.successThreshold;
-    const wasCrit    = i < results.length && results[i] === 10;
-    const cssClass   = isSuccess ? "success" : "failure";
-    const critMark   = wasCrit ? " ✦" : "";
-    return `<span class="die ${cssClass}">${r}${critMark}</span>`;
-  }).join(" ");
+  // Step 6: Render dice — show base → modified where changed
+  const diceHTML = modifiedResults.map((modVal, i) => {
+    const baseVal   = allResults[i] ?? modVal;
+    const isSuccess = modVal >= RAV.successThreshold;
+    const isCrit    = i >= baseResults.length;
+    const modified  = bonusApplied.find(b => b.idx === i);
+    const cssClass  = isSuccess ? "success" : "failure";
+    const critMark  = isCrit ? '<span class="crit-mark">✦</span>' : "";
 
-  const tierLabel  = RAV.tiers[tier] ?? tier;
-  const bonusText  = skillLevel > 0
-    ? `<p><em>${tierLabel} tier — Skill bonus: +${skillLevel}</em></p>`
-    : "";
+    let dieContent;
+    if (modified && modified.amount > 0) {
+      dieContent = `<span class="die-base">${baseVal}</span><span class="die-arrow">→</span><span class="die-final">${modVal}</span><span class="die-bonus">+${modified.amount}</span>`;
+    } else {
+      dieContent = `<span class="die-final alone">${modVal}</span>`;
+    }
 
-  const critText   = critBonus.length > 0
-    ? `<p><strong>⚡ Critical Roll! ${critBonus.length} bonus die/dice added.</strong></p>`
+    return `<div class="die ${cssClass}${isCrit ? " crit" : ""}">${critMark}${dieContent}</div>`;
+  }).join("");
+
+  // Step 7: Build bonus description
+  let bonusDesc = "";
+  if (skillLevel > 0) {
+    const tierLabel = RAV.tiers[tier] ?? tier;
+    if (tier === "novice")      bonusDesc = `${tierLabel} · +${Math.ceil(skillLevel/2)} to 1 die`;
+    else if (tier === "expert") bonusDesc = `${tierLabel} · +${skillLevel} to 1 die`;
+    else if (tier === "master") bonusDesc = `${tierLabel} · +${Math.ceil(skillLevel/2)} / +${Math.floor(skillLevel/2)} across 2 dice`;
+    else                        bonusDesc = `${tierLabel} · +${skillLevel} split optimally`;
+  }
+
+  const luckText  = useLuck ? `<div class="roll-tag luck-tag">🍀 Luck — lowest die rerolled</div>` : "";
+  const critText  = critCount > 0 ? `<div class="roll-tag crit-tag">⚡ Critical — ${critCount} bonus die added</div>` : "";
+  const bonusText = bonusDesc ? `<div class="roll-tag bonus-tag">${bonusDesc}</div>` : "";
+
+  const luck    = actor.system.attributes.luck.value ?? 0;
+  const luckBtn = luck > 0
+    ? `<button class="luck-reroll-btn" data-actor-id="${actor.id}" data-message-id="PENDING">🍀 Spend Luck to reroll lowest die (${luck} left)</button>`
     : "";
 
   const content = `
     <div class="rav-roll">
-      <h3>${flavor}</h3>
-      ${bonusText}
-      ${critText}
-      <div class="dice-results">${diceDisplay}</div>
-      <p class="successes"><strong>Successes: ${successes}</strong></p>
+      <div class="roll-header">
+        <span class="roll-title">${flavor}</span>
+        <span class="roll-pool">${pool}d10</span>
+      </div>
+      <div class="roll-tags">${bonusText}${luckText}${critText}</div>
+      <div class="dice-tray">${diceHTML}</div>
+      <div class="roll-footer">
+        <span class="roll-successes">${successes} Success${successes !== 1 ? "es" : ""}</span>
+      </div>
+      ${luckBtn}
     </div>`;
 
-  ChatMessage.create({
+  const msg = await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
     content,
-    type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-    rolls: [roll]
+    rolls:   [baseRoll]
   });
+
+  // Patch the message id into the luck button now we have it
+  if (luck > 0 && msg) {
+    const updated = content.replace(`data-message-id="PENDING"`, `data-message-id="${msg.id}"`);
+    await msg.update({ content: updated });
+  }
 
   return { successes, results: modifiedResults };
 }
 
-// ----------------------------------------------------------
-//  BONUS DISTRIBUTION HELPERS
-// ----------------------------------------------------------
+// ============================================================
+//  9. LUCK REROLL FROM CHAT
+// ============================================================
 
-/**
- * Apply a flat bonus to the single die that benefits most.
- * Priority: the die whose result + bonus first reaches or exceeds 7.
- * If no die can be pushed to 7, boost the highest die instead.
- */
+Hooks.on("renderChatMessage", (message, html) => {
+  html.find(".luck-reroll-btn").click(async (event) => {
+    event.preventDefault();
+    const btn     = event.currentTarget;
+    const actorId = btn.dataset.actorId;
+    const actor   = game.actors.get(actorId);
+    if (!actor) return;
+
+    const luck = actor.system.attributes.luck.value ?? 0;
+    if (luck <= 0) {
+      ui.notifications.warn("No Luck points remaining!");
+      return;
+    }
+
+    await actor.update({ "system.attributes.luck.value": luck - 1 });
+
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="rav-roll">
+        <div class="roll-header"><span class="roll-title">🍀 ${actor.name} spends Luck</span></div>
+        <p>Reroll your chosen die and apply the new result manually.</p>
+        <p><em>Luck remaining: ${luck - 1}</em></p>
+      </div>`
+    });
+
+    btn.disabled    = true;
+    btn.textContent = `🍀 Luck spent (${luck - 1} remaining)`;
+  });
+});
+
+// ============================================================
+//  10. BONUS HELPERS
+// ============================================================
+
 function _applyBonusToOne(results, bonus) {
   const arr = [...results];
-
-  // Find the best candidate: lowest die that can reach 7 with the bonus
   let bestIdx = -1;
-  let bestVal = Infinity;
+  let bestGap = Infinity;
+
   for (let i = 0; i < arr.length; i++) {
-    const needed = RAV.successThreshold - arr[i];
-    if (needed > 0 && needed <= bonus && arr[i] < bestVal) {
+    const gap = RAV.successThreshold - arr[i];
+    if (gap > 0 && gap <= bonus && gap < bestGap) {
       bestIdx = i;
-      bestVal = arr[i];
+      bestGap = gap;
     }
   }
 
-  // If no die can reach 7, just boost the highest non-10 die
   if (bestIdx === -1) {
-    let highestIdx = 0;
+    let hi = 0;
     for (let i = 1; i < arr.length; i++) {
-      if (arr[i] > arr[highestIdx] && arr[i] < 10) highestIdx = i;
+      if (arr[i] > arr[hi] && arr[i] < 10) hi = i;
     }
-    bestIdx = highestIdx;
+    bestIdx = hi;
   }
 
+  const before = arr[bestIdx];
   arr[bestIdx] = Math.min(10, arr[bestIdx] + bonus);
-  return arr;
+  return { results: arr, idx: bestIdx, amount: arr[bestIdx] - before };
 }
 
-/**
- * Grand Master tier: distribute bonus points greedily across all dice,
- * prioritising those just below the success threshold.
- */
 function _applyBonusGreedy(results, bonus) {
-  const arr = [...results];
+  const arr     = [...results];
   let remaining = bonus;
+  const changes = [];
 
   while (remaining > 0) {
-    // Find the die closest to 7 from below
     let bestIdx = -1;
     let bestGap = Infinity;
     for (let i = 0; i < arr.length; i++) {
       const gap = RAV.successThreshold - arr[i];
-      if (gap > 0 && gap < bestGap) {
-        bestIdx = i;
-        bestGap = gap;
-      }
+      if (gap > 0 && gap < bestGap) { bestIdx = i; bestGap = gap; }
     }
-    // No more dice below threshold — dump remainder on highest die
     if (bestIdx === -1) {
-      let highestIdx = 0;
-      for (let i = 1; i < arr.length; i++) {
-        if (arr[i] > arr[highestIdx]) highestIdx = i;
-      }
-      arr[highestIdx] = Math.min(10, arr[highestIdx] + remaining);
+      let hi = 0;
+      for (let i = 1; i < arr.length; i++) if (arr[i] > arr[hi]) hi = i;
+      const before = arr[hi];
+      arr[hi]      = Math.min(10, arr[hi] + remaining);
+      changes.push({ idx: hi, amount: arr[hi] - before });
       break;
     }
-    const add = Math.min(remaining, bestGap);
+    const add    = Math.min(remaining, bestGap);
+    const before = arr[bestIdx];
     arr[bestIdx] += add;
     remaining    -= add;
+    changes.push({ idx: bestIdx, amount: arr[bestIdx] - before });
   }
 
-  return arr;
+  return { results: arr, changes };
 }
 
 // ============================================================
-//  8. UTILITY FUNCTIONS
+//  11. UTILITIES
 // ============================================================
 
-/**
- * Determine tier from skill level.
- * Grand Master: 9+, Master: 7-8, Expert: 4-6, Novice: 1-3
- */
 function _tierFromLevel(level) {
   if (level >= 9) return "grandmaster";
   if (level >= 7) return "master";
