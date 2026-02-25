@@ -1,14 +1,10 @@
 /* ============================================================
-   Rise of Arcane and Valor — Stylesheet
-   rav.css
-   Dark amber / aged parchment aesthetic to match the world
-   of Tõus and Estonian mythological roots.
+   Rise of Arcane and Valor — Stylesheet v0.2.0 (clean rewrite)
    ============================================================ */
 
-/* ── FONTS ── */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap');
 
-/* ── CSS VARIABLES ── */
+/* ── VARIABLES ── */
 .rav.sheet {
   --rav-bg:           #1a1610;
   --rav-bg-mid:       #221e16;
@@ -21,11 +17,8 @@
   --rav-text-dim:     #a8987a;
   --rav-red:          #c0392b;
   --rav-blue:         #2980b9;
-  --rav-green:        #27ae60;
   --rav-purple:       #8e44ad;
-  --rav-success:      #2ecc71;
-  --rav-failure:      #7f8c8d;
-
+  --rav-green:        #27ae60;
   font-family: 'Crimson Pro', Georgia, serif;
   font-size: 15px;
   color: var(--rav-text);
@@ -33,11 +26,11 @@
 }
 
 /* ── SCROLLBAR ── */
-.rav.sheet ::-webkit-scrollbar { width: 6px; }
+.rav.sheet ::-webkit-scrollbar       { width: 6px; }
 .rav.sheet ::-webkit-scrollbar-track { background: var(--rav-bg); }
 .rav.sheet ::-webkit-scrollbar-thumb { background: var(--rav-border); border-radius: 3px; }
 
-/* ── BASE FORM ── */
+/* ── BASE ── */
 .rav.sheet .sheet-form {
   display: flex;
   flex-direction: column;
@@ -46,6 +39,23 @@
   background: var(--rav-bg);
 }
 
+.rav.sheet input, .rav.sheet select, .rav.sheet textarea {
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  color: var(--rav-text);
+  font-family: 'Crimson Pro', serif;
+}
+
+.rav.sheet input:focus, .rav.sheet select:focus, .rav.sheet textarea:focus {
+  outline: none;
+  border-color: var(--rav-gold);
+  box-shadow: 0 0 0 1px rgba(201,150,58,0.3);
+}
+
+/* ============================================================
+   CHARACTER SHEET
+   ============================================================ */
+
 /* ── HEADER ── */
 .rav.sheet .sheet-header {
   display: flex;
@@ -53,9 +63,6 @@
   padding: 12px;
   background: var(--rav-bg-mid);
   border-bottom: 2px solid var(--rav-border);
-}
-
-.rav.sheet .header-portrait {
   flex-shrink: 0;
 }
 
@@ -66,6 +73,7 @@
   border: 2px solid var(--rav-border);
   border-radius: 4px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .rav.sheet .header-fields {
@@ -73,6 +81,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .rav.sheet .name-input {
@@ -87,10 +96,7 @@
   padding: 2px 4px;
 }
 
-.rav.sheet .name-input:focus {
-  outline: none;
-  border-bottom-color: var(--rav-gold);
-}
+.rav.sheet .name-input:focus { outline: none; border-bottom-color: var(--rav-gold); box-shadow: none; }
 
 .rav.sheet .header-meta {
   display: flex;
@@ -113,12 +119,8 @@
 
 .rav.sheet .meta-field input,
 .rav.sheet .meta-field select {
-  background: var(--rav-bg);
-  border: 1px solid var(--rav-border);
-  color: var(--rav-text);
   padding: 2px 6px;
   border-radius: 3px;
-  font-family: 'Crimson Pro', serif;
   font-size: 14px;
   width: 80px;
 }
@@ -132,6 +134,7 @@
   background: var(--rav-bg-mid);
   border-bottom: 1px solid var(--rav-border);
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .rav.sheet .vital-block {
@@ -150,8 +153,8 @@
   min-width: 28px;
 }
 
-.rav.sheet .vital-hp .vital-label  { color: #e74c3c; }
-.rav.sheet .vital-mp .vital-label  { color: #3498db; }
+.rav.sheet .vital-hp .vital-label   { color: #e74c3c; }
+.rav.sheet .vital-mp .vital-label   { color: #3498db; }
 .rav.sheet .vital-luck .vital-label { color: var(--rav-gold); }
 
 .rav.sheet .vital-controls {
@@ -163,21 +166,15 @@
 .rav.sheet .vital-input {
   width: 44px;
   text-align: center;
-  background: var(--rav-bg);
-  border: 1px solid var(--rav-border);
-  color: var(--rav-text);
   padding: 2px 4px;
   border-radius: 3px;
   font-size: 15px;
+  border: 1px solid var(--rav-border);
 }
 
 .rav.sheet .vital-input.small { width: 52px; }
-
 .rav.sheet .vital-sep,
-.rav.sheet .vital-max {
-  color: var(--rav-text-dim);
-  font-size: 13px;
-}
+.rav.sheet .vital-max { color: var(--rav-text-dim); font-size: 13px; }
 
 .rav.sheet .vital-btn {
   background: var(--rav-bg-light);
@@ -188,17 +185,16 @@
   border-radius: 3px;
   cursor: pointer;
   font-size: 14px;
-  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.15s;
+  flex-shrink: 0;
 }
 
 .rav.sheet .vital-btn:hover {
   border-color: var(--rav-gold);
   color: var(--rav-gold);
-  background: var(--rav-bg-mid);
 }
 
 .rav.sheet .luck-value {
@@ -210,31 +206,29 @@
   text-align: center;
 }
 
-.rav.sheet .luck-roll { font-size: 16px; cursor: pointer; }
-
-/* ── SECTION TITLES ── */
-.rav.sheet .section-title {
-  font-family: 'Cinzel', serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--rav-gold);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin: 8px 0 6px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--rav-border);
-}
-
 /* ── ATTRIBUTES ── */
 .rav.sheet .attributes-section {
   padding: 8px 14px;
   background: var(--rav-bg-mid);
   border-bottom: 1px solid var(--rav-border);
+  flex-shrink: 0;
+}
+
+.rav.sheet .section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rav-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 6px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rav-border);
 }
 
 .rav.sheet .attributes-grid {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
@@ -246,28 +240,26 @@
   background: var(--rav-bg);
   border: 1px solid var(--rav-border);
   border-radius: 4px;
-  padding: 6px 10px;
-  min-width: 80px;
+  padding: 6px 8px;
+  min-width: 82px;
+  flex: 1;
   transition: border-color 0.15s;
 }
 
-.rav.sheet .attribute-box:hover {
-  border-color: var(--rav-gold);
-}
+.rav.sheet .attribute-box:hover { border-color: var(--rav-gold); }
 
 .rav.sheet .attribute-label {
   font-family: 'Cinzel', serif;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--rav-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   cursor: pointer;
+  text-align: center;
 }
 
-.rav.sheet .attribute-label.attribute-roll:hover {
-  color: var(--rav-gold-light);
-}
+.rav.sheet .attribute-roll:hover { color: var(--rav-gold-light); }
 
 .rav.sheet .attribute-value {
   font-family: 'Cinzel', serif;
@@ -278,6 +270,7 @@
   border: none;
   text-align: center;
   width: 40px;
+  box-shadow: none;
 }
 
 .rav.sheet .attribute-dots {
@@ -291,6 +284,7 @@
   border-radius: 50%;
   border: 1px solid var(--rav-border-light);
   background: transparent;
+  transition: background 0.15s;
 }
 
 .rav.sheet .dot.filled {
@@ -304,56 +298,53 @@
   background: var(--rav-bg-mid);
   border-bottom: 1px solid var(--rav-border);
   padding: 0 14px;
+  flex-shrink: 0;
 }
 
 .rav.sheet .sheet-tabs .item {
   font-family: 'Cinzel', serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--rav-text-dim);
-  padding: 8px 14px;
+  padding: 8px 12px;
   cursor: pointer;
   border-bottom: 2px solid transparent;
   transition: all 0.15s;
   text-decoration: none;
+  white-space: nowrap;
 }
 
-.rav.sheet .sheet-tabs .item:hover {
-  color: var(--rav-gold);
-}
-
-.rav.sheet .sheet-tabs .item.active {
-  color: var(--rav-gold-light);
-  border-bottom-color: var(--rav-gold);
-}
+.rav.sheet .sheet-tabs .item:hover  { color: var(--rav-gold); }
+.rav.sheet .sheet-tabs .item.active { color: var(--rav-gold-light); border-bottom-color: var(--rav-gold); }
 
 /* ── SHEET BODY ── */
 .rav.sheet .sheet-body {
   flex: 1;
   overflow-y: auto;
   padding: 12px 14px;
+  min-height: 0;
 }
 
-.rav.sheet .tab { display: none; }
-.rav.sheet .tab.active { display: block; }
+.rav.sheet .tab         { display: none; }
+.rav.sheet .tab.active  { display: block; }
 
 /* ── SKILLS ── */
 .rav.sheet .skills-columns {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 10px;
 }
 
 .rav.sheet .skill-group-title {
   font-family: 'Cinzel', serif;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--rav-gold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin: 0 0 6px;
+  margin: 0 0 5px;
   padding-bottom: 3px;
   border-bottom: 1px solid var(--rav-border);
 }
@@ -361,76 +352,136 @@
 .rav.sheet .skill-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 0;
-  border-bottom: 1px solid rgba(92, 74, 42, 0.3);
+  gap: 5px;
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(92,74,42,0.25);
 }
 
 .rav.sheet .skill-name {
   flex: 1;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--rav-text);
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 
-.rav.sheet .skill-name.skill-roll:hover,
-.rav.sheet .skill-name.npc-skill-roll:hover {
-  color: var(--rav-gold-light);
-}
+.rav.sheet .skill-roll:hover,
+.rav.sheet .npc-skill-roll:hover { color: var(--rav-gold-light); }
 
 .rav.sheet .skill-level {
-  width: 36px;
+  width: 32px;
   text-align: center;
-  background: var(--rav-bg);
-  border: 1px solid var(--rav-border);
-  color: var(--rav-text);
-  padding: 1px 4px;
+  padding: 1px 3px;
   border-radius: 3px;
   font-size: 13px;
+  flex-shrink: 0;
 }
 
-.rav.sheet .skill-tier {
-  font-size: 11px;
+/* ── TIER DROPDOWN ── */
+.rav.sheet .skill-tier-select {
+  font-size: 10px;
   font-family: 'Cinzel', serif;
-  min-width: 70px;
-  text-align: right;
+  width: 82px;
+  padding: 1px 2px;
+  border-radius: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: var(--rav-bg);
 }
 
-.rav.sheet .tier-novice      { color: var(--rav-text-dim); }
-.rav.sheet .tier-expert      { color: #3498db; }
-.rav.sheet .tier-master      { color: var(--rav-purple); }
-.rav.sheet .tier-grandmaster { color: var(--rav-gold-light); }
+.rav.sheet .skill-tier-select.tier-novice      { color: var(--rav-text-dim); border-color: var(--rav-border); }
+.rav.sheet .skill-tier-select.tier-expert      { color: #3498db; border-color: #2980b9; }
+.rav.sheet .skill-tier-select.tier-master      { color: var(--rav-purple); border-color: var(--rav-purple); }
+.rav.sheet .skill-tier-select.tier-grandmaster { color: var(--rav-gold-light); border-color: var(--rav-gold); }
+/* ── TIER MISMATCH HINT ── */
+.rav.sheet .skill-tier-select.tier-mismatch {
+  border-style: dashed !important;
+  opacity: 0.85;
+}
+
+.rav.sheet .skill-tier-select.tier-mismatch::after {
+  content: ' *';
+}
+
 
 /* ── SPECIALTIES ── */
 .rav.sheet .specialties-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2px 16px;
+  gap: 2px 14px;
 }
 
 .rav.sheet .spec-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 0;
-  border-bottom: 1px solid rgba(92, 74, 42, 0.3);
+  gap: 5px;
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(92,74,42,0.25);
+  position: relative;
 }
 
 .rav.sheet .spec-name {
   flex: 1;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--rav-text);
+  cursor: help;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
 }
 
-/* ── GEAR ── */
+.rav.sheet .spec-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1px solid var(--rav-border-light);
+  font-size: 9px;
+  color: var(--rav-text-dim);
+  flex-shrink: 0;
+}
+
+.rav.sheet [data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 0;
+  top: calc(100% + 4px);
+  z-index: 9999;
+  background: #0e0c08;
+  border: 1px solid var(--rav-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--rav-text);
+  width: 260px;
+  white-space: normal;
+  line-height: 1.5;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+  pointer-events: none;
+  font-style: normal;
+  font-family: 'Crimson Pro', serif;
+}
+
+.rav.sheet .spec-tip {
+  font-size: 12px;
+  color: var(--rav-text-dim);
+  font-style: italic;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* ── GEAR & ITEMS ── */
 .rav.sheet .gear-slot-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 6px 16px;
-  margin-bottom: 16px;
+  gap: 5px 14px;
+  margin-bottom: 14px;
 }
 
 .rav.sheet .gear-slot {
@@ -440,331 +491,49 @@
 }
 
 .rav.sheet .gear-slot label {
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--rav-text-dim);
 }
 
 .rav.sheet .gear-slot input {
-  background: var(--rav-bg);
-  border: 1px solid var(--rav-border);
-  color: var(--rav-text);
   padding: 3px 8px;
   border-radius: 3px;
-  font-family: 'Crimson Pro', serif;
-  font-size: 14px;
-}
-
-/* ── ITEMS LIST ── */
-.rav.sheet .item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 6px;
-  border-bottom: 1px solid rgba(92, 74, 42, 0.3);
-  transition: background 0.1s;
-}
-
-.rav.sheet .item:hover {
-  background: var(--rav-bg-light);
-}
-
-.rav.sheet .item-img {
-  width: 28px;
-  height: 28px;
-  object-fit: cover;
-  border: 1px solid var(--rav-border);
-  border-radius: 3px;
-}
-
-.rav.sheet .item-name {
-  flex: 1;
-  font-size: 14px;
-}
-
-.rav.sheet .item-type {
-  font-size: 12px;
-  color: var(--rav-text-dim);
-  font-style: italic;
-  min-width: 60px;
-}
-
-.rav.sheet .item-type-badge {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  color: var(--rav-gold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.rav.sheet .item-controls {
-  display: flex;
-  gap: 6px;
-}
-
-.rav.sheet .item-controls a {
-  color: var(--rav-text-dim);
-  cursor: pointer;
   font-size: 13px;
-  transition: color 0.15s;
 }
 
-.rav.sheet .item-controls a:hover { color: var(--rav-gold); }
-.rav.sheet .item-delete:hover     { color: var(--rav-red) !important; }
-
-/* ── BIOGRAPHY ── */
-.rav.sheet .bio-section {
+.rav.sheet .inventory {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
+  margin-top: 12px;
 }
-
-.rav.sheet .bio-label {
-  font-family: 'Cinzel', serif;
-  font-size: 12px;
-  color: var(--rav-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-/* ── ITEM SHEET BODY ── */
-.rav.sheet .item-body {
-  padding: 12px 14px;
-  overflow-y: auto;
-}
-
-.rav.sheet .item-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.rav.sheet .field-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.rav.sheet .field-row label {
-  min-width: 110px;
-  font-size: 13px;
-  color: var(--rav-text-dim);
-}
-
-.rav.sheet .field-row input,
-.rav.sheet .field-row select,
-.rav.sheet .field-row textarea {
-  flex: 1;
-  background: var(--rav-bg);
-  border: 1px solid var(--rav-border);
-  color: var(--rav-text);
-  padding: 3px 8px;
-  border-radius: 3px;
-  font-family: 'Crimson Pro', serif;
-  font-size: 14px;
-}
-
-.rav.sheet .field-row textarea {
-  min-height: 60px;
-  resize: vertical;
-}
-
-.rav.sheet .field-note {
-  font-size: 12px;
-  color: var(--rav-text-dim);
-  white-space: nowrap;
-}
-
-.rav.sheet .item-description {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.rav.sheet .item-description label {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  color: var(--rav-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-/* ── CHAT ROLL RESULTS ── */
-.rav-roll {
-  background: #1a1610;
-  border: 1px solid #5c4a2a;
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-family: 'Crimson Pro', Georgia, serif;
-  color: #e8dcc8;
-}
-
-.rav-roll h3 {
-  font-family: 'Cinzel', serif;
-  font-size: 14px;
-  color: #c9963a;
-  margin: 0 0 6px;
-  border-bottom: 1px solid #5c4a2a;
-  padding-bottom: 4px;
-}
-
-.rav-roll .dice-results {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 8px 0;
-}
-
-.rav-roll .die {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  font-family: 'Cinzel', serif;
-  font-size: 15px;
-  font-weight: 700;
-  border: 2px solid;
-}
-
-.rav-roll .die.success {
-  background: rgba(46, 204, 113, 0.15);
-  border-color: #2ecc71;
-  color: #2ecc71;
-}
-
-.rav-roll .die.failure {
-  background: rgba(127, 140, 141, 0.1);
-  border-color: #4a4a4a;
-  color: #7f8c8d;
-}
-
-.rav-roll .successes {
-  font-family: 'Cinzel', serif;
-  font-size: 15px;
-  color: #e8b95a;
-  margin: 4px 0 0;
-}
-
-/* ── GENERAL INPUTS ── */
-.rav.sheet input[type="number"],
-.rav.sheet input[type="text"],
-.rav.sheet select {
-  background: var(--rav-bg);
-  border: 1px solid var(--rav-border);
-  color: var(--rav-text);
-  font-family: 'Crimson Pro', serif;
-}
-
-.rav.sheet input:focus,
-.rav.sheet select:focus {
-  outline: none;
-  border-color: var(--rav-gold);
-  box-shadow: 0 0 0 1px rgba(201, 150, 58, 0.3);
-}
-
-/* ── TIER LABEL FIX — Grand Master no longer breaks layout ── */
-.rav.sheet .skill-tier {
-  font-size: 10px !important;
-  min-width: 58px !important;
-  max-width: 58px !important;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ── UPDATED ROLL DISPLAY ── */
-.rav-roll .roll-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  border-bottom: 1px solid #5c4a2a;
-  padding-bottom: 6px;
-  margin-bottom: 6px;
-}
-.rav-roll .roll-title {
-  font-family: 'Cinzel', serif;
-  font-size: 14px;
-  color: #c9963a;
-  font-weight: 600;
-}
-.rav-roll .roll-pool { font-size: 12px; color: #7a6240; }
-
-.rav-roll .roll-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
-.rav-roll .roll-tag { font-size: 11px; padding: 2px 7px; border-radius: 10px; border: 1px solid; }
-.rav-roll .bonus-tag { color: #3498db; border-color: #2980b9; background: rgba(41,128,185,0.1); }
-.rav-roll .luck-tag  { color: #c9963a; border-color: #7a6240; background: rgba(201,150,58,0.1); }
-.rav-roll .crit-tag  { color: #e8b95a; border-color: #c9963a; background: rgba(232,185,90,0.15); }
-
-.rav-roll .dice-tray { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-
-.rav-roll .die {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  padding: 4px 7px;
-  border-radius: 4px;
-  border: 2px solid;
-  font-family: 'Cinzel', serif;
-  position: relative;
-}
-.rav-roll .die.success { background: rgba(46,204,113,0.12); border-color: #2ecc71; }
-.rav-roll .die.failure { background: rgba(127,140,141,0.08); border-color: #3a3a3a; }
-.rav-roll .die.crit    { box-shadow: 0 0 6px rgba(232,185,90,0.4); }
-
-.rav-roll .die-base   { font-size: 13px; color: #7f8c8d; text-decoration: line-through; }
-.rav-roll .die-arrow  { font-size: 11px; color: #5c4a2a; }
-.rav-roll .die-final  { font-size: 16px; font-weight: 700; }
-.rav-roll .die-final.alone { font-size: 18px; }
-.rav-roll .die.success .die-final { color: #2ecc71; }
-.rav-roll .die.failure .die-final { color: #7f8c8d; }
-.rav-roll .die-bonus  { font-size: 10px; color: #3498db; align-self: flex-start; margin-top: 1px; }
-.rav-roll .crit-mark  { position: absolute; top: -6px; right: -4px; font-size: 9px; color: #e8b95a; }
-
-.rav-roll .roll-footer { margin-top: 8px; padding-top: 6px; border-top: 1px solid #3a3020; }
-.rav-roll .roll-successes { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: #e8b95a; }
-
-.rav-roll .luck-reroll-btn {
-  display: block; width: 100%; margin-top: 8px; padding: 5px 10px;
-  background: rgba(201,150,58,0.1); border: 1px solid #7a6240; border-radius: 4px;
-  color: #c9963a; font-family: 'Crimson Pro', serif; font-size: 13px;
-  cursor: pointer; text-align: center; transition: all 0.15s;
-}
-.rav-roll .luck-reroll-btn:hover { background: rgba(201,150,58,0.2); border-color: #c9963a; }
-.rav-roll .luck-reroll-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* ── DIALOG ── */
-.rav-dialog .dialog-field { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.rav-dialog .dialog-field label { min-width: 130px; font-size: 13px; color: #a8987a; }
-.rav-dialog .luck-field { background: rgba(201,150,58,0.08); border: 1px solid #7a6240; border-radius: 4px; padding: 6px 8px; }
-
-/* ── INVENTORY CATEGORIES ── */
-.rav.sheet .inventory { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
 
 .rav.sheet .inv-category-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .rav.sheet .inv-add {
-  font-size: 12px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
   color: var(--rav-gold);
   cursor: pointer;
   border: 1px solid var(--rav-border);
-  padding: 1px 8px;
   border-radius: 3px;
+  padding: 1px 8px;
   transition: all 0.15s;
   text-decoration: none;
+  background: var(--rav-bg-mid);
 }
 
 .rav.sheet .inv-add:hover {
   background: var(--rav-bg-light);
   border-color: var(--rav-gold);
+  color: var(--rav-gold-light);
 }
 
 .rav.sheet .item-row {
@@ -772,7 +541,7 @@
   align-items: center;
   gap: 8px;
   padding: 4px 6px;
-  border-bottom: 1px solid rgba(92, 74, 42, 0.25);
+  border-bottom: 1px solid rgba(92,74,42,0.25);
   transition: background 0.1s;
 }
 
@@ -787,28 +556,20 @@
   flex-shrink: 0;
 }
 
-.rav.sheet .item-name { flex: 1; font-size: 14px; }
+.rav.sheet .item-name   { flex: 1; font-size: 14px; color: var(--rav-text); min-width: 0; }
+.rav.sheet .item-detail { font-size: 12px; color: var(--rav-text-dim); min-width: 65px; text-align: center; }
+.rav.sheet .item-property { font-size: 12px; color: var(--rav-text-dim); font-style: italic; min-width: 55px; }
+.rav.sheet .item-broken { color: var(--rav-red); font-weight: 700; font-size: 11px; }
 
-.rav.sheet .item-detail {
-  font-size: 12px;
+.rav.sheet .item-controls { display: flex; gap: 6px; flex-shrink: 0; }
+.rav.sheet .item-controls a {
   color: var(--rav-text-dim);
-  min-width: 70px;
-  text-align: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: color 0.15s;
 }
-
-.rav.sheet .item-property {
-  font-size: 12px;
-  color: var(--rav-text-dim);
-  font-style: italic;
-  min-width: 60px;
-}
-
-.rav.sheet .item-broken {
-  color: var(--rav-red);
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-}
+.rav.sheet .item-controls a:hover { color: var(--rav-gold); }
+.rav.sheet .item-delete:hover     { color: var(--rav-red) !important; }
 
 /* Rarity colours */
 .rav.sheet .rarity-common    { color: var(--rav-text-dim); }
@@ -817,123 +578,45 @@
 .rav.sheet .rarity-legendary { color: var(--rav-gold-light); }
 .rav.sheet .rarity-mythic    { color: #8e44ad; }
 
-/* ── SPECIALTY TOOLTIPS ── */
-.rav.sheet .spec-row { position: relative; }
-
-.rav.sheet .spec-name {
-  flex: 1;
-  font-size: 14px;
-  color: var(--rav-text);
-  cursor: help;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.rav.sheet .spec-hint {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1px solid var(--rav-border-light);
-  font-size: 9px;
-  color: var(--rav-text-dim);
-  flex-shrink: 0;
-}
-
-/* Tooltip shown on hover via data-tooltip attribute */
-.rav.sheet [data-tooltip] {
-  position: relative;
-}
-
-.rav.sheet [data-tooltip]:hover::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: 0;
-  top: calc(100% + 4px);
-  z-index: 100;
-  background: #0e0c08;
-  border: 1px solid var(--rav-border);
-  border-radius: 4px;
-  padding: 6px 10px;
-  font-size: 12px;
-  color: var(--rav-text);
-  width: 280px;
-  white-space: normal;
-  line-height: 1.5;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-  pointer-events: none;
-  font-style: normal;
-}
-
-.rav.sheet .spec-tip {
-  font-size: 12px;
-  color: var(--rav-text-dim);
-  font-style: italic;
-  margin-top: 10px;
-  text-align: center;
-}
-
 /* ── BIOGRAPHY ── */
-.rav.sheet .bio-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  height: 100%;
-}
-
+.rav.sheet .bio-section { display: flex; flex-direction: column; gap: 8px; }
 .rav.sheet .bio-label {
   font-family: 'Cinzel', serif;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--rav-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-
 .rav.sheet .bio-textarea {
   width: 100%;
   min-height: 320px;
-  background: var(--rav-bg);
-  border: 1px solid var(--rav-border);
+  padding: 10px 12px;
   border-radius: 4px;
-  color: var(--rav-text);
-  font-family: 'Crimson Pro', serif;
   font-size: 14px;
   line-height: 1.6;
-  padding: 10px 12px;
   resize: vertical;
   box-sizing: border-box;
 }
 
-.rav.sheet .bio-textarea:focus {
-  outline: none;
-  border-color: var(--rav-gold);
+/* ============================================================
+   NPC SHEET
+   ============================================================ */
+
+.rav.sheet.npc .npc-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
-/* ── TIER DROPDOWN ── */
-.rav.sheet .skill-tier-select {
-  font-size: 10px;
-  font-family: 'Cinzel', serif;
-  width: 80px;
-  padding: 1px 3px;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.rav.sheet .skill-tier-select.tier-novice      { color: var(--rav-text-dim); border-color: var(--rav-border); }
-.rav.sheet .skill-tier-select.tier-expert      { color: #3498db; border-color: #2980b9; }
-.rav.sheet .skill-tier-select.tier-master      { color: var(--rav-purple); border-color: var(--rav-purple); }
-.rav.sheet .skill-tier-select.tier-grandmaster { color: var(--rav-gold-light); border-color: var(--rav-gold); }
-
-/* ── NPC STAT BLOCK ── */
+/* NPC Header */
 .rav.sheet.npc .npc-header {
   display: flex;
   gap: 12px;
   padding: 10px 12px;
   background: var(--rav-bg-mid);
   border-bottom: 2px solid var(--rav-border);
+  flex-shrink: 0;
 }
 
 .rav.sheet.npc .npc-header-fields {
@@ -941,6 +624,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .rav.sheet.npc .npc-header-meta {
@@ -949,16 +633,17 @@
   flex-wrap: wrap;
 }
 
-/* Attribute row — matches book table */
+/* NPC Stat Block */
 .rav.sheet.npc .npc-stat-block {
   padding: 10px 14px;
   background: var(--rav-bg-mid);
   border-bottom: 2px solid var(--rav-border);
+  flex-shrink: 0;
 }
 
+/* Attribute row */
 .rav.sheet.npc .npc-attributes {
   display: flex;
-  gap: 0;
   border: 1px solid var(--rav-border);
   border-radius: 4px;
   overflow: hidden;
@@ -970,7 +655,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6px 4px;
+  padding: 5px 2px;
   border-right: 1px solid var(--rav-border);
   background: var(--rav-bg);
 }
@@ -978,34 +663,36 @@
 .rav.sheet.npc .npc-attr:last-child { border-right: none; }
 
 .rav.sheet.npc .npc-attr-label {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--rav-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  text-align: center;
-  cursor: pointer;
-  margin-bottom: 4px;
+  font-family: 'Cinzel', serif !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  color: var(--rav-text-dim) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  margin-bottom: 3px !important;
+  line-height: 1.2 !important;
 }
 
 .rav.sheet.npc .npc-attr-label:hover { color: var(--rav-gold-light); }
 
 .rav.sheet.npc .npc-attr-value {
   font-family: 'Cinzel', serif;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--rav-gold-light);
   background: transparent;
   border: none;
   text-align: center;
-  width: 44px;
+  width: 40px;
+  box-shadow: none;
 }
 
 /* HP/MP/Order/Gear row */
 .rav.sheet.npc .npc-vitals-row {
   display: flex;
-  gap: 0;
+  flex-wrap: nowrap;
   border: 1px solid var(--rav-border);
   border-radius: 4px;
   overflow: hidden;
@@ -1015,7 +702,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   padding: 5px 8px;
   border-right: 1px solid var(--rav-border);
   background: var(--rav-bg);
@@ -1026,10 +713,11 @@
 
 .rav.sheet.npc .npc-vital-label {
   font-family: 'Cinzel', serif;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--rav-text-dim);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .rav.sheet.npc .npc-vital-controls {
@@ -1039,15 +727,16 @@
 }
 
 .rav.sheet.npc .npc-vital-input {
-  width: 36px;
+  width: 34px;
   text-align: center;
   background: transparent;
   border: none;
   border-bottom: 1px solid var(--rav-border);
   color: var(--rav-text);
   font-family: 'Cinzel', serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
+  box-shadow: none;
 }
 
 .rav.sheet.npc .npc-gear-input {
@@ -1057,21 +746,18 @@
   border-bottom: 1px solid var(--rav-border);
   color: var(--rav-text);
   font-family: 'Crimson Pro', serif;
-  font-size: 14px;
+  font-size: 13px;
+  box-shadow: none;
 }
 
-/* NPC textarea (features, notes) */
+/* NPC textareas */
 .rav.sheet.npc .npc-textarea {
   width: 100%;
-  min-height: 200px;
-  background: var(--rav-bg);
-  border: 1px solid var(--rav-border);
+  min-height: 180px;
+  padding: 10px 12px;
   border-radius: 4px;
-  color: var(--rav-text);
-  font-family: 'Crimson Pro', serif;
   font-size: 14px;
   line-height: 1.7;
-  padding: 10px 12px;
   resize: vertical;
   box-sizing: border-box;
 }
@@ -1095,49 +781,48 @@
   display: flex;
   background: var(--rav-bg-mid);
   border-bottom: 1px solid var(--rav-border);
-  padding: 4px 6px;
+  padding: 4px 8px;
+  gap: 6px;
 }
 
 .rav.sheet.npc .action-header span {
   font-family: 'Cinzel', serif;
   font-size: 10px;
   font-weight: 700;
-  color: var(--rav-text-dim);
+  color: var(--rav-gold);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
+.rav.sheet.npc .action-col-name   { flex: 2; }
+.rav.sheet.npc .action-col-target { flex: 2; }
+.rav.sheet.npc .action-col-roll   { flex: 1.5; }
+.rav.sheet.npc .action-col-ctrl   { flex: 0 0 44px; display: flex; gap: 6px; justify-content: flex-end; }
+
 .rav.sheet.npc .action-row {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(92, 74, 42, 0.25);
-  padding: 3px 6px;
   gap: 6px;
+  padding: 3px 8px;
+  border-bottom: 1px solid rgba(92,74,42,0.25);
   transition: background 0.1s;
 }
 
 .rav.sheet.npc .action-row:hover { background: var(--rav-bg-light); }
 
-.rav.sheet.npc .action-col-name   { flex: 2; }
-.rav.sheet.npc .action-col-target { flex: 2; }
-.rav.sheet.npc .action-col-roll   { flex: 1.5; }
-.rav.sheet.npc .action-col-ctrl   { flex: 0 0 48px; display: flex; gap: 6px; justify-content: flex-end; }
-
 .rav.sheet.npc .action-input {
   width: 100%;
   background: transparent;
   border: none;
-  border-bottom: 1px dashed rgba(92, 74, 42, 0.4);
+  border-bottom: 1px dashed rgba(92,74,42,0.5);
   color: var(--rav-text);
   font-family: 'Crimson Pro', serif;
   font-size: 13px;
   padding: 1px 3px;
+  box-shadow: none;
 }
 
-.rav.sheet.npc .action-input:focus {
-  border-bottom-color: var(--rav-gold);
-  outline: none;
-}
+.rav.sheet.npc .action-input:focus { border-bottom-color: var(--rav-gold); outline: none; box-shadow: none; }
 
 .rav.sheet.npc .action-roll-btn,
 .rav.sheet.npc .action-delete-btn {
@@ -1150,10 +835,7 @@
 .rav.sheet.npc .action-roll-btn:hover   { color: var(--rav-gold); }
 .rav.sheet.npc .action-delete-btn:hover { color: var(--rav-red); }
 
-.rav.sheet.npc .action-add-row {
-  padding: 6px;
-  text-align: center;
-}
+.rav.sheet.npc .action-add-row { padding: 6px; text-align: center; }
 
 .rav.sheet.npc .action-add-btn {
   background: transparent;
@@ -1170,4 +852,183 @@
 .rav.sheet.npc .action-add-btn:hover {
   border-color: var(--rav-gold);
   color: var(--rav-gold);
+}
+
+/* ============================================================
+   ITEM SHEET
+   ============================================================ */
+
+.rav.sheet.item .item-body {
+  padding: 12px 14px;
+  overflow-y: auto;
+}
+
+.rav.sheet.item .item-type-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--rav-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rav.sheet.item .item-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.rav.sheet.item .field-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rav.sheet.item .field-row label {
+  min-width: 110px;
+  font-size: 13px;
+  color: var(--rav-text-dim);
+  flex-shrink: 0;
+}
+
+.rav.sheet.item .field-row input,
+.rav.sheet.item .field-row select,
+.rav.sheet.item .field-row textarea {
+  flex: 1;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.rav.sheet.item .field-row textarea { min-height: 60px; resize: vertical; }
+.rav.sheet.item .field-note { font-size: 12px; color: var(--rav-text-dim); white-space: nowrap; }
+
+.rav.sheet.item .item-description { display: flex; flex-direction: column; gap: 4px; }
+.rav.sheet.item .item-description label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--rav-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ============================================================
+   CHAT ROLL RESULTS
+   ============================================================ */
+
+.rav-roll {
+  background: #1a1610;
+  border: 1px solid #5c4a2a;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: #e8dcc8;
+}
+
+.rav-roll .roll-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid #5c4a2a;
+  padding-bottom: 5px;
+  margin-bottom: 6px;
+}
+
+.rav-roll .roll-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: #c9963a;
+  font-weight: 600;
+}
+
+.rav-roll .roll-pool { font-size: 11px; color: #7a6240; }
+
+.rav-roll .roll-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 7px; }
+
+.rav-roll .roll-tag {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  border: 1px solid;
+}
+
+.rav-roll .bonus-tag { color: #3498db; border-color: #2980b9; background: rgba(41,128,185,0.1); }
+.rav-roll .luck-tag  { color: #c9963a; border-color: #7a6240; background: rgba(201,150,58,0.1); }
+.rav-roll .crit-tag  { color: #e8b95a; border-color: #c9963a; background: rgba(232,185,90,0.15); }
+
+.rav-roll .dice-tray { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0; }
+
+.rav-roll .die {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 2px solid;
+  font-family: 'Cinzel', serif;
+  position: relative;
+}
+
+.rav-roll .die.success { background: rgba(46,204,113,0.12); border-color: #2ecc71; }
+.rav-roll .die.failure { background: rgba(127,140,141,0.08); border-color: #3a3a3a; }
+.rav-roll .die.crit    { box-shadow: 0 0 6px rgba(232,185,90,0.5); }
+
+.rav-roll .die-base   { font-size: 12px; color: #7f8c8d; text-decoration: line-through; }
+.rav-roll .die-arrow  { font-size: 10px; color: #5c4a2a; }
+.rav-roll .die-final  { font-size: 15px; font-weight: 700; }
+.rav-roll .die-final.alone { font-size: 17px; }
+.rav-roll .die.success .die-final { color: #2ecc71; }
+.rav-roll .die.failure .die-final { color: #7f8c8d; }
+.rav-roll .die-bonus  { font-size: 9px; color: #3498db; align-self: flex-start; margin-top: 1px; }
+.rav-roll .crit-mark  { position: absolute; top: -5px; right: -3px; font-size: 8px; color: #e8b95a; }
+
+.rav-roll .roll-footer { margin-top: 7px; padding-top: 5px; border-top: 1px solid #3a3020; }
+.rav-roll .roll-successes {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #e8b95a;
+}
+
+.rav-roll .luck-reroll-btn {
+  display: block;
+  width: 100%;
+  margin-top: 7px;
+  padding: 4px 10px;
+  background: rgba(201,150,58,0.1);
+  border: 1px solid #7a6240;
+  border-radius: 4px;
+  color: #c9963a;
+  font-family: 'Crimson Pro', serif;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.rav-roll .luck-reroll-btn:hover     { background: rgba(201,150,58,0.2); border-color: #c9963a; }
+.rav-roll .luck-reroll-btn:disabled  { opacity: 0.5; cursor: not-allowed; }
+
+/* ============================================================
+   DIALOG
+   ============================================================ */
+
+.rav-dialog .dialog-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.rav-dialog .dialog-field label {
+  min-width: 130px;
+  font-size: 13px;
+  color: #a8987a;
+}
+
+.rav-dialog .luck-field {
+  background: rgba(201,150,58,0.08);
+  border: 1px solid #7a6240;
+  border-radius: 4px;
+  padding: 6px 8px;
 }

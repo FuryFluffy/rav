@@ -140,6 +140,7 @@ class RAVActorSheet extends ActorSheet {
     context.flags            = context.actor.flags;
     context.specDescriptions = RAV_SPEC_DESCRIPTIONS;
     this._prepareHealthMagic(context);
+    this._prepareSuggestedTiers(context);
     return context;
   }
 
@@ -147,6 +148,21 @@ class RAVActorSheet extends ActorSheet {
     const end = context.system.attributes.endurance.value ?? 1;
     context.system.health.max = 5 + (end * 2);
     context.system.magic.max  = 5 + (end * 2);
+  }
+
+  // Adds a suggestedTier field to each skill/specialty based on level
+  // This is shown as a visual hint but does NOT override the player's chosen tier
+  _prepareSuggestedTiers(context) {
+    for (const group of Object.values(context.system.skills)) {
+      for (const skill of Object.values(group)) {
+        skill.suggestedTier = _tierFromLevel(skill.level);
+        skill.tierMismatch  = skill.suggestedTier !== skill.tier;
+      }
+    }
+    for (const spec of Object.values(context.system.specialties)) {
+      spec.suggestedTier = _tierFromLevel(spec.level);
+      spec.tierMismatch  = spec.suggestedTier !== spec.tier;
+    }
   }
 
 

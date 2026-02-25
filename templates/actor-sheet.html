@@ -164,7 +164,9 @@
                   title="Click to roll {{skill.label}}">{{skill.label}}</span>
             <input type="number" name="system.skills.misc.{{key}}.level"
                    value="{{skill.level}}" min="0" max="9" class="skill-level"/>
-            <select name="system.skills.misc.{{key}}.tier" class="skill-tier-select tier-{{skill.tier}}">
+            <select name="system.skills.misc.{{key}}.tier"
+                    class="skill-tier-select tier-{{skill.tier}}{{#if skill.tierMismatch}} tier-mismatch{{/if}}"
+                    title="{{#if skill.tierMismatch}}Suggested tier based on level: {{tierLabel skill.suggestedTier}}{{else}}Tier matches level{{/if}}">
               <option value="novice"      {{#if (eq skill.tier "novice")}}selected{{/if}}>Novice</option>
               <option value="expert"      {{#if (eq skill.tier "expert")}}selected{{/if}}>Expert</option>
               <option value="master"      {{#if (eq skill.tier "master")}}selected{{/if}}>Master</option>
@@ -182,7 +184,9 @@
                   title="Click to roll {{skill.label}}">{{skill.label}}</span>
             <input type="number" name="system.skills.weapon.{{key}}.level"
                    value="{{skill.level}}" min="0" max="9" class="skill-level"/>
-            <select name="system.skills.weapon.{{key}}.tier" class="skill-tier-select tier-{{skill.tier}}">
+            <select name="system.skills.weapon.{{key}}.tier"
+                    class="skill-tier-select tier-{{skill.tier}}{{#if skill.tierMismatch}} tier-mismatch{{/if}}"
+                    title="{{#if skill.tierMismatch}}Suggested tier based on level: {{tierLabel skill.suggestedTier}}{{else}}Tier matches level{{/if}}">
               <option value="novice"      {{#if (eq skill.tier "novice")}}selected{{/if}}>Novice</option>
               <option value="expert"      {{#if (eq skill.tier "expert")}}selected{{/if}}>Expert</option>
               <option value="master"      {{#if (eq skill.tier "master")}}selected{{/if}}>Master</option>
@@ -225,7 +229,9 @@
           </span>
           <input type="number" name="system.specialties.{{key}}.level"
                  value="{{spec.level}}" min="0" max="9" class="skill-level"/>
-          <select name="system.specialties.{{key}}.tier" class="skill-tier-select tier-{{spec.tier}}">
+          <select name="system.specialties.{{key}}.tier"
+                  class="skill-tier-select tier-{{spec.tier}}{{#if spec.tierMismatch}} tier-mismatch{{/if}}"
+                  title="{{#if spec.tierMismatch}}Suggested tier based on level: {{tierLabel spec.suggestedTier}}{{else}}Tier matches level{{/if}}">
             <option value="novice"      {{#if (eq spec.tier "novice")}}selected{{/if}}>Novice</option>
             <option value="expert"      {{#if (eq spec.tier "expert")}}selected{{/if}}>Expert</option>
             <option value="master"      {{#if (eq spec.tier "master")}}selected{{/if}}>Master</option>
