@@ -140,7 +140,6 @@ class RAVActorSheet extends ActorSheet {
     context.flags            = context.actor.flags;
     context.specDescriptions = RAV_SPEC_DESCRIPTIONS;
     this._prepareHealthMagic(context);
-    this._prepareTiers(context);
     return context;
   }
 
@@ -150,16 +149,7 @@ class RAVActorSheet extends ActorSheet {
     context.system.magic.max  = 5 + (end * 2);
   }
 
-  _prepareTiers(context) {
-    for (const group of Object.values(context.system.skills)) {
-      for (const skill of Object.values(group)) {
-        skill.tier = _tierFromLevel(skill.level);
-      }
-    }
-    for (const spec of Object.values(context.system.specialties)) {
-      spec.tier = _tierFromLevel(spec.level);
-    }
-  }
+
 
   activateListeners(html) {
     super.activateListeners(html);
@@ -346,9 +336,9 @@ class RAVNPCSheet extends ActorSheet {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rav", "sheet", "actor", "npc"],
       template: "systems/rav/templates/npc-sheet.html",
-      width: 620,
-      height: 640,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "stats" }]
+      width: 660,
+      height: 720,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "skills" }]
     });
   }
 
@@ -366,8 +356,11 @@ class RAVNPCSheet extends ActorSheet {
     super.activateListeners(html);
     if (!this.isEditable) return;
     html.find(".attribute-roll").click(this._onRollAttribute.bind(this));
-    html.find(".npc-skill-roll").click(this._onRollNPCSkill.bind(this));
     html.find(".hp-btn").click(this._onHPChange.bind(this));
+    html.find(".mp-btn").click(this._onMPChange.bind(this));
+    html.find(".action-add-btn").click(this._onActionAdd.bind(this));
+    html.find(".action-delete-btn").click(this._onActionDelete.bind(this));
+    html.find(".action-roll-btn").click(this._onActionRoll.bind(this));
   }
 
   async _onRollAttribute(event) {
@@ -378,38 +371,65 @@ class RAVNPCSheet extends ActorSheet {
     await _rollCheck({ actor: this.actor, flavor: `${attrLabel} Check`, dicePool: attrValue, skillLevel: 0, tier: "novice" });
   }
 
-  async _onRollNPCSkill(event) {
-    event.preventDefault();
-    const el       = event.currentTarget;
-    const skill    = this.actor.system.skills[el.dataset.group][el.dataset.skill];
-    const attrOpts = Object.entries(RAV.attributes).map(([k, v]) =>
-      `<option value="${k}">${v} (${this.actor.system.attributes[k].value}d10)</option>`
-    ).join("");
-
-    new Dialog({
-      title:   `${skill.label} Check`,
-      content: `<form><div class="dialog-field"><label>Attribute</label><select name="attribute">${attrOpts}</select></div></form>`,
-      buttons: {
-        roll: {
-          label: "Roll",
-          callback: async (html) => {
-            const attrKey   = html.find("[name=attribute]").val();
-            const attrValue = this.actor.system.attributes[attrKey].value ?? 1;
-            await _rollCheck({ actor: this.actor, flavor: `${skill.label} Check`, dicePool: attrValue, skillLevel: skill.level ?? 0, tier: _tierFromLevel(skill.level) });
-          }
-        },
-        cancel: { label: "Cancel" }
-      },
-      default: "roll"
-    }).render(true);
-  }
-
   async _onHPChange(event) {
     event.preventDefault();
     const delta   = parseInt(event.currentTarget.dataset.delta);
     const current = this.actor.system.health.value;
     const max     = this.actor.system.health.max;
     await this.actor.update({ "system.health.value": Math.clamped(current + delta, 0, max) });
+  }
+
+  async _onMPChange(event) {
+    event.preventDefault();
+    const delta   = parseInt(event.currentTarget.dataset.delta);
+    const current = this.actor.system.magic.value;
+    const max     = this.actor.system.magic.max;
+    await this.actor.update({ "system.magic.value": Math.clamped(current + delta, 0, max) });
+  }
+
+  // Add a blank action row
+  async _onActionAdd(event) {
+    event.preventDefault();
+    const actions  = foundry.utils.deepClone(this.actor.system.actions ?? {});
+    const key      = "action_" + Date.now();
+    actions[key]   = { name: "New Action", target: "One; Adjacent", roll: "2d10" };
+    await this.actor.update({ "system.actions": actions });
+  }
+
+  // Delete an action row
+  async _onActionDelete(event) {
+    event.preventDefault();
+    const key     = event.currentTarget.dataset.actionKey;
+    const actions = foundry.utils.deepClone(this.actor.system.actions ?? {});
+    delete actions[key];
+    await this.actor.update({ "system.actions": actions });
+  }
+
+  // Roll an action directly from the stat block
+  async _onActionRoll(event) {
+    event.preventDefault();
+    const key    = event.currentTarget.dataset.actionKey;
+    const action = this.actor.system.actions[key];
+    if (!action?.roll) return;
+
+    // Parse roll formula — strip MP cost if present (e.g. "3MP; 4d10 + 1" → "4d10 + 1")
+    const formula = action.roll.includes(";")
+      ? action.roll.split(";")[1].trim()
+      : action.roll.trim();
+
+    try {
+      const roll = await new Roll(formula).evaluate();
+      const successes = roll.dice.reduce((sum, d) => {
+        return sum + d.results.filter(r => r.result >= RAV.successThreshold).length;
+      }, 0);
+
+      roll.toMessage({
+        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+        flavor:  `<strong>${action.name}</strong> — ${action.target}<br><em>${roll.formula}</em> → ${successes} success${successes !== 1 ? "es" : ""}`
+      });
+    } catch(e) {
+      ui.notifications.warn(`Could not parse roll formula: ${formula}`);
+    }
   }
 }
 

@@ -911,3 +911,263 @@
   outline: none;
   border-color: var(--rav-gold);
 }
+
+/* ── TIER DROPDOWN ── */
+.rav.sheet .skill-tier-select {
+  font-size: 10px;
+  font-family: 'Cinzel', serif;
+  width: 80px;
+  padding: 1px 3px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.rav.sheet .skill-tier-select.tier-novice      { color: var(--rav-text-dim); border-color: var(--rav-border); }
+.rav.sheet .skill-tier-select.tier-expert      { color: #3498db; border-color: #2980b9; }
+.rav.sheet .skill-tier-select.tier-master      { color: var(--rav-purple); border-color: var(--rav-purple); }
+.rav.sheet .skill-tier-select.tier-grandmaster { color: var(--rav-gold-light); border-color: var(--rav-gold); }
+
+/* ── NPC STAT BLOCK ── */
+.rav.sheet.npc .npc-header {
+  display: flex;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--rav-bg-mid);
+  border-bottom: 2px solid var(--rav-border);
+}
+
+.rav.sheet.npc .npc-header-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rav.sheet.npc .npc-header-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Attribute row — matches book table */
+.rav.sheet.npc .npc-stat-block {
+  padding: 10px 14px;
+  background: var(--rav-bg-mid);
+  border-bottom: 2px solid var(--rav-border);
+}
+
+.rav.sheet.npc .npc-attributes {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--rav-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.rav.sheet.npc .npc-attr {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 4px;
+  border-right: 1px solid var(--rav-border);
+  background: var(--rav-bg);
+}
+
+.rav.sheet.npc .npc-attr:last-child { border-right: none; }
+
+.rav.sheet.npc .npc-attr-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--rav-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.rav.sheet.npc .npc-attr-label:hover { color: var(--rav-gold-light); }
+
+.rav.sheet.npc .npc-attr-value {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--rav-gold-light);
+  background: transparent;
+  border: none;
+  text-align: center;
+  width: 44px;
+}
+
+/* HP/MP/Order/Gear row */
+.rav.sheet.npc .npc-vitals-row {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--rav-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rav.sheet.npc .npc-vital-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-right: 1px solid var(--rav-border);
+  background: var(--rav-bg);
+}
+
+.rav.sheet.npc .npc-vital-cell:last-child { border-right: none; }
+.rav.sheet.npc .npc-gear-cell { flex: 2; }
+
+.rav.sheet.npc .npc-vital-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rav-text-dim);
+  white-space: nowrap;
+}
+
+.rav.sheet.npc .npc-vital-controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.rav.sheet.npc .npc-vital-input {
+  width: 36px;
+  text-align: center;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rav-border);
+  color: var(--rav-text);
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.rav.sheet.npc .npc-gear-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rav-border);
+  color: var(--rav-text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+}
+
+/* NPC textarea (features, notes) */
+.rav.sheet.npc .npc-textarea {
+  width: 100%;
+  min-height: 200px;
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  border-radius: 4px;
+  color: var(--rav-text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  line-height: 1.7;
+  padding: 10px 12px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.rav.sheet.npc .npc-tab-hint {
+  font-size: 12px;
+  color: var(--rav-text-dim);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+/* Action table */
+.rav.sheet.npc .action-table {
+  width: 100%;
+  border: 1px solid var(--rav-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rav.sheet.npc .action-header {
+  display: flex;
+  background: var(--rav-bg-mid);
+  border-bottom: 1px solid var(--rav-border);
+  padding: 4px 6px;
+}
+
+.rav.sheet.npc .action-header span {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--rav-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.rav.sheet.npc .action-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(92, 74, 42, 0.25);
+  padding: 3px 6px;
+  gap: 6px;
+  transition: background 0.1s;
+}
+
+.rav.sheet.npc .action-row:hover { background: var(--rav-bg-light); }
+
+.rav.sheet.npc .action-col-name   { flex: 2; }
+.rav.sheet.npc .action-col-target { flex: 2; }
+.rav.sheet.npc .action-col-roll   { flex: 1.5; }
+.rav.sheet.npc .action-col-ctrl   { flex: 0 0 48px; display: flex; gap: 6px; justify-content: flex-end; }
+
+.rav.sheet.npc .action-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(92, 74, 42, 0.4);
+  color: var(--rav-text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 13px;
+  padding: 1px 3px;
+}
+
+.rav.sheet.npc .action-input:focus {
+  border-bottom-color: var(--rav-gold);
+  outline: none;
+}
+
+.rav.sheet.npc .action-roll-btn,
+.rav.sheet.npc .action-delete-btn {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--rav-text-dim);
+  transition: color 0.15s;
+}
+
+.rav.sheet.npc .action-roll-btn:hover   { color: var(--rav-gold); }
+.rav.sheet.npc .action-delete-btn:hover { color: var(--rav-red); }
+
+.rav.sheet.npc .action-add-row {
+  padding: 6px;
+  text-align: center;
+}
+
+.rav.sheet.npc .action-add-btn {
+  background: transparent;
+  border: 1px dashed var(--rav-border);
+  color: var(--rav-text-dim);
+  font-family: 'Crimson Pro', serif;
+  font-size: 13px;
+  padding: 3px 16px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.rav.sheet.npc .action-add-btn:hover {
+  border-color: var(--rav-gold);
+  color: var(--rav-gold);
+}

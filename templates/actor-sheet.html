@@ -95,7 +95,7 @@
         <input type="number" name="system.attributes.might.value"
                value="{{system.attributes.might.value}}" min="1" max="5" class="attribute-value"/>
         <div class="attribute-dots">
-          {{#times 5}}<span class="dot {{#if (dotFilled this ../system.attributes.might.value)}}filled{{/if}}"></span>{{/times}}
+          {{#times 5}}<span class="dot {{#if (lte (add this 1) ../system.attributes.might.value)}}filled{{/if}}"></span>{{/times}}
         </div>
       </div>
 
@@ -105,7 +105,7 @@
         <input type="number" name="system.attributes.agility.value"
                value="{{system.attributes.agility.value}}" min="1" max="5" class="attribute-value"/>
         <div class="attribute-dots">
-          {{#times 5}}<span class="dot {{#if (dotFilled this ../system.attributes.agility.value)}}filled{{/if}}"></span>{{/times}}
+          {{#times 5}}<span class="dot {{#if (lte (add this 1) ../system.attributes.agility.value)}}filled{{/if}}"></span>{{/times}}
         </div>
       </div>
 
@@ -115,7 +115,7 @@
         <input type="number" name="system.attributes.endurance.value"
                value="{{system.attributes.endurance.value}}" min="1" max="5" class="attribute-value"/>
         <div class="attribute-dots">
-          {{#times 5}}<span class="dot {{#if (dotFilled this ../system.attributes.endurance.value)}}filled{{/if}}"></span>{{/times}}
+          {{#times 5}}<span class="dot {{#if (lte (add this 1) ../system.attributes.endurance.value)}}filled{{/if}}"></span>{{/times}}
         </div>
       </div>
 
@@ -125,7 +125,7 @@
         <input type="number" name="system.attributes.intellect.value"
                value="{{system.attributes.intellect.value}}" min="1" max="5" class="attribute-value"/>
         <div class="attribute-dots">
-          {{#times 5}}<span class="dot {{#if (dotFilled this ../system.attributes.intellect.value)}}filled{{/if}}"></span>{{/times}}
+          {{#times 5}}<span class="dot {{#if (lte (add this 1) ../system.attributes.intellect.value)}}filled{{/if}}"></span>{{/times}}
         </div>
       </div>
 
@@ -135,7 +135,7 @@
         <input type="number" name="system.attributes.personality.value"
                value="{{system.attributes.personality.value}}" min="1" max="5" class="attribute-value"/>
         <div class="attribute-dots">
-          {{#times 5}}<span class="dot {{#if (dotFilled this ../system.attributes.personality.value)}}filled{{/if}}"></span>{{/times}}
+          {{#times 5}}<span class="dot {{#if (lte (add this 1) ../system.attributes.personality.value)}}filled{{/if}}"></span>{{/times}}
         </div>
       </div>
 
@@ -164,7 +164,12 @@
                   title="Click to roll {{skill.label}}">{{skill.label}}</span>
             <input type="number" name="system.skills.misc.{{key}}.level"
                    value="{{skill.level}}" min="0" max="9" class="skill-level"/>
-            <span class="skill-tier tier-{{skill.tier}}">{{tierLabel skill.tier}}</span>
+            <select name="system.skills.misc.{{key}}.tier" class="skill-tier-select tier-{{skill.tier}}">
+              <option value="novice"      {{#if (eq skill.tier "novice")}}selected{{/if}}>Novice</option>
+              <option value="expert"      {{#if (eq skill.tier "expert")}}selected{{/if}}>Expert</option>
+              <option value="master"      {{#if (eq skill.tier "master")}}selected{{/if}}>Master</option>
+              <option value="grandmaster" {{#if (eq skill.tier "grandmaster")}}selected{{/if}}>Grand Master</option>
+            </select>
           </div>
           {{/each}}
         </div>
@@ -177,7 +182,12 @@
                   title="Click to roll {{skill.label}}">{{skill.label}}</span>
             <input type="number" name="system.skills.weapon.{{key}}.level"
                    value="{{skill.level}}" min="0" max="9" class="skill-level"/>
-            <span class="skill-tier tier-{{skill.tier}}">{{tierLabel skill.tier}}</span>
+            <select name="system.skills.weapon.{{key}}.tier" class="skill-tier-select tier-{{skill.tier}}">
+              <option value="novice"      {{#if (eq skill.tier "novice")}}selected{{/if}}>Novice</option>
+              <option value="expert"      {{#if (eq skill.tier "expert")}}selected{{/if}}>Expert</option>
+              <option value="master"      {{#if (eq skill.tier "master")}}selected{{/if}}>Master</option>
+              <option value="grandmaster" {{#if (eq skill.tier "grandmaster")}}selected{{/if}}>Grand Master</option>
+            </select>
           </div>
           {{/each}}
         </div>
@@ -190,7 +200,12 @@
                   title="Click to roll {{skill.label}}">{{skill.label}}</span>
             <input type="number" name="system.skills.magic.{{key}}.level"
                    value="{{skill.level}}" min="0" max="9" class="skill-level"/>
-            <span class="skill-tier tier-{{skill.tier}}">{{tierLabel skill.tier}}</span>
+            <select name="system.skills.magic.{{key}}.tier" class="skill-tier-select tier-{{skill.tier}}">
+              <option value="novice"      {{#if (eq skill.tier "novice")}}selected{{/if}}>Novice</option>
+              <option value="expert"      {{#if (eq skill.tier "expert")}}selected{{/if}}>Expert</option>
+              <option value="master"      {{#if (eq skill.tier "master")}}selected{{/if}}>Master</option>
+              <option value="grandmaster" {{#if (eq skill.tier "grandmaster")}}selected{{/if}}>Grand Master</option>
+            </select>
           </div>
           {{/each}}
         </div>
@@ -210,7 +225,12 @@
           </span>
           <input type="number" name="system.specialties.{{key}}.level"
                  value="{{spec.level}}" min="0" max="9" class="skill-level"/>
-          <span class="skill-tier tier-{{spec.tier}}">{{tierLabel spec.tier}}</span>
+          <select name="system.specialties.{{key}}.tier" class="skill-tier-select tier-{{spec.tier}}">
+            <option value="novice"      {{#if (eq spec.tier "novice")}}selected{{/if}}>Novice</option>
+            <option value="expert"      {{#if (eq spec.tier "expert")}}selected{{/if}}>Expert</option>
+            <option value="master"      {{#if (eq spec.tier "master")}}selected{{/if}}>Master</option>
+            <option value="grandmaster" {{#if (eq spec.tier "grandmaster")}}selected{{/if}}>Grand Master</option>
+          </select>
         </div>
         {{/each}}
 
