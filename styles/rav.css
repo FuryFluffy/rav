@@ -740,3 +740,174 @@
 .rav-dialog .dialog-field { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .rav-dialog .dialog-field label { min-width: 130px; font-size: 13px; color: #a8987a; }
 .rav-dialog .luck-field { background: rgba(201,150,58,0.08); border: 1px solid #7a6240; border-radius: 4px; padding: 6px 8px; }
+
+/* ── INVENTORY CATEGORIES ── */
+.rav.sheet .inventory { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
+
+.rav.sheet .inv-category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.rav.sheet .inv-add {
+  font-size: 12px;
+  color: var(--rav-gold);
+  cursor: pointer;
+  border: 1px solid var(--rav-border);
+  padding: 1px 8px;
+  border-radius: 3px;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.rav.sheet .inv-add:hover {
+  background: var(--rav-bg-light);
+  border-color: var(--rav-gold);
+}
+
+.rav.sheet .item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-bottom: 1px solid rgba(92, 74, 42, 0.25);
+  transition: background 0.1s;
+}
+
+.rav.sheet .item-row:hover { background: var(--rav-bg-light); }
+
+.rav.sheet .item-img {
+  width: 26px;
+  height: 26px;
+  object-fit: cover;
+  border: 1px solid var(--rav-border);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.rav.sheet .item-name { flex: 1; font-size: 14px; }
+
+.rav.sheet .item-detail {
+  font-size: 12px;
+  color: var(--rav-text-dim);
+  min-width: 70px;
+  text-align: center;
+}
+
+.rav.sheet .item-property {
+  font-size: 12px;
+  color: var(--rav-text-dim);
+  font-style: italic;
+  min-width: 60px;
+}
+
+.rav.sheet .item-broken {
+  color: var(--rav-red);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+/* Rarity colours */
+.rav.sheet .rarity-common    { color: var(--rav-text-dim); }
+.rav.sheet .rarity-uncommon  { color: #27ae60; }
+.rav.sheet .rarity-rare      { color: #2980b9; }
+.rav.sheet .rarity-legendary { color: var(--rav-gold-light); }
+.rav.sheet .rarity-mythic    { color: #8e44ad; }
+
+/* ── SPECIALTY TOOLTIPS ── */
+.rav.sheet .spec-row { position: relative; }
+
+.rav.sheet .spec-name {
+  flex: 1;
+  font-size: 14px;
+  color: var(--rav-text);
+  cursor: help;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rav.sheet .spec-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--rav-border-light);
+  font-size: 9px;
+  color: var(--rav-text-dim);
+  flex-shrink: 0;
+}
+
+/* Tooltip shown on hover via data-tooltip attribute */
+.rav.sheet [data-tooltip] {
+  position: relative;
+}
+
+.rav.sheet [data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 0;
+  top: calc(100% + 4px);
+  z-index: 100;
+  background: #0e0c08;
+  border: 1px solid var(--rav-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--rav-text);
+  width: 280px;
+  white-space: normal;
+  line-height: 1.5;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  pointer-events: none;
+  font-style: normal;
+}
+
+.rav.sheet .spec-tip {
+  font-size: 12px;
+  color: var(--rav-text-dim);
+  font-style: italic;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* ── BIOGRAPHY ── */
+.rav.sheet .bio-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+
+.rav.sheet .bio-label {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--rav-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rav.sheet .bio-textarea {
+  width: 100%;
+  min-height: 320px;
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  border-radius: 4px;
+  color: var(--rav-text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 10px 12px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.rav.sheet .bio-textarea:focus {
+  outline: none;
+  border-color: var(--rav-gold);
+}

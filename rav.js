@@ -31,6 +31,38 @@ const RAV = {
 };
 
 // ============================================================
+//  SPECIALTY DESCRIPTIONS
+//  Shown as tooltips on the character sheet
+// ============================================================
+
+const RAV_SPEC_DESCRIPTIONS = {
+  armorer:          "Novice: +1 Armor Soak. Expert: Ignore 1 Armor damage per hit. Master: Repair armor in the field with no tools.",
+  armsmaster:       "Novice: +1 damage on attacks. Expert: Wield two weapons or a two-handed weapon. Master: +1 additional attack per round.",
+  bodybuilding:     "Novice: +2 max HP. Expert: +4 max HP, ignore 1 point of unarmed damage. Master: +6 max HP.",
+  caster:           "Novice: Reduce spell MP cost by 1 (min 1). Expert: Cast two spells per action once per round. Master: Ignore spell tier requirements once per session.",
+  learning:         "Novice: Learn new skills 25% faster. Expert: Teach others at normal speed. Master: Can raise Skill Tiers through teaching.",
+  meditation:       "Novice: Recover 1 MP per round of rest. Expert: Recover 2 MP per round. Master: Recover 3 MP at the start of each round.",
+  relicKnowledge:   "Novice: Identify Common and Uncommon relics. Expert: Identify Rare relics and sense curses. Master: Identify Legendary relics.",
+  monsterKnowledge: "Novice: Know basic stats of Common monsters. Expert: Know skills of Uncommon monsters. Master: Know full stat blocks of Rare monsters.",
+  alchemy:          "Novice: Brew basic potions. Expert: Brew advanced potions and poisons. Master: Create experimental concoctions with unique effects.",
+  tinkering:        "Novice: Craft simple mechanical devices. Expert: Craft complex traps and gadgets. Master: Create unique mechanical artifacts.",
+  repair:           "Novice: Remove up to 2 damage points from gear. Expert: Fully repair gear in the field. Master: Repair Broken gear without a forge.",
+  perception:       "Novice: +1d10 to Awareness checks. Expert: +1d10 and re-roll 1d10 for sight-based checks. Master: Cannot be surprised.",
+  investigation:    "Novice: Find hidden clues automatically on success. Expert: Deduce NPC motives on 2+ successes. Master: Reconstruct past events from a scene.",
+  appraisal:        "Novice: Estimate item value within 20%. Expert: Detect forgeries. Master: Identify magical properties without Relic Knowledge.",
+  disarmTrap:       "Novice: Disarm simple traps. Expert: Disarm complex traps and reset them. Master: Disarm magical traps.",
+  forgeDocument:    "Novice: Forge basic documents. Expert: Forge official seals and signatures. Master: Create flawless forgeries of any document.",
+  pickLock:         "Novice: Pick simple locks. Expert: Pick complex locks and magical locks. Master: Open any lock given enough time.",
+  eloquence:        "Novice: +1d10 to Speech in formal settings. Expert: Re-roll 1 die on failed Speech checks. Master: Sway crowds with a short speech.",
+  merchant:         "Novice: Buy items 10% cheaper. Expert: +1d10 and re-roll 1d10 for trading Speech checks. Master: +2d10 to trading, access rare goods.",
+  performance:      "Novice: Earn modest income from performances. Expert: Captivate an audience, distract guards. Master: Performances can influence NPC attitudes.",
+  forage:           "Novice: Find food for 1 person per success. Expert: Find rare herbs and alchemical ingredients. Master: Never go hungry in the wild.",
+  tracking:         "Novice: Track creatures over easy terrain. Expert: Track over any terrain, determine creature type. Master: Track creatures that tried to hide their trail."
+};
+
+
+
+// ============================================================
 //  2. INIT
 // ============================================================
 
@@ -103,9 +135,10 @@ class RAVActorSheet extends ActorSheet {
 
   getData() {
     const context  = super.getData();
-    context.RAV    = RAV;
-    context.system = context.actor.system;
-    context.flags  = context.actor.flags;
+    context.RAV              = RAV;
+    context.system           = context.actor.system;
+    context.flags            = context.actor.flags;
+    context.specDescriptions = RAV_SPEC_DESCRIPTIONS;
     this._prepareHealthMagic(context);
     this._prepareTiers(context);
     return context;
