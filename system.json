@@ -2,7 +2,7 @@
   "id": "rav",
   "title": "Rise of Arcane and Valor",
   "description": "A unique d10+ dice pool system set in the world of T\u00f5us, drawing on Estonian mythology.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
