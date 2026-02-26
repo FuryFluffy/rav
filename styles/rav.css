@@ -1107,3 +1107,95 @@
   width: 80px !important;
   height: 80px !important;
 }
+
+/* ── NPC STRUCTURED SKILL LIST ── */
+.rav.sheet.npc .npc-skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.rav.sheet.npc .npc-skill-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 4px;
+  border-bottom: 1px solid rgba(92,74,42,0.25);
+}
+
+.rav.sheet.npc .npc-skill-name-input {
+  width: 130px;
+  flex-shrink: 0;
+  font-weight: 700 !important;
+  font-family: 'Crimson Pro', serif !important;
+  font-size: 14px !important;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rav-border);
+  color: var(--rav-text) !important;
+  padding: 1px 4px;
+}
+
+.rav.sheet.npc .npc-skill-desc-input {
+  flex: 1;
+  font-family: 'Crimson Pro', serif !important;
+  font-size: 14px !important;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed rgba(92,74,42,0.4);
+  color: var(--rav-text) !important;
+  padding: 1px 4px;
+}
+
+.rav.sheet.npc .npc-skill-name-input:focus,
+.rav.sheet.npc .npc-skill-desc-input:focus {
+  outline: none;
+  border-bottom-color: var(--rav-gold);
+  box-shadow: none;
+}
+
+.rav.sheet.npc .npc-skill-delete {
+  color: var(--rav-text-dim);
+  cursor: pointer;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+.rav.sheet.npc .npc-skill-delete:hover { color: var(--rav-red); }
+
+.rav.sheet.npc .npc-skill-add-row {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* Skill preview — rulebook style rendering */
+.rav.sheet.npc .npc-skill-preview {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--rav-bg-mid);
+  border: 1px solid var(--rav-border);
+  border-radius: 4px;
+}
+
+.rav.sheet.npc .npc-preview-title {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--rav-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 6px;
+}
+
+.rav.sheet.npc .npc-skill-preview-line {
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  color: var(--rav-text) !important;
+  line-height: 1.6;
+  margin: 0 0 3px;
+}
+
+.rav.sheet.npc .npc-skill-preview-line strong {
+  color: var(--rav-gold-light);
+}
