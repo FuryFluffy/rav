@@ -36,28 +36,159 @@ const RAV = {
 // ============================================================
 
 const RAV_SPEC_DESCRIPTIONS = {
-  armorer:          "Novice: +1d10 to Defense rolls. Expert: Re-roll 1d10 on Defense. Master: Defense succeeds on 6+ instead of 7+. Grand Master: Re-roll any dice once on Defense.",
-  armsmaster:       "Novice: +1 to weapon damage (if any damage dealt). Expert: Two-handed weapons — make 2 Attack checks per Action. Master: +1 to weapon damage. Grand Master: +2 to weapon damage.",
-  bodybuilding:     "Novice: +1d10 to Attack dice pool. Expert: +1 max HP. Master: +1 max HP. Grand Master: +1d10 to Attack dice pool again.",
-  spellcaster:      "Novice: +1 to magical damage. Expert: Upcharge — hold a spell one round for +2 damage (cancelled if hit). Master: +1 to magical damage. Grand Master: +2 to magical damage.",
-  learning:         "Novice: Level up in 3/4 of a day. Expert: Level up in 1/2 a day. Master: Allows teaching other characters. Grand Master: +10% to all EXP gained.",
-  meditation:       "Novice: Restore 1 MP at the start of each round. Expert: +1 max MP. Master: +1 max MP. Grand Master: Restore 3 MP at the start of each round.",
-  relicKnowledge:   "Novice: Identify Uncommon relics. Expert: Identify Rare relics. Master: Identify Legendary relics. Grand Master: Identify Mythic relics.",
-  monsterKnowledge: "Novice: Know stats of Uncommon monsters. Expert: Know stats of Rare monsters. Master: Know stats of Ancient monsters. Grand Master: Know stats of Mythic monsters.",
-  alchemy:          "Novice: Brew basic potions. Expert: Mix basic potions. Master: Mix effect potions. Grand Master: Mix Master potions.",
-  tinkering:        "Novice: Basic tinkering. Expert: Advanced tinkering. Master: Upgrade weapons. Grand Master: Replicate enchantments.",
-  repair:           "Novice: Minor fixes. Expert: Detailed fixes. Master: Restore broken items. Grand Master: Replicate items.",
-  perception:       "Novice: +1d10 for looking/awareness checks. Expert: Re-roll 1d10 on looking checks. Master: +1d10 for looking checks. Grand Master: Re-roll any dice once.",
-  investigation:    "Novice: +1d10 for searching. Expert: Re-roll 1d10. Master: +1d10 for searching. Grand Master: Re-roll any dice once.",
-  appraisal:        "Novice: +1d10 for appraisal checks. Expert: Re-roll 1d10. Master: +1d10 for appraisal. Grand Master: Re-roll any dice once.",
-  disarmTrap:       "Novice: +1d10 for disarming traps. Expert: Re-roll 1d10. Master: +1d10 for disarming traps. Grand Master: Re-roll any dice once.",
-  forgeDocument:    "Novice: Forge invitations. Expert: Forge common documents. Master: Forge official documents. Grand Master: Forge royal documents.",
-  pickLock:         "Novice: +1d10 for picking locks. Expert: Re-roll 1d10. Master: +1d10 for picking locks. Grand Master: Re-roll any dice once.",
-  eloquence:        "Novice: +1d10 for speaking/speech checks. Expert: Re-roll 1d10. Master: +1d10 for speaking. Grand Master: Re-roll any dice once.",
-  merchant:         "Novice: +1d10 for trading checks. Expert: Re-roll 1d10. Master: +1d10 for trading. Grand Master: Re-roll any dice once.",
-  performance:      "Novice: +1d10 for Staging checks. Expert: Re-roll 1d10. Master: +1d10 for Staging. Grand Master: Re-roll any dice once.",
-  forage:           "Novice: +1d10 for foraging. Expert: Re-roll 1d10. Master: +1d10 for foraging. Grand Master: Re-roll any dice once.",
-  tracking:         "Novice: +1d10 for tracking. Expert: Re-roll 1d10. Master: +1d10 for tracking. Grand Master: Re-roll any dice once."
+  armorer:
+    "Armorer — Proficiency in the effective use of chosen armor (Shield, Cloth, Leather, Chain, Plate).\n\n" +
+    "Novice: +1d10 to Defense Checks.\n" +
+    "Expert: Re-roll 1d10 for Defense Checks without spending Luck.\n" +
+    "Master: Success threshold for Defense Checks lowers to 6+.\n" +
+    "Grand Master: Re-roll any chosen dice for Defense Checks once per turn.",
+
+  armsmaster:
+    "Armsmaster — Proficiency in combat techniques and mastery of weapons.\n\n" +
+    "Novice: +1 to weapon damage (requires at least 1 damage to land).\n" +
+    "Expert: Two-handed weapons — make 2 Attack Checks with one Action.\n" +
+    "Master: +1 to weapon damage.\n" +
+    "Grand Master: +2 to weapon damage.",
+
+  bodybuilding:
+    "Bodybuilding — Physical prowess and resilience.\n\n" +
+    "Novice: +1d10 to Attack Checks.\n" +
+    "Expert: +1 max HP.\n" +
+    "Master: +1 max HP.\n" +
+    "Grand Master: +1d10 to Attack Checks.",
+
+  spellcaster:
+    "Spellcaster — Proficiency in wielding magical forces.\n\n" +
+    "Novice: +1 to magical damage.\n" +
+    "Expert: Upcharge — hold a spell one round for +2 damage. Any damage received cancels the spell and consumes its MP.\n" +
+    "Master: +1 to magical damage.\n" +
+    "Grand Master: +2 to magical damage.",
+
+  learning:
+    "Learning — Ability to acquire and process knowledge efficiently.\n\n" +
+    "Novice: Level up in 3/4 of a day.\n" +
+    "Expert: Level up in 1/2 a day.\n" +
+    "Master: Can teach Skills and Specialties you know to others.\n" +
+    "Grand Master: +10% to all EXP gained.",
+
+  meditation:
+    "Meditation — Connection to inner energies and magical restoration.\n\n" +
+    "Novice: Recover 1 MP each round.\n" +
+    "Expert: +1 max MP.\n" +
+    "Master: +1 max MP.\n" +
+    "Grand Master: Recover 3 MP each round.",
+
+  relicKnowledge:
+    "Relic Knowledge — Understanding of ancient artifacts and relics.\n\n" +
+    "Novice: Identify relics up to Uncommon tier.\n" +
+    "Expert: Identify relics up to Rare tier.\n" +
+    "Master: Identify relics up to Legendary tier.\n" +
+    "Grand Master: Identify relics up to Mythical tier.",
+
+  monsterKnowledge:
+    "Monster Knowledge — Familiarity with creatures of Tõus.\n\n" +
+    "Novice: Identify Common monsters.\n" +
+    "Expert: Identify Rare monsters.\n" +
+    "Master: Identify Ancient monsters.\n" +
+    "Grand Master: Identify Mythical monsters.",
+
+  alchemy:
+    "Alchemy — Expertise in potion brewing.\n\n" +
+    "Novice: Brew basic potions (restore HP, MP, cure Diseases).\n" +
+    "Expert: Mix basic potions into effect potions (replicate spell effects like Stone Skin or Haste).\n" +
+    "Master: Mix effect potions into master potions (temporarily increase Attributes).\n" +
+    "Grand Master: Mix master potions into black potions (grant SP or replicate powerful spells).",
+
+  tinkering:
+    "Tinkering — Skill in working with mechanisms and weapons.\n\n" +
+    "Novice: Basic mechanisms — small explosives, spring traps, trinkets.\n" +
+    "Expert: Add special effects to mechanisms (shrapnel, hidden daggers, etc.).\n" +
+    "Master: Add special effects to weapons (spikes, hooks — bonus damage).\n" +
+    "Grand Master: Upgrade weapons and clothes to enchantment-like effects (e.g. fire sword, silent cloak).",
+
+  repair:
+    "Repair — Ability to fix and restore items.\n\n" +
+    "Novice: Repair lightly damaged items.\n" +
+    "Expert: Repair moderately damaged items.\n" +
+    "Master: Repair heavily damaged items.\n" +
+    "Grand Master: Craft any design the character has previously worked with.",
+
+  perception:
+    "Perception — Awareness based on sight and observation.\n\n" +
+    "Novice: +1d10 to Awareness Checks relying on sight.\n" +
+    "Expert: Re-roll 1d10 for sight-based Awareness Checks.\n" +
+    "Master: +1d10 to sight-based Awareness Checks.\n" +
+    "Grand Master: Re-roll any chosen dice for sight Awareness Checks once per Check.",
+
+  investigation:
+    "Investigation — Skills in searching and scrutinising details.\n\n" +
+    "Novice: +1d10 to Awareness Checks for investigating.\n" +
+    "Expert: Re-roll 1d10 for investigation Awareness Checks.\n" +
+    "Master: +1d10 to investigation Awareness Checks.\n" +
+    "Grand Master: Re-roll any chosen dice for investigation Checks once per Check.",
+
+  appraisal:
+    "Appraisal — Ability to assess the value of items.\n\n" +
+    "Novice: +1d10 to Awareness Checks for determining item value.\n" +
+    "Expert: Re-roll 1d10 for appraisal Checks.\n" +
+    "Master: +1d10 to appraisal Awareness Checks.\n" +
+    "Grand Master: Re-roll any chosen dice for appraisal Checks once per Check.",
+
+  disarmTrap:
+    "Disarm Trap — Expertise in disarming traps.\n\n" +
+    "Novice: +1d10 to Espionage Checks for trap disarming.\n" +
+    "Expert: Re-roll 1d10 for trap disarming Checks.\n" +
+    "Master: +1d10 to Espionage Checks for trap disarming.\n" +
+    "Grand Master: Re-roll any chosen dice for trap disarming Checks once per Check.",
+
+  forgeDocument:
+    "Forge Document — Skill in creating and altering documents.\n\n" +
+    "Novice: Forge invitations.\n" +
+    "Expert: Forge common documents.\n" +
+    "Master: Forge official documents.\n" +
+    "Grand Master: Forge royal documents.",
+
+  pickLock:
+    "Pick Lock — Proficiency in picking locks.\n\n" +
+    "Novice: +1d10 to Espionage Checks for lock picking.\n" +
+    "Expert: Re-roll 1d10 for lock picking Checks.\n" +
+    "Master: +1d10 to Espionage Checks for lock picking.\n" +
+    "Grand Master: Re-roll any chosen dice for lock picking Checks once per Check.",
+
+  eloquence:
+    "Eloquence — Ability to communicate persuasively.\n\n" +
+    "Novice: +1d10 to Speech Checks (persuasion, deception, intimidation).\n" +
+    "Expert: Re-roll 1d10 for Speech Checks.\n" +
+    "Master: +1d10 to Speech Checks.\n" +
+    "Grand Master: Re-roll any chosen dice for Speech Checks once per Check.",
+
+  merchant:
+    "Merchant — Skill in trade and negotiation.\n\n" +
+    "Novice: +1d10 to Speech Checks while trading.\n" +
+    "Expert: Re-roll 1d10 for trading Speech Checks.\n" +
+    "Master: +1d10 to Speech Checks while trading.\n" +
+    "Grand Master: Re-roll any chosen dice for trading Speech Checks once per Check.",
+
+  performance:
+    "Performance — Skill in entertaining through various mediums.\n\n" +
+    "Novice: +1d10 to Staging Checks.\n" +
+    "Expert: Re-roll 1d10 for Staging Checks.\n" +
+    "Master: +1d10 to Staging Checks.\n" +
+    "Grand Master: Re-roll any chosen dice for Staging Checks once per Check.",
+
+  forage:
+    "Forage — Ability to find sustenance in the wild.\n\n" +
+    "Novice: +1d10 to Survival Checks for foraging.\n" +
+    "Expert: Re-roll 1d10 for foraging Checks.\n" +
+    "Master: +1d10 to Survival Checks for foraging.\n" +
+    "Grand Master: Re-roll any chosen dice for foraging Checks once per Check.",
+
+  tracking:
+    "Tracking — Skill in following trails and footprints.\n\n" +
+    "Novice: +1d10 to Survival Checks for tracking.\n" +
+    "Expert: Re-roll 1d10 for tracking Checks.\n" +
+    "Master: +1d10 to Survival Checks for tracking.\n" +
+    "Grand Master: Re-roll any chosen dice for tracking Checks once per Check."
 };
 
 
@@ -149,22 +280,33 @@ class RAVActorSheet extends ActorSheet {
     const attrs = sys.attributes;
     const specs = sys.specialties;
 
-    const end  = attrs.endurance.value    ?? 1;
-    const mig  = attrs.might.value        ?? 1;
-    const int_ = attrs.intellect.value    ?? 1;
-    const per  = attrs.personality.value  ?? 1;
+    const end  = attrs.endurance.value   ?? 1;
+    const mig  = attrs.might.value       ?? 1;
+    const int_ = attrs.intellect.value   ?? 1;
+    const per  = attrs.personality.value ?? 1;
 
     // HP = Endurance + Might + Bodybuilding bonuses
-    const bbExpert  = specs.bodybuilding?.tier === "expert"      || specs.bodybuilding?.tier === "master" || specs.bodybuilding?.tier === "grandmaster";
-    const bbMaster  = specs.bodybuilding?.tier === "master"      || specs.bodybuilding?.tier === "grandmaster";
-    const hpBonus   = (bbExpert ? 1 : 0) + (bbMaster ? 1 : 0);
-    sys.health.max  = end + mig + hpBonus;
+    const bbExpert = ["expert","master","grandmaster"].includes(specs.bodybuilding?.tier);
+    const bbMaster = ["master","grandmaster"].includes(specs.bodybuilding?.tier);
+    const hpMax    = end + mig + (bbExpert ? 1 : 0) + (bbMaster ? 1 : 0);
 
     // MP = Endurance + highest(Intellect, Personality) + Meditation bonuses
-    const medExpert = specs.meditation?.tier === "expert"        || specs.meditation?.tier === "master" || specs.meditation?.tier === "grandmaster";
-    const medMaster = specs.meditation?.tier === "master"        || specs.meditation?.tier === "grandmaster";
-    const mpBonus   = (medExpert ? 1 : 0) + (medMaster ? 1 : 0);
-    sys.magic.max   = end + Math.max(int_, per) + mpBonus;
+    const medExpert = ["expert","master","grandmaster"].includes(specs.meditation?.tier);
+    const medMaster = ["master","grandmaster"].includes(specs.meditation?.tier);
+    const mpMax     = end + Math.max(int_, per) + (medExpert ? 1 : 0) + (medMaster ? 1 : 0);
+
+    // Write calculated values into context for template rendering
+    sys.health.max = hpMax;
+    sys.magic.max  = mpMax;
+
+    // Also persist to actor if the stored max is wrong — keeps HP/MP bar accurate
+    if (context.actor.system.health.max !== hpMax ||
+        context.actor.system.magic.max  !== mpMax) {
+      context.actor.update({
+        "system.health.max": hpMax,
+        "system.magic.max":  mpMax
+      });
+    }
   }
 
   // Adds a suggestedTier field to each skill/specialty based on level
@@ -219,22 +361,21 @@ class RAVActorSheet extends ActorSheet {
   }
 
   // --- ATTRIBUTE ROLL ---
+  // Clicks the attribute label -> rolls that attribute directly, no dialog
 
   async _onRollAttribute(event) {
     event.preventDefault();
     const attrKey   = event.currentTarget.dataset.attribute;
     const attrValue = this.actor.system.attributes[attrKey]?.value ?? 1;
     const attrLabel = RAV.attributes[attrKey] ?? attrKey;
-    const luck      = this.actor.system.attributes.luck.value ?? 0;
 
-    await _showRollDialog({
+    await _rollCheck({
       actor:      this.actor,
-      title:      `${attrLabel} Check`,
+      flavor:     `${attrLabel} Check`,
       dicePool:   attrValue,
-      skillLabel: attrLabel,
       skillLevel: 0,
       tier:       "novice",
-      luck
+      useLuck:    false
     });
   }
 
@@ -389,9 +530,11 @@ class RAVNPCSheet extends ActorSheet {
     html.find(".attribute-roll").click(this._onRollAttribute.bind(this));
     html.find(".hp-btn").click(this._onHPChange.bind(this));
     html.find(".mp-btn").click(this._onMPChange.bind(this));
-    html.find(".action-add-btn").click(this._onActionAdd.bind(this));
+    html.find(".action-add-btn:not(.npc-skill-add-btn)").click(this._onActionAdd.bind(this));
     html.find(".action-delete-btn").click(this._onActionDelete.bind(this));
     html.find(".action-roll-btn").click(this._onActionRoll.bind(this));
+    html.find(".npc-skill-add-btn").click(this._onNpcSkillAdd.bind(this));
+    html.find(".npc-skill-delete").click(this._onNpcSkillDelete.bind(this));
   }
 
   async _onRollAttribute(event) {
@@ -399,7 +542,14 @@ class RAVNPCSheet extends ActorSheet {
     const attrKey   = event.currentTarget.dataset.attribute;
     const attrValue = this.actor.system.attributes[attrKey]?.value ?? 1;
     const attrLabel = RAV.attributes[attrKey] ?? attrKey;
-    await _rollCheck({ actor: this.actor, flavor: `${attrLabel} Check`, dicePool: attrValue, skillLevel: 0, tier: "novice" });
+    await _rollCheck({
+      actor:      this.actor,
+      flavor:     `${attrLabel} Check`,
+      dicePool:   attrValue,
+      skillLevel: 0,
+      tier:       "novice",
+      useLuck:    false
+    });
   }
 
   async _onHPChange(event) {
@@ -416,6 +566,24 @@ class RAVNPCSheet extends ActorSheet {
     const current = this.actor.system.magic.value;
     const max     = this.actor.system.magic.max ?? 99;
     await this.actor.update({ "system.magic.value": Math.clamped(current + delta, 0, max) });
+  }
+
+  // Add a blank NPC skill row
+  async _onNpcSkillAdd(event) {
+    event.preventDefault();
+    const skills = foundry.utils.deepClone(this.actor.system.npcSkills ?? {});
+    const key    = "skill_" + Date.now();
+    skills[key]  = { name: "", description: "" };
+    await this.actor.update({ "system.npcSkills": skills });
+  }
+
+  // Delete an NPC skill row
+  async _onNpcSkillDelete(event) {
+    event.preventDefault();
+    const key    = event.currentTarget.dataset.skillKey;
+    const skills = foundry.utils.deepClone(this.actor.system.npcSkills ?? {});
+    delete skills[key];
+    await this.actor.update({ "system.npcSkills": skills });
   }
 
   // Add a blank action row
@@ -436,7 +604,7 @@ class RAVNPCSheet extends ActorSheet {
     await this.actor.update({ "system.actions": actions });
   }
 
-  // Roll an action directly from the stat block
+  // Roll an action directly from the stat block — uses full roll engine
   async _onActionRoll(event) {
     event.preventDefault();
     const key    = event.currentTarget.dataset.actionKey;
@@ -444,23 +612,30 @@ class RAVNPCSheet extends ActorSheet {
     if (!action?.roll) return;
 
     // Parse roll formula — strip MP cost if present (e.g. "3MP; 4d10 + 1" → "4d10 + 1")
-    const formula = action.roll.includes(";")
+    // Also handle flat bonus like "4d10 + 2" — extract dice count and bonus separately
+    let rawFormula = action.roll.includes(";")
       ? action.roll.split(";")[1].trim()
       : action.roll.trim();
 
-    try {
-      const roll = await new Roll(formula).evaluate();
-      const successes = roll.dice.reduce((sum, d) => {
-        return sum + d.results.filter(r => r.result >= RAV.successThreshold).length;
-      }, 0);
-
-      roll.toMessage({
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor:  `<strong>${action.name}</strong> — ${action.target}<br><em>${roll.formula}</em> → ${successes} success${successes !== 1 ? "es" : ""}`
-      });
-    } catch(e) {
-      ui.notifications.warn(`Could not parse roll formula: ${formula}`);
+    // Extract dice pool count from formula (e.g. "5d10 + 1" → pool=5, flatBonus=1)
+    const diceMatch = rawFormula.match(/(\d+)d10\s*([+-]\s*\d+)?/i);
+    if (!diceMatch) {
+      ui.notifications.warn(`Could not parse roll formula: ${rawFormula}`);
+      return;
     }
+
+    const dicePool  = parseInt(diceMatch[1]);
+    const flatBonus = diceMatch[2] ? parseInt(diceMatch[2].replace(/\s/g, "")) : 0;
+
+    await _rollCheck({
+      actor:      this.actor,
+      flavor:     `${action.name} — ${action.target}`,
+      dicePool,
+      skillLevel: Math.abs(flatBonus), // treat flat bonus as skill level for display
+      tier:       flatBonus > 0 ? "novice" : "novice",
+      useLuck:    false,
+      flatBonus   // pass raw flat bonus separately
+    });
   }
 }
 
@@ -536,7 +711,7 @@ async function _showRollDialog({ actor, title, dicePool, skillLabel, skillLevel,
 //  8. CORE ROLL ENGINE
 // ============================================================
 
-async function _rollCheck({ actor, flavor, dicePool, skillLevel = 0, tier = "novice", useLuck = false }) {
+async function _rollCheck({ actor, flavor, dicePool, skillLevel = 0, tier = "novice", useLuck = false, flatBonus = 0 }) {
 
   // Step 1: Base roll
   const pool      = Math.max(1, dicePool);
@@ -565,6 +740,12 @@ async function _rollCheck({ actor, flavor, dicePool, skillLevel = 0, tier = "nov
         critCount++;
       }
     }
+  }
+
+  // Step 3b: Apply flat bonus (NPC action bonus dice like "+1" in "5d10 + 1")
+  // This adds to every die result equally — represents weapon damage bonus
+  if (flatBonus > 0) {
+    allResults = allResults.map(r => Math.min(10, r + flatBonus));
   }
 
   // Step 4: Apply skill bonus
