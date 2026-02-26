@@ -36,28 +36,28 @@ const RAV = {
 // ============================================================
 
 const RAV_SPEC_DESCRIPTIONS = {
-  armorer:          "Novice: +1 Armor Soak. Expert: Ignore 1 Armor damage per hit. Master: Repair armor in the field with no tools.",
-  armsmaster:       "Novice: +1 damage on attacks. Expert: Wield two weapons or a two-handed weapon. Master: +1 additional attack per round.",
-  bodybuilding:     "Novice: +2 max HP. Expert: +4 max HP, ignore 1 point of unarmed damage. Master: +6 max HP.",
-  caster:           "Novice: Reduce spell MP cost by 1 (min 1). Expert: Cast two spells per action once per round. Master: Ignore spell tier requirements once per session.",
-  learning:         "Novice: Learn new skills 25% faster. Expert: Teach others at normal speed. Master: Can raise Skill Tiers through teaching.",
-  meditation:       "Novice: Recover 1 MP per round of rest. Expert: Recover 2 MP per round. Master: Recover 3 MP at the start of each round.",
-  relicKnowledge:   "Novice: Identify Common and Uncommon relics. Expert: Identify Rare relics and sense curses. Master: Identify Legendary relics.",
-  monsterKnowledge: "Novice: Know basic stats of Common monsters. Expert: Know skills of Uncommon monsters. Master: Know full stat blocks of Rare monsters.",
-  alchemy:          "Novice: Brew basic potions. Expert: Brew advanced potions and poisons. Master: Create experimental concoctions with unique effects.",
-  tinkering:        "Novice: Craft simple mechanical devices. Expert: Craft complex traps and gadgets. Master: Create unique mechanical artifacts.",
-  repair:           "Novice: Remove up to 2 damage points from gear. Expert: Fully repair gear in the field. Master: Repair Broken gear without a forge.",
-  perception:       "Novice: +1d10 to Awareness checks. Expert: +1d10 and re-roll 1d10 for sight-based checks. Master: Cannot be surprised.",
-  investigation:    "Novice: Find hidden clues automatically on success. Expert: Deduce NPC motives on 2+ successes. Master: Reconstruct past events from a scene.",
-  appraisal:        "Novice: Estimate item value within 20%. Expert: Detect forgeries. Master: Identify magical properties without Relic Knowledge.",
-  disarmTrap:       "Novice: Disarm simple traps. Expert: Disarm complex traps and reset them. Master: Disarm magical traps.",
-  forgeDocument:    "Novice: Forge basic documents. Expert: Forge official seals and signatures. Master: Create flawless forgeries of any document.",
-  pickLock:         "Novice: Pick simple locks. Expert: Pick complex locks and magical locks. Master: Open any lock given enough time.",
-  eloquence:        "Novice: +1d10 to Speech in formal settings. Expert: Re-roll 1 die on failed Speech checks. Master: Sway crowds with a short speech.",
-  merchant:         "Novice: Buy items 10% cheaper. Expert: +1d10 and re-roll 1d10 for trading Speech checks. Master: +2d10 to trading, access rare goods.",
-  performance:      "Novice: Earn modest income from performances. Expert: Captivate an audience, distract guards. Master: Performances can influence NPC attitudes.",
-  forage:           "Novice: Find food for 1 person per success. Expert: Find rare herbs and alchemical ingredients. Master: Never go hungry in the wild.",
-  tracking:         "Novice: Track creatures over easy terrain. Expert: Track over any terrain, determine creature type. Master: Track creatures that tried to hide their trail."
+  armorer:          "Novice: +1d10 to Defense rolls. Expert: Re-roll 1d10 on Defense. Master: Defense succeeds on 6+ instead of 7+. Grand Master: Re-roll any dice once on Defense.",
+  armsmaster:       "Novice: +1 to weapon damage (if any damage dealt). Expert: Two-handed weapons — make 2 Attack checks per Action. Master: +1 to weapon damage. Grand Master: +2 to weapon damage.",
+  bodybuilding:     "Novice: +1d10 to Attack dice pool. Expert: +1 max HP. Master: +1 max HP. Grand Master: +1d10 to Attack dice pool again.",
+  spellcaster:      "Novice: +1 to magical damage. Expert: Upcharge — hold a spell one round for +2 damage (cancelled if hit). Master: +1 to magical damage. Grand Master: +2 to magical damage.",
+  learning:         "Novice: Level up in 3/4 of a day. Expert: Level up in 1/2 a day. Master: Allows teaching other characters. Grand Master: +10% to all EXP gained.",
+  meditation:       "Novice: Restore 1 MP at the start of each round. Expert: +1 max MP. Master: +1 max MP. Grand Master: Restore 3 MP at the start of each round.",
+  relicKnowledge:   "Novice: Identify Uncommon relics. Expert: Identify Rare relics. Master: Identify Legendary relics. Grand Master: Identify Mythic relics.",
+  monsterKnowledge: "Novice: Know stats of Uncommon monsters. Expert: Know stats of Rare monsters. Master: Know stats of Ancient monsters. Grand Master: Know stats of Mythic monsters.",
+  alchemy:          "Novice: Brew basic potions. Expert: Mix basic potions. Master: Mix effect potions. Grand Master: Mix Master potions.",
+  tinkering:        "Novice: Basic tinkering. Expert: Advanced tinkering. Master: Upgrade weapons. Grand Master: Replicate enchantments.",
+  repair:           "Novice: Minor fixes. Expert: Detailed fixes. Master: Restore broken items. Grand Master: Replicate items.",
+  perception:       "Novice: +1d10 for looking/awareness checks. Expert: Re-roll 1d10 on looking checks. Master: +1d10 for looking checks. Grand Master: Re-roll any dice once.",
+  investigation:    "Novice: +1d10 for searching. Expert: Re-roll 1d10. Master: +1d10 for searching. Grand Master: Re-roll any dice once.",
+  appraisal:        "Novice: +1d10 for appraisal checks. Expert: Re-roll 1d10. Master: +1d10 for appraisal. Grand Master: Re-roll any dice once.",
+  disarmTrap:       "Novice: +1d10 for disarming traps. Expert: Re-roll 1d10. Master: +1d10 for disarming traps. Grand Master: Re-roll any dice once.",
+  forgeDocument:    "Novice: Forge invitations. Expert: Forge common documents. Master: Forge official documents. Grand Master: Forge royal documents.",
+  pickLock:         "Novice: +1d10 for picking locks. Expert: Re-roll 1d10. Master: +1d10 for picking locks. Grand Master: Re-roll any dice once.",
+  eloquence:        "Novice: +1d10 for speaking/speech checks. Expert: Re-roll 1d10. Master: +1d10 for speaking. Grand Master: Re-roll any dice once.",
+  merchant:         "Novice: +1d10 for trading checks. Expert: Re-roll 1d10. Master: +1d10 for trading. Grand Master: Re-roll any dice once.",
+  performance:      "Novice: +1d10 for Staging checks. Expert: Re-roll 1d10. Master: +1d10 for Staging. Grand Master: Re-roll any dice once.",
+  forage:           "Novice: +1d10 for foraging. Expert: Re-roll 1d10. Master: +1d10 for foraging. Grand Master: Re-roll any dice once.",
+  tracking:         "Novice: +1d10 for tracking. Expert: Re-roll 1d10. Master: +1d10 for tracking. Grand Master: Re-roll any dice once."
 };
 
 
@@ -145,9 +145,26 @@ class RAVActorSheet extends ActorSheet {
   }
 
   _prepareHealthMagic(context) {
-    const end = context.system.attributes.endurance.value ?? 1;
-    context.system.health.max = 5 + (end * 2);
-    context.system.magic.max  = 5 + (end * 2);
+    const sys   = context.system;
+    const attrs = sys.attributes;
+    const specs = sys.specialties;
+
+    const end  = attrs.endurance.value    ?? 1;
+    const mig  = attrs.might.value        ?? 1;
+    const int_ = attrs.intellect.value    ?? 1;
+    const per  = attrs.personality.value  ?? 1;
+
+    // HP = Endurance + Might + Bodybuilding bonuses
+    const bbExpert  = specs.bodybuilding?.tier === "expert"      || specs.bodybuilding?.tier === "master" || specs.bodybuilding?.tier === "grandmaster";
+    const bbMaster  = specs.bodybuilding?.tier === "master"      || specs.bodybuilding?.tier === "grandmaster";
+    const hpBonus   = (bbExpert ? 1 : 0) + (bbMaster ? 1 : 0);
+    sys.health.max  = end + mig + hpBonus;
+
+    // MP = Endurance + highest(Intellect, Personality) + Meditation bonuses
+    const medExpert = specs.meditation?.tier === "expert"        || specs.meditation?.tier === "master" || specs.meditation?.tier === "grandmaster";
+    const medMaster = specs.meditation?.tier === "master"        || specs.meditation?.tier === "grandmaster";
+    const mpBonus   = (medExpert ? 1 : 0) + (medMaster ? 1 : 0);
+    sys.magic.max   = end + Math.max(int_, per) + mpBonus;
   }
 
   // Adds a suggestedTier field to each skill/specialty based on level
@@ -362,9 +379,7 @@ class RAVNPCSheet extends ActorSheet {
     const context  = super.getData();
     context.RAV    = RAV;
     context.system = context.actor.system;
-    const end = context.system.attributes.endurance.value ?? 1;
-    context.system.health.max = 5 + (end * 2);
-    context.system.magic.max  = 5 + (end * 2);
+    // NPC HP/MP max is free input — no calculation
     return context;
   }
 
@@ -391,7 +406,7 @@ class RAVNPCSheet extends ActorSheet {
     event.preventDefault();
     const delta   = parseInt(event.currentTarget.dataset.delta);
     const current = this.actor.system.health.value;
-    const max     = this.actor.system.health.max;
+    const max     = this.actor.system.health.max ?? 99;
     await this.actor.update({ "system.health.value": Math.clamped(current + delta, 0, max) });
   }
 
@@ -399,7 +414,7 @@ class RAVNPCSheet extends ActorSheet {
     event.preventDefault();
     const delta   = parseInt(event.currentTarget.dataset.delta);
     const current = this.actor.system.magic.value;
-    const max     = this.actor.system.magic.max;
+    const max     = this.actor.system.magic.max ?? 99;
     await this.actor.update({ "system.magic.value": Math.clamped(current + delta, 0, max) });
   }
 
