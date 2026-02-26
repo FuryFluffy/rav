@@ -461,7 +461,16 @@
       "actions": {},
       "monsterTier": "common",
       "features": "",
-      "gear": ""
+      "gear": "",
+      "monsterType": "",
+      "health": {
+        "value": 10,
+        "max": 10
+      },
+      "magic": {
+        "value": 5,
+        "max": 5
+      }
     }
   },
   "Item": {
