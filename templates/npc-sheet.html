@@ -1,17 +1,16 @@
-{{!-- Rise of Arcane and Valor — NPC Sheet v0.2.0 --}}
-{{!-- Matches the stat block format from the rulebook --}}
+{{!-- Rise of Arcane and Valor — NPC Sheet v0.2.1 --}}
 <form class="sheet-form npc-form" autocomplete="off">
 
   {{!-- ── HEADER ── --}}
   <header class="npc-header">
     <div class="header-portrait">
-      <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+      <img class="profile-img npc-portrait" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
     </div>
     <div class="npc-header-fields">
       <input class="name-input" type="text" name="name" value="{{actor.name}}" placeholder="NPC Name"/>
       <div class="npc-header-meta">
         <div class="meta-field">
-          <label>Monster Tier</label>
+          <label>Rarity</label>
           <select name="system.monsterTier">
             <option value="common"   {{#if (eq system.monsterTier "common")}}selected{{/if}}>Common</option>
             <option value="uncommon" {{#if (eq system.monsterTier "uncommon")}}selected{{/if}}>Uncommon</option>
@@ -20,100 +19,114 @@
             <option value="mythical" {{#if (eq system.monsterTier "mythical")}}selected{{/if}}>Mythical</option>
           </select>
         </div>
+        <div class="meta-field">
+          <label>Type</label>
+          <input type="text" name="system.monsterType" value="{{system.monsterType}}" placeholder="e.g. Beast, Undead"/>
+        </div>
       </div>
     </div>
   </header>
 
-  {{!-- ── ATTRIBUTE BLOCK (matches book table layout) ── --}}
+  {{!-- ── ATTRIBUTE BLOCK ── --}}
   <section class="npc-stat-block">
 
+    {{!-- Attribute row --}}
     <div class="npc-attributes">
       <div class="npc-attr">
-        <span class="npc-attr-label attribute-roll" data-attribute="might" title="Roll Might">Might</span>
+        <span class="npc-attr-label attribute-roll" data-attribute="might">Might</span>
         <input type="number" name="system.attributes.might.value"
-               value="{{system.attributes.might.value}}" min="1" max="10" class="npc-attr-value"/>
+               value="{{system.attributes.might.value}}" min="1" max="20" class="npc-attr-value"/>
       </div>
       <div class="npc-attr">
-        <span class="npc-attr-label attribute-roll" data-attribute="agility" title="Roll Agility">Agility</span>
+        <span class="npc-attr-label attribute-roll" data-attribute="agility">Agility</span>
         <input type="number" name="system.attributes.agility.value"
-               value="{{system.attributes.agility.value}}" min="1" max="10" class="npc-attr-value"/>
+               value="{{system.attributes.agility.value}}" min="1" max="20" class="npc-attr-value"/>
       </div>
       <div class="npc-attr">
-        <span class="npc-attr-label attribute-roll" data-attribute="endurance" title="Roll Endurance">Endurance</span>
+        <span class="npc-attr-label attribute-roll" data-attribute="endurance">Endurance</span>
         <input type="number" name="system.attributes.endurance.value"
-               value="{{system.attributes.endurance.value}}" min="1" max="10" class="npc-attr-value"/>
+               value="{{system.attributes.endurance.value}}" min="1" max="20" class="npc-attr-value"/>
       </div>
       <div class="npc-attr">
-        <span class="npc-attr-label attribute-roll" data-attribute="intellect" title="Roll Intellect">Intellect</span>
+        <span class="npc-attr-label attribute-roll" data-attribute="intellect">Intellect</span>
         <input type="number" name="system.attributes.intellect.value"
-               value="{{system.attributes.intellect.value}}" min="1" max="10" class="npc-attr-value"/>
+               value="{{system.attributes.intellect.value}}" min="1" max="20" class="npc-attr-value"/>
       </div>
       <div class="npc-attr">
-        <span class="npc-attr-label attribute-roll" data-attribute="personality" title="Roll Personality">Personality</span>
+        <span class="npc-attr-label attribute-roll" data-attribute="personality">Personality</span>
         <input type="number" name="system.attributes.personality.value"
-               value="{{system.attributes.personality.value}}" min="1" max="10" class="npc-attr-value"/>
+               value="{{system.attributes.personality.value}}" min="1" max="20" class="npc-attr-value"/>
       </div>
     </div>
 
-    {{!-- ── HP / MP / ORDER / GEAR ROW ── --}}
+    {{!-- HP / MP / Order / Gear row — all free input --}}
     <div class="npc-vitals-row">
+
       <div class="npc-vital-cell">
         <span class="npc-vital-label">HP</span>
         <div class="npc-vital-controls">
           <button type="button" class="hp-btn vital-btn" data-delta="-1">−</button>
-          <input type="number" name="system.health.value" value="{{system.health.value}}"
-                 min="0" max="{{system.health.max}}" class="npc-vital-input"/>
+          <input type="number" name="system.health.value"
+                 value="{{system.health.value}}" min="0" class="npc-vital-input"/>
           <span class="vital-sep">/</span>
-          <span class="vital-max">{{system.health.max}}</span>
+          <input type="number" name="system.health.max"
+                 value="{{system.health.max}}" min="0" class="npc-vital-input npc-max-input"
+                 title="Set max HP freely"/>
           <button type="button" class="hp-btn vital-btn" data-delta="1">+</button>
         </div>
       </div>
+
       <div class="npc-vital-cell">
         <span class="npc-vital-label">MP</span>
         <div class="npc-vital-controls">
           <button type="button" class="mp-btn vital-btn" data-delta="-1">−</button>
-          <input type="number" name="system.magic.value" value="{{system.magic.value}}"
-                 min="0" max="{{system.magic.max}}" class="npc-vital-input"/>
+          <input type="number" name="system.magic.value"
+                 value="{{system.magic.value}}" min="0" class="npc-vital-input"/>
           <span class="vital-sep">/</span>
-          <span class="vital-max">{{system.magic.max}}</span>
+          <input type="number" name="system.magic.max"
+                 value="{{system.magic.max}}" min="0" class="npc-vital-input npc-max-input"
+                 title="Set max MP freely"/>
           <button type="button" class="mp-btn vital-btn" data-delta="1">+</button>
         </div>
       </div>
+
       <div class="npc-vital-cell">
         <span class="npc-vital-label">Order</span>
         <input type="number" name="system.order" value="{{system.order}}"
                min="0" max="20" class="npc-vital-input"/>
       </div>
+
       <div class="npc-vital-cell npc-gear-cell">
         <span class="npc-vital-label">Gear</span>
         <input type="text" name="system.gear" value="{{system.gear}}"
                placeholder="None" class="npc-gear-input"/>
       </div>
-    </div>
 
+    </div>
   </section>
 
   {{!-- ── TABS ── --}}
   <nav class="sheet-tabs tabs" data-group="primary">
-    <a class="item" data-tab="skills">Skills &amp; Features</a>
+    <a class="item" data-tab="skills">Skills</a>
     <a class="item" data-tab="actions">Actions</a>
-    <a class="item" data-tab="notes">Notes</a>
+    <a class="item" data-tab="description">Description</a>
   </nav>
 
   <section class="sheet-body">
 
-    {{!-- ── TAB: SKILLS & FEATURES ── --}}
+    {{!-- ── TAB: SKILLS ── --}}
+    {{!-- Free text, format: SkillName. Description. One per line. --}}
     <div class="tab" data-tab="skills">
-      <p class="npc-tab-hint">List this NPC's passive abilities and special features below.</p>
-      <textarea name="system.features" class="npc-textarea"
-                placeholder="***Pack.*** Work together to take down one target.&#10;***Fast.*** Ignore 1 success of target's Dodge.">{{system.features}}</textarea>
+      <p class="npc-tab-hint">
+        Format: <strong>Skill Name.</strong> Description of what it does.
+        One skill per line. Example: <em>Pack. Work together to take down one target.</em>
+      </p>
+      <textarea name="system.features" class="npc-textarea npc-skills-textarea"
+                placeholder="Pack. Work together to take down one target.&#10;Fast. Ignore 1 success of target's Dodge.&#10;Deadly. Ignores 1 success from target's Defend.">{{system.features}}</textarea>
     </div>
 
     {{!-- ── TAB: ACTIONS ── --}}
     <div class="tab" data-tab="actions">
-      <p class="npc-tab-hint">List attacks and defenses. Format: Name | Target; Zone | MP - Roll</p>
-
-      {{!-- Action table header --}}
       <div class="action-table">
         <div class="action-header">
           <span class="action-col-name">Attack / Defense</span>
@@ -125,14 +138,16 @@
         {{#each system.actions as |action key|}}
         <div class="action-row" data-action-key="{{key}}">
           <input type="text" name="system.actions.{{key}}.name"
-                 value="{{action.name}}" placeholder="Attack name" class="action-col-name action-input"/>
+                 value="{{action.name}}" placeholder="e.g. Sword" class="action-col-name action-input"/>
           <input type="text" name="system.actions.{{key}}.target"
                  value="{{action.target}}" placeholder="One; Adjacent" class="action-col-target action-input"/>
           <input type="text" name="system.actions.{{key}}.roll"
                  value="{{action.roll}}" placeholder="3d10 + 1" class="action-col-roll action-input"/>
           <div class="action-col-ctrl">
             <a class="action-roll-btn" data-action-key="{{key}}" title="Roll this action">🎲</a>
-            <a class="action-delete-btn" data-action-key="{{key}}" title="Remove"><i class="fas fa-trash"></i></a>
+            <a class="action-delete-btn" data-action-key="{{key}}" title="Remove">
+              <i class="fas fa-trash"></i>
+            </a>
           </div>
         </div>
         {{/each}}
@@ -143,12 +158,21 @@
       </div>
     </div>
 
-    {{!-- ── TAB: NOTES ── --}}
-    <div class="tab" data-tab="notes">
-      <textarea name="system.biography" class="npc-textarea"
-                placeholder="GM notes, lore, tactics...">{{system.biography}}</textarea>
+    {{!-- ── TAB: DESCRIPTION ── --}}
+    <div class="tab" data-tab="description">
+      <div class="npc-description-tab">
+        <div class="npc-desc-portrait-wrap">
+          <img class="npc-desc-portrait" src="{{actor.img}}" data-edit="img"
+               title="Click to change portrait"/>
+          <span class="npc-desc-portrait-hint">Click to change</span>
+        </div>
+        <div class="npc-desc-text-wrap">
+          <label class="bio-label">Description &amp; Lore</label>
+          <textarea name="system.biography" class="npc-textarea npc-bio-textarea"
+                    placeholder="Describe this creature or NPC — its appearance, behaviour, habitat, legends surrounding it...">{{system.biography}}</textarea>
+        </div>
+      </div>
     </div>
 
   </section>
-
 </form>
