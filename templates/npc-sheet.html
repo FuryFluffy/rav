@@ -115,14 +115,46 @@
   <section class="sheet-body">
 
     {{!-- ── TAB: SKILLS ── --}}
-    {{!-- Free text, format: SkillName. Description. One per line. --}}
     <div class="tab" data-tab="skills">
-      <p class="npc-tab-hint">
-        Format: <strong>Skill Name.</strong> Description of what it does.
-        One skill per line. Example: <em>Pack. Work together to take down one target.</em>
-      </p>
-      <textarea name="system.features" class="npc-textarea npc-skills-textarea"
-                placeholder="Pack. Work together to take down one target.&#10;Fast. Ignore 1 success of target's Dodge.&#10;Deadly. Ignores 1 success from target's Defend.">{{system.features}}</textarea>
+      <p class="npc-tab-hint">Each skill shows as <strong>Name.</strong> Description in the stat block.</p>
+
+      <div class="npc-skill-list">
+        {{#each system.npcSkills as |skill key|}}
+        <div class="npc-skill-row" data-skill-key="{{key}}">
+          <input type="text"
+                 name="system.npcSkills.{{key}}.name"
+                 value="{{skill.name}}"
+                 placeholder="Skill name"
+                 class="npc-skill-name-input"/>
+          <input type="text"
+                 name="system.npcSkills.{{key}}.description"
+                 value="{{skill.description}}"
+                 placeholder="What it does..."
+                 class="npc-skill-desc-input"/>
+          <a class="npc-skill-delete" data-skill-key="{{key}}" title="Remove">
+            <i class="fas fa-trash"></i>
+          </a>
+        </div>
+        {{/each}}
+      </div>
+
+      <div class="npc-skill-add-row">
+        <button type="button" class="action-add-btn npc-skill-add-btn">+ Add Skill</button>
+      </div>
+
+      {{!-- READ-ONLY PREVIEW — shows how skills render in final stat block style --}}
+      {{#if system.npcSkills}}
+      <div class="npc-skill-preview">
+        <h4 class="npc-preview-title">Preview</h4>
+        {{#each system.npcSkills as |skill key|}}
+        {{#if skill.name}}
+        <p class="npc-skill-preview-line">
+          <strong>{{skill.name}}.</strong> {{skill.description}}
+        </p>
+        {{/if}}
+        {{/each}}
+      </div>
+      {{/if}}
     </div>
 
     {{!-- ── TAB: ACTIONS ── --}}
