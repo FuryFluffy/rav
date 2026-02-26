@@ -470,7 +470,8 @@
       "magic": {
         "value": 5,
         "max": 5
-      }
+      },
+      "npcSkills": {}
     }
   },
   "Item": {
