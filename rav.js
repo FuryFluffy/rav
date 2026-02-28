@@ -426,7 +426,7 @@ class RAVActorSheet extends ActorSheet {
             const skillLevel = parseInt(html.find("[name=skillLevel]").val()) || 0;
             const useLuck    = html.find("[name=useLuck]").prop("checked");
             const attrValue  = this.actor.system.attributes[attrKey].value ?? 1;
-            const tier       = _tierFromLevel(skillLevel);
+            const tier       = skill.tier ?? _tierFromLevel(skillLevel);
 
             if (useLuck && luck > 0) {
               await this.actor.update({ "system.attributes.luck.value": luck - 1 });
@@ -535,6 +535,16 @@ class RAVNPCSheet extends ActorSheet {
     html.find(".action-roll-btn").click(this._onActionRoll.bind(this));
     html.find(".npc-skill-add-btn").click(this._onNpcSkillAdd.bind(this));
     html.find(".npc-skill-delete").click(this._onNpcSkillDelete.bind(this));
+
+    // Toggle between preview and edit mode for NPC skills
+    html.find(".npc-skill-edit-toggle").click((event) => {
+      event.preventDefault();
+      const viewMode = html.find(".npc-skill-view-mode");
+      const editMode = html.find(".npc-skill-edit-mode");
+      const isEditing = editMode.is(":visible");
+      viewMode.toggle(isEditing);
+      editMode.toggle(!isEditing);
+    });
   }
 
   async _onRollAttribute(event) {
@@ -742,12 +752,6 @@ async function _rollCheck({ actor, flavor, dicePool, skillLevel = 0, tier = "nov
     }
   }
 
-  // Step 3b: Apply flat bonus (NPC action bonus dice like "+1" in "5d10 + 1")
-  // This adds to every die result equally — represents weapon damage bonus
-  if (flatBonus > 0) {
-    allResults = allResults.map(r => Math.min(10, r + flatBonus));
-  }
-
   // Step 4: Apply skill bonus
   let modifiedResults = [...allResults];
   const bonusApplied  = [];
@@ -781,7 +785,9 @@ async function _rollCheck({ actor, flavor, dicePool, skillLevel = 0, tier = "nov
   }
 
   // Step 5: Count successes
-  const successes = modifiedResults.filter(r => r >= RAV.successThreshold).length;
+  // flatBonus adds directly to success count (e.g. "5d10 + 1" = roll 5d10, then +1 success)
+  const diceSuccesses = modifiedResults.filter(r => r >= RAV.successThreshold).length;
+  const successes     = diceSuccesses + Math.max(0, flatBonus);
 
   // Step 6: Render dice — show base → modified where changed
   const diceHTML = modifiedResults.map((modVal, i) => {
@@ -812,14 +818,14 @@ async function _rollCheck({ actor, flavor, dicePool, skillLevel = 0, tier = "nov
     else                        bonusDesc = `${tierLabel} · +${skillLevel} split optimally`;
   }
 
-  const luckText  = useLuck ? `<div class="roll-tag luck-tag">🍀 Luck — lowest die rerolled</div>` : "";
-  const critText  = critCount > 0 ? `<div class="roll-tag crit-tag">⚡ Critical — ${critCount} bonus die added</div>` : "";
-  const bonusText = bonusDesc ? `<div class="roll-tag bonus-tag">${bonusDesc}</div>` : "";
+  const luckText   = useLuck ? `<div class="roll-tag luck-tag">🍀 Luck — lowest die rerolled</div>` : "";
+  const critText   = critCount > 0 ? `<div class="roll-tag crit-tag">⚡ Critical — ${critCount} bonus die added</div>` : "";
+  const bonusText  = bonusDesc ? `<div class="roll-tag bonus-tag">${bonusDesc}</div>` : "";
+  const flatText   = flatBonus > 0 ? `<div class="roll-tag bonus-tag">+${flatBonus} bonus success${flatBonus !== 1 ? "es" : ""}</div>` : "";
 
-  const luck    = actor.system.attributes.luck.value ?? 0;
-  const luckBtn = luck > 0
-    ? `<button class="luck-reroll-btn" data-actor-id="${actor.id}" data-message-id="PENDING">🍀 Spend Luck to reroll lowest die (${luck} left)</button>`
-    : "";
+  // Luck button — always shown, any player can spend their own Luck
+  // data-actor-id is the ORIGINAL actor for reference, but the clicker spends their own Luck
+  const luckBtn = `<button class="luck-reroll-btn" data-actor-id="${actor.id}" data-message-id="PENDING">🍀 Spend Luck to reroll lowest die</button>`;
 
   const content = `
     <div class="rav-roll">
@@ -827,7 +833,7 @@ async function _rollCheck({ actor, flavor, dicePool, skillLevel = 0, tier = "nov
         <span class="roll-title">${flavor}</span>
         <span class="roll-pool">${pool}d10</span>
       </div>
-      <div class="roll-tags">${bonusText}${luckText}${critText}</div>
+      <div class="roll-tags">${bonusText}${flatText}${luckText}${critText}</div>
       <div class="dice-tray">${diceHTML}</div>
       <div class="roll-footer">
         <span class="roll-successes">${successes} Success${successes !== 1 ? "es" : ""}</span>
@@ -857,30 +863,62 @@ async function _rollCheck({ actor, flavor, dicePool, skillLevel = 0, tier = "nov
 Hooks.on("renderChatMessage", (message, html) => {
   html.find(".luck-reroll-btn").click(async (event) => {
     event.preventDefault();
-    const btn     = event.currentTarget;
-    const actorId = btn.dataset.actorId;
-    const actor   = game.actors.get(actorId);
-    if (!actor) return;
+    const btn = event.currentTarget;
 
-    const luck = actor.system.attributes.luck.value ?? 0;
-    if (luck <= 0) {
-      ui.notifications.warn("No Luck points remaining!");
+    // Find the spending actor — prefer the user's currently controlled/owned token actor,
+    // fall back to any owned actor with Luck remaining
+    let spender = null;
+
+    // First try: controlled token on canvas
+    const controlled = canvas?.tokens?.controlled ?? [];
+    for (const token of controlled) {
+      if (token.actor?.isOwner && (token.actor.system.attributes.luck.value ?? 0) > 0) {
+        spender = token.actor;
+        break;
+      }
+    }
+
+    // Second try: any actor the user owns with Luck > 0
+    if (!spender) {
+      spender = game.actors.find(a =>
+        a.isOwner &&
+        a.type === "character" &&
+        (a.system.attributes.luck.value ?? 0) > 0
+      );
+    }
+
+    if (!spender) {
+      ui.notifications.warn("No controlled character with Luck remaining!");
       return;
     }
 
-    await actor.update({ "system.attributes.luck.value": luck - 1 });
+    const luck = spender.system.attributes.luck.value;
+    await spender.update({ "system.attributes.luck.value": luck - 1 });
 
+    // Post a 1d10 reroll result to chat for the player to apply manually
+    const reroll = await new Roll("1d10").evaluate();
     ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor }),
+      speaker: ChatMessage.getSpeaker({ actor: spender }),
       content: `<div class="rav-roll">
-        <div class="roll-header"><span class="roll-title">🍀 ${actor.name} spends Luck</span></div>
-        <p>Reroll your chosen die and apply the new result manually.</p>
-        <p><em>Luck remaining: ${luck - 1}</em></p>
+        <div class="roll-header">
+          <span class="roll-title">🍀 ${spender.name} spends Luck</span>
+        </div>
+        <div class="dice-tray">
+          <div class="die ${reroll.total >= 7 ? "success" : "failure"}">
+            <span class="die-final alone">${reroll.total}</span>
+          </div>
+        </div>
+        <div class="roll-footer">
+          <span class="roll-successes" style="font-size:12px;color:var(--rav-text-dim)">
+            Apply this result to your chosen die · Luck remaining: ${luck - 1}
+          </span>
+        </div>
       </div>`
     });
 
-    btn.disabled    = true;
-    btn.textContent = `🍀 Luck spent (${luck - 1} remaining)`;
+    btn.textContent = `🍀 Luck spent — ${luck - 1} remaining`;
+    btn.style.opacity = "0.6";
+    btn.disabled = luck - 1 <= 0;
   });
 });
 

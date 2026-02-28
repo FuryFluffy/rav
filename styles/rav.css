@@ -1199,3 +1199,40 @@
 .rav.sheet.npc .npc-skill-preview-line strong {
   color: var(--rav-gold-light);
 }
+
+/* ── NPC SKILL TOGGLE BUTTON ── */
+.rav.sheet.npc .npc-skill-view-footer {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.rav.sheet.npc .npc-skill-edit-toggle {
+  background: transparent;
+  border: 1px solid var(--rav-border);
+  color: var(--rav-text-dim);
+  font-family: 'Crimson Pro', serif;
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.rav.sheet.npc .npc-skill-edit-toggle:hover {
+  border-color: var(--rav-gold);
+  color: var(--rav-gold);
+}
+
+/* NPC skill preview lines — stronger color override */
+.rav.sheet.npc .npc-skill-preview-line {
+  font-family: 'Crimson Pro', serif !important;
+  font-size: 14px !important;
+  color: var(--rav-text) !important;
+  line-height: 1.7;
+  margin: 0 0 4px;
+}
+
+.rav.sheet.npc .npc-skill-preview-line strong {
+  color: var(--rav-gold-light) !important;
+  font-weight: 700;
+}

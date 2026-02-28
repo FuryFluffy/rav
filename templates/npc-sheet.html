@@ -116,45 +116,54 @@
 
     {{!-- ── TAB: SKILLS ── --}}
     <div class="tab" data-tab="skills">
-      <p class="npc-tab-hint">Each skill shows as <strong>Name.</strong> Description in the stat block.</p>
 
-      <div class="npc-skill-list">
-        {{#each system.npcSkills as |skill key|}}
-        <div class="npc-skill-row" data-skill-key="{{key}}">
-          <input type="text"
-                 name="system.npcSkills.{{key}}.name"
-                 value="{{skill.name}}"
-                 placeholder="Skill name"
-                 class="npc-skill-name-input"/>
-          <input type="text"
-                 name="system.npcSkills.{{key}}.description"
-                 value="{{skill.description}}"
-                 placeholder="What it does..."
-                 class="npc-skill-desc-input"/>
-          <a class="npc-skill-delete" data-skill-key="{{key}}" title="Remove">
-            <i class="fas fa-trash"></i>
-          </a>
-        </div>
-        {{/each}}
-      </div>
-
-      <div class="npc-skill-add-row">
-        <button type="button" class="action-add-btn npc-skill-add-btn">+ Add Skill</button>
-      </div>
-
-      {{!-- READ-ONLY PREVIEW — shows how skills render in final stat block style --}}
-      {{#if system.npcSkills}}
-      <div class="npc-skill-preview">
-        <h4 class="npc-preview-title">Preview</h4>
-        {{#each system.npcSkills as |skill key|}}
-        {{#if skill.name}}
-        <p class="npc-skill-preview-line">
-          <strong>{{skill.name}}.</strong> {{skill.description}}
-        </p>
+      {{!-- DEFAULT VIEW: Rulebook-style preview --}}
+      <div class="npc-skill-view-mode">
+        {{#if system.npcSkills}}
+          {{#each system.npcSkills as |skill key|}}
+          {{#if skill.name}}
+          <p class="npc-skill-preview-line">
+            <strong>{{skill.name}}.</strong> {{skill.description}}
+          </p>
+          {{/if}}
+          {{/each}}
+        {{else}}
+          <p class="npc-tab-hint">No skills added yet. Click Edit to add skills.</p>
         {{/if}}
-        {{/each}}
+        <div class="npc-skill-view-footer">
+          <button type="button" class="npc-skill-edit-toggle">✏ Edit Skills</button>
+        </div>
       </div>
-      {{/if}}
+
+      {{!-- EDIT MODE: hidden by default, toggled by button --}}
+      <div class="npc-skill-edit-mode" style="display:none;">
+        <div class="npc-skill-list">
+          {{#each system.npcSkills as |skill key|}}
+          <div class="npc-skill-row" data-skill-key="{{key}}">
+            <input type="text"
+                   name="system.npcSkills.{{key}}.name"
+                   value="{{skill.name}}"
+                   placeholder="Skill name"
+                   class="npc-skill-name-input"/>
+            <input type="text"
+                   name="system.npcSkills.{{key}}.description"
+                   value="{{skill.description}}"
+                   placeholder="What it does..."
+                   class="npc-skill-desc-input"/>
+            <a class="npc-skill-delete" data-skill-key="{{key}}" title="Remove">
+              <i class="fas fa-trash"></i>
+            </a>
+          </div>
+          {{/each}}
+        </div>
+        <div class="npc-skill-add-row">
+          <button type="button" class="action-add-btn npc-skill-add-btn">+ Add Skill</button>
+        </div>
+        <div class="npc-skill-view-footer">
+          <button type="button" class="npc-skill-edit-toggle">✓ Done Editing</button>
+        </div>
+      </div>
+
     </div>
 
     {{!-- ── TAB: ACTIONS ── --}}
