@@ -1236,3 +1236,15 @@
   color: var(--rav-gold-light) !important;
   font-weight: 700;
 }
+
+/* Hide "no skills" hint when preview lines exist */
+.rav.sheet.npc .npc-skill-view-mode:has(.npc-skill-preview-line) .npc-no-skills-hint {
+  display: none;
+}
+
+/* Remove any red border from edit toggle button */
+.rav.sheet.npc .npc-skill-edit-toggle {
+  border-color: var(--rav-border) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

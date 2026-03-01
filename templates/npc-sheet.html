@@ -119,17 +119,14 @@
 
       {{!-- DEFAULT VIEW: Rulebook-style preview --}}
       <div class="npc-skill-view-mode">
-        {{#if system.npcSkills}}
-          {{#each system.npcSkills as |skill key|}}
-          {{#if skill.name}}
-          <p class="npc-skill-preview-line">
-            <strong>{{skill.name}}.</strong> {{skill.description}}
-          </p>
-          {{/if}}
-          {{/each}}
-        {{else}}
-          <p class="npc-tab-hint">No skills added yet. Click Edit to add skills.</p>
+        {{#each system.npcSkills as |skill key|}}
+        {{#if skill.name}}
+        <p class="npc-skill-preview-line">
+          <strong>{{skill.name}}.</strong> {{skill.description}}
+        </p>
         {{/if}}
+        {{/each}}
+        <p class="npc-tab-hint npc-no-skills-hint">No skills added yet.</p>
         <div class="npc-skill-view-footer">
           <button type="button" class="npc-skill-edit-toggle">✏ Edit Skills</button>
         </div>

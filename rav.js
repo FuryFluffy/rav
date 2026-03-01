@@ -389,6 +389,11 @@ class RAVActorSheet extends ActorSheet {
     const skill    = this.actor.system.skills[group][skillKey];
     const luck     = this.actor.system.attributes.luck.value ?? 0;
 
+    // Read tier directly from the sheet's dropdown — more reliable than actor data
+    // which may not have tier set on older actors
+    const tierSelect = el.closest(".skill-row")?.querySelector(`[name="system.skills.${group}.${skillKey}.tier"]`);
+    const liveTier   = tierSelect?.value || skill.tier || "novice";
+
     const attrOptions = Object.entries(RAV.attributes).map(([k, v]) => {
       const dots = this.actor.system.attributes[k].value;
       return `<option value="${k}">${v} — ${dots}d10</option>`;
@@ -406,7 +411,7 @@ class RAVActorSheet extends ActorSheet {
         </div>
         <div class="dialog-field">
           <label>Tier</label>
-          <span class="tier-${skill.tier}">${RAV.tiers[skill.tier] ?? skill.tier}</span>
+          <span class="tier-${liveTier}">${RAV.tiers[liveTier] ?? liveTier}</span>
         </div>
         ${luck > 0 ? `
         <div class="dialog-field luck-field">
@@ -426,7 +431,7 @@ class RAVActorSheet extends ActorSheet {
             const skillLevel = parseInt(html.find("[name=skillLevel]").val()) || 0;
             const useLuck    = html.find("[name=useLuck]").prop("checked");
             const attrValue  = this.actor.system.attributes[attrKey].value ?? 1;
-            const tier       = skill.tier ?? _tierFromLevel(skillLevel);
+            const tier       = liveTier;
 
             if (useLuck && luck > 0) {
               await this.actor.update({ "system.attributes.luck.value": luck - 1 });
@@ -641,10 +646,10 @@ class RAVNPCSheet extends ActorSheet {
       actor:      this.actor,
       flavor:     `${action.name} — ${action.target}`,
       dicePool,
-      skillLevel: Math.abs(flatBonus), // treat flat bonus as skill level for display
-      tier:       flatBonus > 0 ? "novice" : "novice",
+      skillLevel: 0,       // NPCs have no tier bonus logic
+      tier:       "novice",
       useLuck:    false,
-      flatBonus   // pass raw flat bonus separately
+      flatBonus            // added directly to success count after roll
     });
   }
 }
