@@ -27,12 +27,13 @@
           }
         },
         "health": {
-          "value": 10,
-          "max": 10
+          "value": 2,
+          "max": 2
         },
         "magic": {
-          "value": 10,
-          "max": 10
+          "value": 2,
+          "max": 2,
+          "source": "intellect"
         },
         "food": {
           "value": 0,
@@ -461,17 +462,7 @@
       "actions": {},
       "monsterTier": "common",
       "features": "",
-      "gear": "",
-      "monsterType": "",
-      "health": {
-        "value": 10,
-        "max": 10
-      },
-      "magic": {
-        "value": 5,
-        "max": 5
-      },
-      "npcSkills": {}
+      "gear": ""
     }
   },
   "Item": {
@@ -518,7 +509,9 @@
       "tier": "novice",
       "mpCost": 0,
       "dicePool": "",
-      "effect": ""
+      "targets": "",
+      "effect": "",
+      "duration": ""
     },
     "specialty": {
       "templates": [

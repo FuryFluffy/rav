@@ -59,6 +59,10 @@
         <span class="vital-sep">/</span>
         <span class="vital-max">{{system.magic.max}}</span>
         <button type="button" class="mp-btn vital-btn" data-delta="1">+</button>
+        <button type="button" class="mp-source-toggle vital-btn" 
+                title="Toggle MP source between Intellect and Personality">
+          {{#if (eq system.magic.source "intellect")}}INT{{else}}PER{{/if}}
+        </button>
       </div>
     </div>
 
@@ -347,6 +351,7 @@
             <span class="item-detail">{{item.system.school}} · {{item.system.mpCost}} MP</span>
             <span class="item-property tier-{{item.system.tier}}">{{tierLabel item.system.tier}}</span>
             <div class="item-controls">
+              <a class="spell-cast" title="Cast Spell">✨</a>
               <a class="item-edit" title="Edit"><i class="fas fa-edit"></i></a>
               <a class="item-delete" title="Delete"><i class="fas fa-trash"></i></a>
             </div>
