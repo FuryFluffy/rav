@@ -1,6 +1,6 @@
 // ============================================================
 //  Rise of Arcane and Valor — Main System File
-//  rav.js  v0.3.0 — FOUNDATION FIXES
+//  rav.js  v0.5.0 — PENDING ROLL ENGINE
 // ============================================================
 
 // ============================================================
@@ -65,7 +65,7 @@ const RAV_SPEC_DESCRIPTIONS = {
 // ============================================================
 
 Hooks.once("init", function () {
-  console.log("RAV | Initialising Rise of Arcane and Valor system v0.3.0");
+  console.log("RAV | Initialising Rise of Arcane and Valor system v0.4.0");
   game.rav = { RAV };
 
   Actors.unregisterSheet("core", ActorSheet);
@@ -87,6 +87,7 @@ Hooks.once("init", function () {
   });
 
   _registerHandlebarsHelpers();
+  _registerChatCardListeners();
 });
 
 // ============================================================
@@ -141,24 +142,45 @@ class RAVActorSheet extends ActorSheet {
     
     this._prepareHealthMagic(context);
     this._prepareSuggestedTiers(context);
+    this._prepareEquippedGear(context);
     
     return context;
   }
 
-  // FIXED: Proper HP/MP calculation
+  // FIXED: Proper HP/MP calculation with Specialty bonuses
   _prepareHealthMagic(context) {
     const might = context.system.attributes.might.value ?? 1;
     const end   = context.system.attributes.endurance.value ?? 1;
     const int   = context.system.attributes.intellect.value ?? 1;
     const pers  = context.system.attributes.personality.value ?? 1;
     
-    // HP = Might + Endurance
-    context.system.health.max = might + end;
+    // Base HP = Might + Endurance
+    let hpMax = might + end;
     
-    // MP = (Intellect OR Personality) + Endurance
+    // Bodybuilding bonuses to HP
+    const bodybuilding = context.system.specialties.bodybuilding;
+    if (bodybuilding && bodybuilding.level > 0) {
+      const tier = bodybuilding.tier;
+      if (tier === "expert") hpMax += 1;
+      else if (tier === "master") hpMax += 2;
+    }
+    
+    context.system.health.max = hpMax;
+    
+    // Base MP = (Intellect OR Personality) + Endurance
     const mpSource = context.system.magic.source ?? "intellect";
     const mentalStat = mpSource === "intellect" ? int : pers;
-    context.system.magic.max = mentalStat + end;
+    let mpMax = mentalStat + end;
+    
+    // Meditation bonuses to MP
+    const meditation = context.system.specialties.meditation;
+    if (meditation && meditation.level > 0) {
+      const tier = meditation.tier;
+      if (tier === "expert") mpMax += 1;
+      else if (tier === "master") mpMax += 2;
+    }
+    
+    context.system.magic.max = mpMax;
   }
 
   // Adds a suggestedTier field to each skill/specialty based on level
@@ -176,6 +198,21 @@ class RAVActorSheet extends ActorSheet {
     }
   }
 
+  // Prepare equipped gear data for display
+  _prepareEquippedGear(context) {
+    const gearSlots = context.system.gear;
+    context.equippedGear = {};
+    
+    for (const [slot, itemId] of Object.entries(gearSlots)) {
+      if (itemId) {
+        const item = this.actor.items.get(itemId);
+        context.equippedGear[slot] = item ?? null;
+      } else {
+        context.equippedGear[slot] = null;
+      }
+    }
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
     if (!this.isEditable) return;
@@ -188,6 +225,7 @@ class RAVActorSheet extends ActorSheet {
     html.find(".mp-source-toggle").click(this._onMPSourceToggle.bind(this));
     html.find(".item-create").click(this._onItemCreate.bind(this));
     html.find(".item-equip").click(this._onItemEquip.bind(this));
+    html.find(".equipped-item-unequip").click(this._onEquippedItemUnequip.bind(this));
     html.find(".item-edit").click(this._onItemEdit.bind(this));
     html.find(".item-delete").click(this._onItemDelete.bind(this));
     html.find(".spell-cast").click(this._onSpellCast.bind(this));
@@ -326,7 +364,82 @@ class RAVActorSheet extends ActorSheet {
     const itemId = row.dataset.itemId;
     const item = this.actor.items.get(itemId);
     if (!item) return;
-    await item.update({ "system.equipped": !item.system.equipped });
+
+    const isEquipped = item.system.equipped;
+    
+    if (isEquipped) {
+      // Unequip: remove from slot and mark unequipped
+      await this._unequipItem(item);
+    } else {
+      // Equip: find appropriate slot and equip
+      await this._equipItem(item);
+    }
+  }
+
+  async _equipItem(item) {
+    let targetSlot = null;
+    
+    // Determine which slot this item goes in
+    if (item.type === "weapon") {
+      // Weapons go in right arm by default, or left if right is occupied
+      if (!this.actor.system.gear.rightArm) {
+        targetSlot = "rightArm";
+      } else if (!this.actor.system.gear.leftArm) {
+        targetSlot = "leftArm";
+      } else {
+        ui.notifications.warn("Both weapon slots are full! Unequip something first.");
+        return;
+      }
+    } else if (item.type === "armor") {
+      const armorType = item.system.armorType;
+      
+      if (armorType.startsWith("shield")) {
+        // Shields go in left arm
+        targetSlot = "leftArm";
+      } else {
+        // Armor goes in torso
+        targetSlot = "torso";
+      }
+      
+      // Check if slot is occupied
+      if (this.actor.system.gear[targetSlot]) {
+        ui.notifications.warn(`${targetSlot} slot is full! Unequip something first.`);
+        return;
+      }
+    }
+    
+    if (targetSlot) {
+      await item.update({ "system.equipped": true });
+      await this.actor.update({ [`system.gear.${targetSlot}`]: item.id });
+      ui.notifications.info(`${item.name} equipped to ${targetSlot}.`);
+    }
+  }
+
+  async _unequipItem(item) {
+    // Find which slot this item is in
+    const gearSlots = this.actor.system.gear;
+    let slotToClear = null;
+    
+    for (const [slot, itemId] of Object.entries(gearSlots)) {
+      if (itemId === item.id) {
+        slotToClear = slot;
+        break;
+      }
+    }
+    
+    if (slotToClear) {
+      await item.update({ "system.equipped": false });
+      await this.actor.update({ [`system.gear.${slotToClear}`]: null });
+      ui.notifications.info(`${item.name} unequipped.`);
+    }
+  }
+
+  async _onEquippedItemUnequip(event) {
+    event.preventDefault();
+    const equippedDiv = event.currentTarget.closest(".equipped-item");
+    const itemId = equippedDiv.dataset.itemId;
+    const item = this.actor.items.get(itemId);
+    if (item) await this._unequipItem(item);
   }
 
   _onItemEdit(event) {
@@ -526,116 +639,555 @@ class RAVItemSheet extends ItemSheet {
 }
 
 // ============================================================
-//  7. DICE ROLLING (with Specialty Bonuses)
+//  7. DICE ROLLING — Pending Roll Engine
 // ============================================================
 
-async function _rollD10Pool({ actor, pool, flavor, skillLevel = 0, tier = "novice", extraInfo = "" }) {
+async function _rollD10Pool({
+  actor,
+  pool,
+  flavor,
+  skillLevel = 0,
+  tier = "novice",
+  extraInfo = "",
+  threshold = RAV.successThreshold,
+  difficulty = null,
+  rollType = "check",
+  attribute = null,
+  skillGroup = null,
+  skillKey = null
+}) {
+  pool = Math.max(Number(pool) || 0, 0);
+  threshold = Math.max(Number(threshold) || RAV.successThreshold, 2);
+
   const baseRoll = await new Roll(`${pool}d10`).evaluate();
-  let baseResults = baseRoll.terms[0].results.map(r => r.result);
+  const baseDice = baseRoll.terms[0]?.results?.map(r => r.result) ?? [];
 
-  // Step 1: Exploding 10s (Critical Rolls)
-  let allResults = [...baseResults];
-  let critCount = 0;
-  for (let i = 0; i < allResults.length; i++) {
-    if (allResults[i] === 10) {
+  // Critical Roll support: current system behavior keeps rolling an extra d10 for each 10.
+  const allDice = [...baseDice];
+  const criticalDice = [];
+  for (let i = 0; i < allDice.length; i++) {
+    if (allDice[i] === 10) {
       const critRoll = await new Roll("1d10").evaluate();
-      allResults.push(critRoll.total);
-      critCount++;
+      allDice.push(critRoll.total);
+      criticalDice.push(allDice.length - 1);
     }
   }
 
-  // Step 2: Apply skill modifiers
-  let modifiedResults = [...allResults];
-  const bonusApplied = [];
-
-  if (skillLevel > 0) {
-    if (tier === "novice") {
-      const bonus = Math.ceil(skillLevel / 2);
-      const r = _applyBonusToOne(modifiedResults, bonus);
-      modifiedResults = r.results;
-      bonusApplied.push({ idx: r.idx, amount: r.amount });
-    } else if (tier === "expert") {
-      const r = _applyBonusToOne(modifiedResults, skillLevel);
-      modifiedResults = r.results;
-      bonusApplied.push({ idx: r.idx, amount: r.amount });
-    } else if (tier === "master") {
-      const half1 = Math.ceil(skillLevel / 2);
-      const half2 = Math.floor(skillLevel / 2);
-      const r1 = _applyBonusToOne(modifiedResults, half1);
-      modifiedResults = r1.results;
-      bonusApplied.push({ idx: r1.idx, amount: r1.amount });
-      if (half2 > 0) {
-        const r2 = _applyBonusToOne(modifiedResults, half2);
-        modifiedResults = r2.results;
-        bonusApplied.push({ idx: r2.idx, amount: r2.amount });
-      }
-    } else if (tier === "grandmaster") {
-      const r = _applyBonusGreedy(modifiedResults, skillLevel);
-      modifiedResults = r.results;
-      bonusApplied.push(...r.changes);
-    }
-  }
-
-  // Step 3: Count successes
-  const successes = modifiedResults.filter(r => r >= RAV.successThreshold).length;
-
-  // Step 4: Render dice
-  const diceHTML = modifiedResults.map((modVal, i) => {
-    const baseVal   = allResults[i] ?? modVal;
-    const isSuccess = modVal >= RAV.successThreshold;
-    const isCrit    = i >= baseResults.length;
-    const modified  = bonusApplied.find(b => b.idx === i);
-    const cssClass  = isSuccess ? "success" : "failure";
-    const critMark  = isCrit ? '<span class="crit-mark">✦</span>' : "";
-
-    let dieContent;
-    if (modified && modified.amount > 0) {
-      dieContent = `<span class="die-base">${baseVal}</span><span class="die-arrow">→</span><span class="die-final">${modVal}</span><span class="die-bonus">+${modified.amount}</span>`;
-    } else {
-      dieContent = `<span class="die-final alone">${modVal}</span>`;
-    }
-
-    return `<div class="die ${cssClass}${isCrit ? " crit" : ""}">${critMark}${dieContent}</div>`;
-  }).join("");
-
-  // Step 5: Build bonus description
-  let bonusDesc = "";
-  if (skillLevel > 0) {
-    const tierLabel = RAV.tiers[tier] ?? tier;
-    if (tier === "novice")      bonusDesc = `${tierLabel} · +${Math.ceil(skillLevel/2)} to 1 die`;
-    else if (tier === "expert") bonusDesc = `${tierLabel} · +${skillLevel} to 1 die`;
-    else if (tier === "master") bonusDesc = `${tierLabel} · +${Math.ceil(skillLevel/2)} / +${Math.floor(skillLevel/2)} across 2 dice`;
-    else                        bonusDesc = `${tierLabel} · +${skillLevel} split optimally`;
-  }
-
-  const critText  = critCount > 0 ? `<div class="roll-tag crit-tag">⚡ Critical — ${critCount} bonus die added</div>` : "";
-  const bonusText = bonusDesc ? `<div class="roll-tag bonus-tag">${bonusDesc}</div>` : "";
-  const extraText = extraInfo ? `<div class="roll-tag">${extraInfo}</div>` : "";
-
-  const content = `
-    <div class="rav-roll">
-      <div class="roll-header">
-        <span class="roll-title">${flavor}</span>
-        <span class="roll-pool">${pool}d10</span>
-      </div>
-      <div class="roll-tags">${bonusText}${critText}${extraText}</div>
-      <div class="dice-tray">${diceHTML}</div>
-      <div class="roll-footer">
-        <span class="roll-successes">${successes} Success${successes !== 1 ? "es" : ""}</span>
-      </div>
-    </div>`;
-
-  await ChatMessage.create({
-    speaker: ChatMessage.getSpeaker({ actor }),
-    content,
-    rolls: [baseRoll]
+  const suggestion = RAVRollOptimizer.suggest({
+    dice: allDice,
+    skillLevel,
+    tier,
+    threshold
   });
 
-  return { successes, results: modifiedResults };
+  const state = {
+    schemaVersion: 1,
+    state: "pending",
+    actorId: actor.id,
+    tokenId: actor.token?.id ?? null,
+    sceneId: actor.token?.parent?.id ?? null,
+    rollType,
+    flavor,
+    attribute,
+    skillGroup,
+    skillKey,
+    pool,
+    threshold,
+    difficulty,
+    skillLevel: Number(skillLevel) || 0,
+    tier: tier || "novice",
+    extraInfo,
+    baseDice,
+    criticalDice,
+    dice: allDice,
+    skillAllocations: suggestion.allocations,
+    rerolls: [],
+    finalizedBy: null
+  };
+
+  const content = RAVPendingRollCard.render(state);
+
+  const msg = await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content,
+    rolls: [baseRoll],
+    flags: { rav: { pendingRoll: state } }
+  });
+
+  return { message: msg, state };
+}
+
+class RAVRollOptimizer {
+  static suggest({ dice, skillLevel = 0, tier = "novice", threshold = RAV.successThreshold }) {
+    skillLevel = Number(skillLevel) || 0;
+    if (skillLevel <= 0 || !dice.length) return { allocations: [], unused: 0 };
+
+    const rules = this._tierRules(skillLevel, tier);
+    if (rules.budget <= 0 || rules.maxDice <= 0) return { allocations: [], unused: 0 };
+
+    if (rules.maxDice === 1) return this._bestSingleDie(dice, rules.budget, threshold);
+    if (Number.isFinite(rules.maxDice)) return this._bestLimitedSplit(dice, rules.budget, rules.maxDice, threshold);
+    return this._bestGrandMasterSplit(dice, rules.budget, threshold);
+  }
+
+  static _tierRules(skillLevel, tier) {
+    if (tier === "novice") return { budget: Math.ceil(skillLevel / 2), maxDice: 1 };
+    if (tier === "expert") return { budget: skillLevel, maxDice: 1 };
+    if (tier === "master") return { budget: skillLevel, maxDice: 2 };
+    if (tier === "grandmaster") return { budget: skillLevel, maxDice: Infinity };
+    return { budget: 0, maxDice: 0 };
+  }
+
+  static _bestSingleDie(dice, budget, threshold) {
+    let bestIdx = -1;
+    let bestScore = -Infinity;
+    let bestAmount = 0;
+
+    for (let i = 0; i < dice.length; i++) {
+      const before = dice[i];
+      const needed = Math.max(threshold - before, 0);
+      const crosses = before < threshold && needed > 0 && needed <= budget;
+      const amount = crosses ? needed : budget;
+      const after = before + amount;
+      const gained = (before < threshold && after >= threshold) ? 1 : 0;
+      const waste = crosses ? budget - needed : budget;
+      const closeness = Math.min(after, threshold) / threshold;
+      const score = gained * 1000 - waste * 5 + closeness + before / 100;
+      if (score > bestScore) {
+        bestScore = score;
+        bestIdx = i;
+        bestAmount = amount;
+      }
+    }
+
+    return {
+      allocations: bestIdx >= 0 && bestAmount > 0 ? [{ dieIndex: bestIdx, amount: bestAmount }] : [],
+      unused: Math.max(budget - bestAmount, 0)
+    };
+  }
+
+  static _bestLimitedSplit(dice, budget, maxDice, threshold) {
+    const n = dice.length;
+    let best = { allocations: [], score: -Infinity, unused: budget };
+
+    const indices = [];
+    const walkIndices = (start) => {
+      this._scoreAllocationSet(dice, indices, budget, threshold, best);
+      if (indices.length >= maxDice) return;
+      for (let i = start; i < n; i++) {
+        indices.push(i);
+        walkIndices(i + 1);
+        indices.pop();
+      }
+    };
+    walkIndices(0);
+
+    return { allocations: best.allocations, unused: best.unused };
+  }
+
+  static _scoreAllocationSet(dice, indices, budget, threshold, best) {
+    if (!indices.length) return;
+    const amounts = new Array(indices.length).fill(0);
+
+    const distribute = (pos, remaining) => {
+      if (pos === indices.length) {
+        const allocations = indices.map((dieIndex, i) => ({ dieIndex, amount: amounts[i] })).filter(a => a.amount > 0);
+        const score = this._allocationScore(dice, allocations, budget, threshold);
+        if (score.score > best.score) {
+          best.allocations = allocations;
+          best.score = score.score;
+          best.unused = score.unused;
+        }
+        return;
+      }
+      for (let amount = 0; amount <= remaining; amount++) {
+        amounts[pos] = amount;
+        distribute(pos + 1, remaining - amount);
+      }
+    };
+
+    distribute(0, budget);
+  }
+
+  static _bestGrandMasterSplit(dice, budget, threshold) {
+    let remaining = budget;
+    const allocations = [];
+    const used = new Set();
+
+    // Buy as many new successes as possible, cheapest gaps first.
+    const candidates = dice
+      .map((value, dieIndex) => ({ dieIndex, value, gap: threshold - value }))
+      .filter(d => d.gap > 0 && d.gap <= remaining)
+      .sort((a, b) => a.gap - b.gap || b.value - a.value);
+
+    for (const c of candidates) {
+      if (c.gap <= remaining) {
+        allocations.push({ dieIndex: c.dieIndex, amount: c.gap });
+        remaining -= c.gap;
+        used.add(c.dieIndex);
+      }
+    }
+
+    // Put leftover points on the die closest to success, mostly for transparency.
+    if (remaining > 0) {
+      let bestIdx = -1;
+      let bestValue = -Infinity;
+      for (let i = 0; i < dice.length; i++) {
+        if (used.has(i)) continue;
+        if (dice[i] < threshold && dice[i] > bestValue) {
+          bestValue = dice[i];
+          bestIdx = i;
+        }
+      }
+      if (bestIdx === -1) {
+        for (let i = 0; i < dice.length; i++) {
+          if (dice[i] > bestValue) {
+            bestValue = dice[i];
+            bestIdx = i;
+          }
+        }
+      }
+      if (bestIdx >= 0) {
+        allocations.push({ dieIndex: bestIdx, amount: remaining });
+        remaining = 0;
+      }
+    }
+
+    return { allocations, unused: remaining };
+  }
+
+  static _allocationScore(dice, allocations, budget, threshold) {
+    const modified = RAVRollState.applyAllocations(dice, allocations);
+    const baseSuccesses = RAVRollState.countSuccesses(dice, threshold);
+    const finalSuccesses = RAVRollState.countSuccesses(modified, threshold);
+    const gained = finalSuccesses - baseSuccesses;
+    const spent = allocations.reduce((sum, a) => sum + Number(a.amount || 0), 0);
+    const unused = Math.max(budget - spent, 0);
+    const nearMisses = modified.reduce((sum, d) => sum + (d < threshold ? d / threshold : 1), 0);
+
+    return {
+      score: gained * 10000 - unused * 10 + nearMisses + spent / 100,
+      unused
+    };
+  }
+}
+
+class RAVRollState {
+  static applyAllocations(dice, allocations = []) {
+    const modified = [...dice];
+    for (const allocation of allocations) {
+      const idx = Number(allocation.dieIndex);
+      const amount = Number(allocation.amount) || 0;
+      if (idx >= 0 && idx < modified.length && amount > 0) modified[idx] += amount;
+    }
+    return modified;
+  }
+
+  static countSuccesses(dice, threshold = RAV.successThreshold) {
+    return dice.filter(d => Number(d) >= threshold).length;
+  }
+
+  static getFinalDice(state) {
+    return this.applyAllocations(state.dice ?? [], state.skillAllocations ?? []);
+  }
+
+  static getSkillBudget(state) {
+    return RAVRollOptimizer._tierRules(Number(state.skillLevel) || 0, state.tier).budget;
+  }
+
+  static getMaxModifiedDice(state) {
+    return RAVRollOptimizer._tierRules(Number(state.skillLevel) || 0, state.tier).maxDice;
+  }
+}
+
+class RAVPendingRollCard {
+  static render(state) {
+    const finalDice = RAVRollState.getFinalDice(state);
+    const baseSuccesses = RAVRollState.countSuccesses(state.dice, state.threshold);
+    const projectedSuccesses = RAVRollState.countSuccesses(finalDice, state.threshold);
+    const budget = RAVRollState.getSkillBudget(state);
+    const spent = (state.skillAllocations ?? []).reduce((sum, a) => sum + Number(a.amount || 0), 0);
+    const unused = Math.max(budget - spent, 0);
+    const diceHTML = _renderDiceTray({ state, finalDice, pending: true });
+    const suggestionText = _renderAllocationSummary(state, finalDice, unused);
+    const difficultyText = state.difficulty ? `<span class="roll-difficulty">Difficulty ${state.difficulty}</span>` : "";
+    const resultText = state.difficulty ? _resultLabel(projectedSuccesses, state.difficulty) : `${projectedSuccesses} projected`;
+    const critText = state.criticalDice?.length ? `<div class="roll-tag crit-tag">⚡ Critical — ${state.criticalDice.length} bonus die${state.criticalDice.length !== 1 ? "s" : ""} added</div>` : "";
+    const skillText = state.skillLevel > 0 ? `<div class="roll-tag bonus-tag">${RAV.tiers[state.tier] ?? state.tier} · Skill ${state.skillLevel} · Budget ${budget}</div>` : "";
+    const extraText = state.extraInfo ? `<div class="roll-tag">${state.extraInfo}</div>` : "";
+
+    return `
+      <div class="rav-roll rav-pending-roll" data-rav-roll-state="pending">
+        <div class="roll-header">
+          <span class="roll-title">${_escapeHTML(state.flavor)} — Pending</span>
+          <span class="roll-pool">${state.pool}d10</span>
+        </div>
+        <div class="roll-tags">${skillText}${critText}${extraText}<div class="roll-tag pending-tag">Pending: confirm modifiers/rerolls before final result</div></div>
+        <div class="dice-tray">${diceHTML}</div>
+        <div class="roll-summary">
+          <div><strong>Base Successes:</strong> ${baseSuccesses}</div>
+          <div><strong>Suggested Skill Use:</strong> ${suggestionText}</div>
+          <div><strong>Projected Successes:</strong> ${projectedSuccesses} ${difficultyText}</div>
+          <div><strong>Projected Result:</strong> ${resultText}</div>
+        </div>
+        <div class="rav-roll-actions">
+          <button type="button" class="rav-roll-btn rav-accept-suggestion">Accept Suggestion</button>
+          <button type="button" class="rav-roll-btn rav-edit-modifier">Edit Skill Modifier</button>
+          <button type="button" class="rav-roll-btn rav-luck-reroll">Use Luck Reroll</button>
+          <button type="button" class="rav-roll-btn rav-finalize-no-skill">Finalize Without Skill</button>
+        </div>
+      </div>`;
+  }
+}
+
+class RAVFinalRollCard {
+  static render(state) {
+    const finalDice = RAVRollState.getFinalDice(state);
+    const baseSuccesses = RAVRollState.countSuccesses(state.dice, state.threshold);
+    const successes = RAVRollState.countSuccesses(finalDice, state.threshold);
+    const diceHTML = _renderDiceTray({ state, finalDice, pending: false });
+    const difficultyText = state.difficulty ? `<span class="roll-difficulty">Difficulty ${state.difficulty}</span>` : "";
+    const resultText = state.difficulty ? _resultLabel(successes, state.difficulty) : `${successes} Success${successes !== 1 ? "es" : ""}`;
+    const allocations = _renderAllocationSummary(state, finalDice, 0);
+    const rerollText = state.rerolls?.length ? `<div><strong>Rerolls:</strong> ${state.rerolls.length}</div>` : "";
+    const extraText = state.extraInfo ? `<div class="roll-tag">${state.extraInfo}</div>` : "";
+
+    return `
+      <div class="rav-roll rav-final-roll" data-rav-roll-state="final">
+        <div class="roll-header">
+          <span class="roll-title">${_escapeHTML(state.flavor)} — Final</span>
+          <span class="roll-pool">${state.pool}d10</span>
+        </div>
+        <div class="roll-tags">${extraText}<div class="roll-tag final-tag">Final Result</div></div>
+        <div class="dice-tray">${diceHTML}</div>
+        <div class="roll-summary">
+          <div><strong>Base Successes:</strong> ${baseSuccesses}</div>
+          <div><strong>Skill Modifier:</strong> ${allocations}</div>
+          ${rerollText}
+          <div><strong>Successes:</strong> ${successes} ${difficultyText}</div>
+          <div><strong>Result:</strong> ${resultText}</div>
+        </div>
+      </div>`;
+  }
+}
+
+function _registerChatCardListeners() {
+  Hooks.on("renderChatMessage", (message, html) => {
+    const pending = message.getFlag("rav", "pendingRoll");
+    if (!pending || pending.state !== "pending") return;
+
+    html.find(".rav-accept-suggestion").click(ev => _onPendingRollFinalize(ev, message));
+    html.find(".rav-edit-modifier").click(ev => _onPendingRollEditModifier(ev, message));
+    html.find(".rav-luck-reroll").click(ev => _onPendingRollLuckReroll(ev, message));
+    html.find(".rav-finalize-no-skill").click(ev => _onPendingRollFinalize(ev, message, { withoutSkill: true }));
+  });
+}
+
+async function _onPendingRollFinalize(event, message, { withoutSkill = false } = {}) {
+  event.preventDefault();
+  const state = foundry.utils.duplicate(message.getFlag("rav", "pendingRoll"));
+  if (!state || state.state !== "pending") return;
+
+  if (withoutSkill) state.skillAllocations = [];
+  state.state = "final";
+  state.finalizedBy = game.user.id;
+
+  await message.update({
+    content: RAVFinalRollCard.render(state),
+    flags: { rav: { pendingRoll: state } }
+  });
+}
+
+async function _onPendingRollEditModifier(event, message) {
+  event.preventDefault();
+  const state = foundry.utils.duplicate(message.getFlag("rav", "pendingRoll"));
+  if (!state || state.state !== "pending") return;
+
+  if ((Number(state.skillLevel) || 0) <= 0) {
+    ui.notifications.info("This roll has no skill modifier to edit.");
+    return;
+  }
+
+  const budget = RAVRollState.getSkillBudget(state);
+  const maxDice = RAVRollState.getMaxModifiedDice(state);
+  const current = new Map((state.skillAllocations ?? []).map(a => [Number(a.dieIndex), Number(a.amount) || 0]));
+
+  const rows = state.dice.map((value, i) => `
+    <tr>
+      <td>Die ${i + 1}</td>
+      <td>${value}</td>
+      <td><input type="number" class="rav-allocation-input" data-die-index="${i}" min="0" max="${budget}" value="${current.get(i) ?? 0}" style="width:70px;"/></td>
+    </tr>`).join("");
+
+  const maxDiceLabel = Number.isFinite(maxDice) ? maxDice : "any number of";
+  const content = `
+    <div class="rav-dialog">
+      <p>Assign up to <strong>${budget}</strong> skill point${budget !== 1 ? "s" : ""} across <strong>${maxDiceLabel}</strong> dice.</p>
+      <p class="hint">The system will reject allocations that exceed the tier limits.</p>
+      <table class="rav-allocation-table">
+        <thead><tr><th>Die</th><th>Base</th><th>Bonus</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+
+  const allocations = await Dialog.prompt({
+    title: `Edit ${state.flavor} Modifier`,
+    content,
+    callback: (html) => {
+      const chosen = [];
+      html.find(".rav-allocation-input").each((_, input) => {
+        const amount = Number(input.value) || 0;
+        if (amount > 0) chosen.push({ dieIndex: Number(input.dataset.dieIndex), amount });
+      });
+      return chosen;
+    },
+    rejectClose: false
+  });
+
+  if (!allocations) return;
+
+  const validation = _validateAllocations(allocations, budget, maxDice, state.dice.length);
+  if (!validation.valid) {
+    ui.notifications.warn(validation.message);
+    return;
+  }
+
+  state.skillAllocations = allocations;
+  await message.update({
+    content: RAVPendingRollCard.render(state),
+    flags: { rav: { pendingRoll: state } }
+  });
+}
+
+async function _onPendingRollLuckReroll(event, message) {
+  event.preventDefault();
+  const state = foundry.utils.duplicate(message.getFlag("rav", "pendingRoll"));
+  if (!state || state.state !== "pending") return;
+
+  const actor = _getActorFromRollState(state);
+  if (!actor) return;
+
+  const luck = Number(actor.system.attributes?.luck?.value) || 0;
+  if (luck <= 0) {
+    ui.notifications.warn(`${actor.name} has no Luck remaining.`);
+    return;
+  }
+
+  const options = state.dice.map((value, i) => `<option value="${i}">Die ${i + 1}: ${value}</option>`).join("");
+  const dieIndex = await Dialog.prompt({
+    title: "Use Luck Reroll",
+    content: `
+      <div class="rav-dialog">
+        <p>Choose one die to reroll. This spends 1 Luck.</p>
+        <div class="dialog-field"><label>Die:</label><select id="rav-reroll-die">${options}</select></div>
+      </div>`,
+    callback: (html) => Number(html.find("#rav-reroll-die").val()),
+    rejectClose: false
+  });
+
+  if (dieIndex === null || dieIndex === undefined || Number.isNaN(dieIndex)) return;
+
+  const oldValue = state.dice[dieIndex];
+  const reroll = await new Roll("1d10").evaluate();
+  state.dice[dieIndex] = reroll.total;
+  state.rerolls = state.rerolls ?? [];
+  state.rerolls.push({ type: "luck", dieIndex, oldValue, newValue: reroll.total, userId: game.user.id });
+
+  await actor.update({ "system.attributes.luck.value": Math.max(luck - 1, 0) });
+
+  // After a reroll, recalculate the suggested optimal modifier.
+  const suggestion = RAVRollOptimizer.suggest({
+    dice: state.dice,
+    skillLevel: state.skillLevel,
+    tier: state.tier,
+    threshold: state.threshold
+  });
+  state.skillAllocations = suggestion.allocations;
+
+  await message.update({
+    content: RAVPendingRollCard.render(state),
+    flags: { rav: { pendingRoll: state } }
+  });
+}
+
+function _validateAllocations(allocations, budget, maxDice, diceCount) {
+  const spent = allocations.reduce((sum, a) => sum + Number(a.amount || 0), 0);
+  const modifiedDice = new Set(allocations.filter(a => Number(a.amount) > 0).map(a => Number(a.dieIndex)));
+
+  if (spent > budget) return { valid: false, message: `Skill allocation exceeds budget (${spent}/${budget}).` };
+  if (Number.isFinite(maxDice) && modifiedDice.size > maxDice) {
+    return { valid: false, message: `This tier can modify only ${maxDice} die${maxDice !== 1 ? "s" : ""}.` };
+  }
+  for (const a of allocations) {
+    const idx = Number(a.dieIndex);
+    const amount = Number(a.amount);
+    if (idx < 0 || idx >= diceCount || amount < 0) return { valid: false, message: "Invalid die allocation." };
+  }
+  return { valid: true, message: "OK" };
+}
+
+function _getActorFromRollState(state) {
+  if (state.sceneId && state.tokenId) {
+    const scene = game.scenes.get(state.sceneId);
+    const token = scene?.tokens?.get(state.tokenId);
+    if (token?.actor) return token.actor;
+  }
+  const actor = game.actors.get(state.actorId);
+  if (!actor) ui.notifications.warn("Could not find the actor for this roll.");
+  return actor;
+}
+
+function _renderDiceTray({ state, finalDice, pending }) {
+  const allocations = new Map((state.skillAllocations ?? []).map(a => [Number(a.dieIndex), Number(a.amount) || 0]));
+  const rerolled = new Set((state.rerolls ?? []).map(r => Number(r.dieIndex)));
+  return finalDice.map((finalValue, i) => {
+    const baseValue = state.dice[i];
+    const amount = allocations.get(i) || 0;
+    const isSuccess = finalValue >= state.threshold;
+    const isCrit = state.criticalDice?.includes(i);
+    const wasRerolled = rerolled.has(i);
+    const cssClass = isSuccess ? "success" : "failure";
+    const critMark = isCrit ? '<span class="crit-mark">✦</span>' : "";
+    const rerollMark = wasRerolled ? '<span class="reroll-mark">↻</span>' : "";
+    const pendingMark = pending && amount > 0 ? '<span class="pending-mark">?</span>' : "";
+
+    let dieContent;
+    if (amount > 0) {
+      dieContent = `<span class="die-base">${baseValue}</span><span class="die-arrow">→</span><span class="die-final">${finalValue}</span><span class="die-bonus">+${amount}</span>`;
+    } else {
+      dieContent = `<span class="die-final alone">${finalValue}</span>`;
+    }
+    return `<div class="die ${cssClass}${isCrit ? " crit" : ""}${wasRerolled ? " rerolled" : ""}">${critMark}${rerollMark}${pendingMark}${dieContent}</div>`;
+  }).join("");
+}
+
+function _renderAllocationSummary(state, finalDice, unused = 0) {
+  const allocations = state.skillAllocations ?? [];
+  if (!allocations.length) return "None";
+  const parts = allocations.map(a => {
+    const idx = Number(a.dieIndex);
+    const amount = Number(a.amount) || 0;
+    const before = state.dice[idx];
+    const after = finalDice[idx];
+    return `+${amount} to die ${idx + 1} (${before} → ${after})`;
+  });
+  if (unused > 0) parts.push(`${unused} unused`);
+  return parts.join(", ");
+}
+
+function _resultLabel(successes, difficulty) {
+  const ok = successes >= difficulty;
+  return `<span class="${ok ? "result-success" : "result-failure"}">${ok ? "Success" : "Failure"}</span>`;
+}
+
+function _escapeHTML(value) {
+  const div = document.createElement("div");
+  div.innerText = String(value ?? "");
+  return div.innerHTML;
 }
 
 // ============================================================
-//  8. BONUS HELPERS
+//  8. LEGACY BONUS HELPERS (kept for compatibility)
 // ============================================================
 
 function _applyBonusToOne(results, bonus) {
@@ -654,44 +1206,18 @@ function _applyBonusToOne(results, bonus) {
   if (bestIdx === -1) {
     let hi = 0;
     for (let i = 1; i < arr.length; i++) {
-      if (arr[i] > arr[hi] && arr[i] < 10) hi = i;
+      if (arr[i] > arr[hi]) hi = i;
     }
     bestIdx = hi;
   }
 
   const before = arr[bestIdx];
-  arr[bestIdx] = Math.min(10, arr[bestIdx] + bonus);
+  arr[bestIdx] = arr[bestIdx] + bonus;
   return { results: arr, idx: bestIdx, amount: arr[bestIdx] - before };
 }
 
 function _applyBonusGreedy(results, bonus) {
-  const arr     = [...results];
-  let remaining = bonus;
-  const changes = [];
-
-  while (remaining > 0) {
-    let bestIdx = -1;
-    let bestGap = Infinity;
-    for (let i = 0; i < arr.length; i++) {
-      const gap = RAV.successThreshold - arr[i];
-      if (gap > 0 && gap < bestGap) { bestIdx = i; bestGap = gap; }
-    }
-    if (bestIdx === -1) {
-      let hi = 0;
-      for (let i = 1; i < arr.length; i++) if (arr[i] > arr[hi]) hi = i;
-      const before = arr[hi];
-      arr[hi]      = Math.min(10, arr[hi] + remaining);
-      changes.push({ idx: hi, amount: arr[hi] - before });
-      break;
-    }
-    const add    = Math.min(remaining, bestGap);
-    const before = arr[bestIdx];
-    arr[bestIdx] += add;
-    remaining    -= add;
-    changes.push({ idx: bestIdx, amount: arr[bestIdx] - before });
-  }
-
-  return { results: arr, changes };
+  return RAVRollOptimizer._bestGrandMasterSplit(results, bonus, RAV.successThreshold);
 }
 
 // ============================================================

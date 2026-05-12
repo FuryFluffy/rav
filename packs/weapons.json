@@ -1,0 +1,155 @@
+{
+  "label": "RAV Weapons",
+  "entries": [
+    {
+      "name": "Sword",
+      "type": "weapon",
+      "img": "icons/weapons/swords/sword-guard-steel.webp",
+      "system": {
+        "description": "A versatile blade designed for both cutting and thrusting.",
+        "equipped": false,
+        "weaponType": "sword",
+        "damage": 0,
+        "damagePoints": 0,
+        "maxDamagePoints": 5,
+        "broken": false,
+        "property": "Ignores 1 success from Dodge"
+      }
+    },
+    {
+      "name": "Axe",
+      "type": "weapon",
+      "img": "icons/weapons/axes/axe-battle-worn.webp",
+      "system": {
+        "description": "A heavy chopping weapon designed to cleave through armor.",
+        "equipped": false,
+        "weaponType": "axe",
+        "damage": 0,
+        "damagePoints": 0,
+        "maxDamagePoints": 5,
+        "broken": false,
+        "property": "Ignores 1 success from Armor Defend"
+      }
+    },
+    {
+      "name": "Staff",
+      "type": "weapon",
+      "img": "icons/weapons/staves/staff-ornate-spiral.webp",
+      "system": {
+        "description": "A long pole used for both offense and defense, favored by mages.",
+        "equipped": false,
+        "weaponType": "staff",
+        "damage": 0,
+        "damagePoints": 0,
+        "maxDamagePoints": 5,
+        "broken": false,
+        "property": "Target loses 1 Action if damage is dealt"
+      }
+    },
+    {
+      "name": "Spear",
+      "type": "weapon",
+      "img": "icons/weapons/polearms/spear-hooked-blue.webp",
+      "system": {
+        "description": "A thrusting weapon with extended reach.",
+        "equipped": false,
+        "weaponType": "spear",
+        "damage": 0,
+        "damagePoints": 0,
+        "maxDamagePoints": 5,
+        "broken": false,
+        "property": "Can attack from Close range"
+      }
+    },
+    {
+      "name": "Dagger",
+      "type": "weapon",
+      "img": "icons/weapons/daggers/dagger-straight-blue.webp",
+      "system": {
+        "description": "A short blade perfect for quick strikes and parrying.",
+        "equipped": false,
+        "weaponType": "dagger",
+        "damage": 0,
+        "damagePoints": 0,
+        "maxDamagePoints": 5,
+        "broken": false,
+        "property": "Ignores 1 success for Parry"
+      }
+    },
+    {
+      "name": "Mace",
+      "type": "weapon",
+      "img": "icons/weapons/maces/mace-round-spiked.webp",
+      "system": {
+        "description": "A crushing weapon designed to dent armor and break bones.",
+        "equipped": false,
+        "weaponType": "mace",
+        "damage": 0,
+        "damagePoints": 0,
+        "maxDamagePoints": 5,
+        "broken": false,
+        "property": "Ignores 1 success for Shield Defend"
+      }
+    },
+    {
+      "name": "Unarmed",
+      "type": "weapon",
+      "img": "icons/skills/melee/unarmed-punch-fist.webp",
+      "system": {
+        "description": "Fighting with bare fists or improvised techniques.",
+        "equipped": false,
+        "weaponType": "unarmed",
+        "damage": 0,
+        "damagePoints": 0,
+        "maxDamagePoints": 5,
+        "broken": false,
+        "property": "On Critical Roll, make one more Attack for free"
+      }
+    },
+    {
+      "name": "Bow",
+      "type": "weapon",
+      "img": "icons/weapons/bows/bow-recurve-leather.webp",
+      "system": {
+        "description": "A ranged weapon that fires arrows at distant targets.",
+        "equipped": false,
+        "weaponType": "bow",
+        "damage": 0,
+        "damagePoints": 0,
+        "maxDamagePoints": 5,
+        "broken": false,
+        "property": "+1d10 if attacking from Very Far zone"
+      }
+    },
+    {
+      "name": "Crossbow",
+      "type": "weapon",
+      "img": "icons/weapons/crossbows/crossbow-simple-worn.webp",
+      "system": {
+        "description": "A mechanical bow mounted on a stock, easier to aim than a regular bow.",
+        "equipped": false,
+        "weaponType": "crossbow",
+        "damage": 0,
+        "damagePoints": 0,
+        "maxDamagePoints": 5,
+        "broken": false,
+        "property": "+1d10 if attacking from Far zone"
+      }
+    },
+    {
+      "name": "Sling",
+      "type": "weapon",
+      "img": "icons/weapons/thrown/bullets-sling-steel.webp",
+      "system": {
+        "description": "A simple ranged weapon that hurls stones or bullets.",
+        "equipped": false,
+        "weaponType": "slings",
+        "damage": 0,
+        "damagePoints": 0,
+        "maxDamagePoints": 5,
+        "broken": false,
+        "property": "+1d10 if attacking from Close zone"
+      }
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "label": "RAV Armor & Shields",
+  "entries": [
+    {
+      "name": "Cloth Armor",
+      "type": "armor",
+      "img": "icons/equipment/chest/robe-layered-blue.webp",
+      "system": {
+        "description": "Light robes that provide minimal protection but maximum mobility.",
+        "equipped": false,
+        "armorType": "cloth",
+        "damagePoints": 0,
+        "maxDamagePoints": 1,
+        "broken": false,
+        "dodgeBonus": 2,
+        "property": "Can take 1 damage; +2d10 to Dodge"
+      }
+    },
+    {
+      "name": "Leather Armor",
+      "type": "armor",
+      "img": "icons/equipment/chest/breastplate-leather-brown.webp",
+      "system": {
+        "description": "Hardened leather provides decent protection while allowing good movement.",
+        "equipped": false,
+        "armorType": "leather",
+        "damagePoints": 0,
+        "maxDamagePoints": 2,
+        "broken": false,
+        "dodgeBonus": 1,
+        "property": "Can take 2 damage; +1d10 to Dodge"
+      }
+    },
+    {
+      "name": "Chain Armor",
+      "type": "armor",
+      "img": "icons/equipment/chest/breastplate-layered-steel.webp",
+      "system": {
+        "description": "Interlocking metal rings provide solid protection at the cost of some mobility.",
+        "equipped": false,
+        "armorType": "chain",
+        "damagePoints": 0,
+        "maxDamagePoints": 3,
+        "broken": false,
+        "dodgeBonus": -1,
+        "property": "Can take 3 damage; -1d10 to Dodge"
+      }
+    },
+    {
+      "name": "Plate Armor",
+      "type": "armor",
+      "img": "icons/equipment/chest/breastplate-cuirass-steel.webp",
+      "system": {
+        "description": "Full metal plates offer maximum protection but significantly reduce agility.",
+        "equipped": false,
+        "armorType": "plate",
+        "damagePoints": 0,
+        "maxDamagePoints": 4,
+        "broken": false,
+        "dodgeBonus": -2,
+        "property": "Can take 4 damage; -2d10 to Dodge"
+      }
+    },
+    {
+      "name": "Small Shield",
+      "type": "armor",
+      "img": "icons/equipment/shield/buckler-wooden-boss-steel.webp",
+      "system": {
+        "description": "A light buckler used for deflecting blows.",
+        "equipped": false,
+        "armorType": "shield-small",
+        "damagePoints": 0,
+        "maxDamagePoints": 1,
+        "broken": false,
+        "dodgeBonus": 0,
+        "property": "+1d10 to Parry"
+      }
+    },
+    {
+      "name": "Regular Shield",
+      "type": "armor",
+      "img": "icons/equipment/shield/heater-steel-worn-blue.webp",
+      "system": {
+        "description": "A standard shield that can absorb damage and hinder dodging.",
+        "equipped": false,
+        "armorType": "shield-regular",
+        "damagePoints": 0,
+        "maxDamagePoints": 2,
+        "broken": false,
+        "dodgeBonus": -1,
+        "property": "Can take 2 damage; -1d10 to Dodge"
+      }
+    },
+    {
+      "name": "Heavy Shield",
+      "type": "armor",
+      "img": "icons/equipment/shield/kite-steel-red.webp",
+      "system": {
+        "description": "A large tower shield providing excellent protection at the cost of mobility.",
+        "equipped": false,
+        "armorType": "shield-heavy",
+        "damagePoints": 0,
+        "maxDamagePoints": 3,
+        "broken": false,
+        "dodgeBonus": -2,
+        "property": "Can take 3 damage; -2d10 to Dodge"
+      }
+    }
+  ]
+}

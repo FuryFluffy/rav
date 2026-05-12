@@ -480,21 +480,119 @@
 .rav.sheet .gear-slot-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 5px 14px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .rav.sheet .gear-slot {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  background: var(--rav-bg);
+  border: 1px solid var(--rav-border);
+  border-radius: 4px;
+  padding: 8px;
+  min-height: 60px;
 }
 
 .rav.sheet .gear-slot label {
+  font-family: 'Cinzel', serif;
   font-size: 10px;
+  font-weight: 700;
+  color: var(--rav-gold);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--rav-border);
+  padding-bottom: 3px;
+  margin-bottom: 2px;
+}
+
+.rav.sheet .empty-slot {
+  font-size: 12px;
   color: var(--rav-text-dim);
+  font-style: italic;
+  text-align: center;
+  padding: 8px;
+}
+
+.rav.sheet .equipped-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  position: relative;
+}
+
+.rav.sheet .equipped-item-img {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border: 1px solid var(--rav-border);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.rav.sheet .equipped-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rav.sheet .equipped-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rav-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rav.sheet .equipped-item-detail {
+  font-size: 11px;
+  color: var(--rav-text-dim);
+  text-transform: capitalize;
+}
+
+.rav.sheet .equipped-item-health {
+  font-size: 11px;
+  color: var(--rav-blue);
+  font-family: 'Cinzel', serif;
+}
+
+.rav.sheet .equipped-item-dodge {
+  font-size: 11px;
+  color: var(--rav-green);
+  font-family: 'Cinzel', serif;
+}
+
+.rav.sheet .equipped-item-property {
+  font-size: 10px;
+  color: var(--rav-gold);
+  font-style: italic;
+}
+
+.rav.sheet .equipped-item-unequip {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 18px;
+  height: 18px;
+  background: var(--rav-red);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+  font-weight: bold;
+}
+
+.rav.sheet .equipped-item-unequip:hover {
+  opacity: 1;
 }
 
 .rav.sheet .gear-slot input {
@@ -1031,4 +1129,117 @@
   border: 1px solid #7a6240;
   border-radius: 4px;
   padding: 6px 8px;
+}
+
+/* ============================================================
+   PENDING ROLL ENGINE v0.5.0
+   ============================================================ */
+
+.rav-roll.rav-pending-roll {
+  border: 1px solid var(--rav-gold, #c9963a);
+  box-shadow: inset 0 0 0 1px rgba(201,150,58,0.18);
+}
+
+.rav-roll.rav-final-roll {
+  border: 1px solid var(--rav-border-light, #7a6240);
+}
+
+.rav-roll .pending-tag {
+  color: var(--rav-gold-light, #e8b95a);
+  border-color: var(--rav-gold, #c9963a);
+}
+
+.rav-roll .final-tag {
+  color: var(--rav-green, #27ae60);
+  border-color: var(--rav-green, #27ae60);
+}
+
+.rav-roll .roll-summary {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(122,98,64,0.35);
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.rav-roll .roll-difficulty {
+  margin-left: 6px;
+  color: var(--rav-text-dim, #a8987a);
+  font-size: 12px;
+}
+
+.rav-roll .result-success {
+  color: var(--rav-green, #27ae60);
+  font-weight: 700;
+}
+
+.rav-roll .result-failure {
+  color: var(--rav-red, #c0392b);
+  font-weight: 700;
+}
+
+.rav-roll .rav-roll-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.rav-roll .rav-roll-btn {
+  flex: 1 1 42%;
+  min-width: 120px;
+  padding: 4px 8px;
+  background: var(--rav-bg-light, #2e2820);
+  color: var(--rav-text, #e8dcc8);
+  border: 1px solid var(--rav-border, #5c4a2a);
+  border-radius: 4px;
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.rav-roll .rav-roll-btn:hover {
+  color: var(--rav-gold-light, #e8b95a);
+  border-color: var(--rav-gold, #c9963a);
+  box-shadow: 0 0 0 1px rgba(201,150,58,0.15);
+}
+
+.rav-roll .pending-mark,
+.rav-roll .reroll-mark,
+.rav-roll .crit-mark {
+  position: absolute;
+  top: -5px;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--rav-gold-light, #e8b95a);
+  text-shadow: 0 1px 2px #000;
+}
+
+.rav-roll .pending-mark { right: -4px; }
+.rav-roll .reroll-mark  { left: -4px; }
+.rav-roll .crit-mark    { top: -7px; left: 50%; transform: translateX(-50%); }
+
+.rav-roll .die.rerolled {
+  outline: 1px dashed var(--rav-gold, #c9963a);
+  outline-offset: 2px;
+}
+
+.rav-allocation-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.rav-allocation-table th,
+.rav-allocation-table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid rgba(122,98,64,0.35);
+  text-align: left;
+}
+
+.rav-dialog .hint {
+  color: var(--rav-text-dim, #a8987a);
+  font-size: 12px;
 }

@@ -253,22 +253,141 @@
 
       {{!-- Equipped slots --}}
       <div class="gear-slots">
-        <h3 class="skill-group-title">Equipped Slots</h3>
+        <h3 class="skill-group-title">Equipped Gear</h3>
         <div class="gear-slot-grid">
-          <div class="gear-slot"><label>Right Arm</label>
-            <input type="text" name="system.gear.rightArm" value="{{system.gear.rightArm}}" placeholder="Empty"/></div>
-          <div class="gear-slot"><label>Left Arm</label>
-            <input type="text" name="system.gear.leftArm" value="{{system.gear.leftArm}}" placeholder="Empty"/></div>
-          <div class="gear-slot"><label>Head</label>
-            <input type="text" name="system.gear.head" value="{{system.gear.head}}" placeholder="Empty"/></div>
-          <div class="gear-slot"><label>Torso</label>
-            <input type="text" name="system.gear.torso" value="{{system.gear.torso}}" placeholder="Empty"/></div>
-          <div class="gear-slot"><label>Legs</label>
-            <input type="text" name="system.gear.legs" value="{{system.gear.legs}}" placeholder="Empty"/></div>
-          <div class="gear-slot"><label>Necklace</label>
-            <input type="text" name="system.gear.necklace" value="{{system.gear.necklace}}" placeholder="Empty"/></div>
-          <div class="gear-slot"><label>Rings</label>
-            <input type="text" name="system.gear.rings" value="{{system.gear.rings}}" placeholder="Empty"/></div>
+          
+          {{!-- Right Arm --}}
+          <div class="gear-slot">
+            <label>Right Arm</label>
+            {{#if equippedGear.rightArm}}
+            <div class="equipped-item" data-item-id="{{equippedGear.rightArm.id}}">
+              <img src="{{equippedGear.rightArm.img}}" class="equipped-item-img" title="{{equippedGear.rightArm.name}}"/>
+              <div class="equipped-item-info">
+                <span class="equipped-item-name">{{equippedGear.rightArm.name}}</span>
+                {{#if (eq equippedGear.rightArm.type "weapon")}}
+                <span class="equipped-item-detail">{{equippedGear.rightArm.system.weaponType}}</span>
+                <span class="equipped-item-health">HP: {{equippedGear.rightArm.system.damagePoints}}/{{equippedGear.rightArm.system.maxDamagePoints}}</span>
+                {{#if equippedGear.rightArm.system.property}}
+                <span class="equipped-item-property">{{equippedGear.rightArm.system.property}}</span>
+                {{/if}}
+                {{/if}}
+              </div>
+              <a class="equipped-item-unequip" title="Unequip">✕</a>
+            </div>
+            {{else}}
+            <span class="empty-slot">Empty</span>
+            {{/if}}
+          </div>
+
+          {{!-- Left Arm --}}
+          <div class="gear-slot">
+            <label>Left Arm</label>
+            {{#if equippedGear.leftArm}}
+            <div class="equipped-item" data-item-id="{{equippedGear.leftArm.id}}">
+              <img src="{{equippedGear.leftArm.img}}" class="equipped-item-img" title="{{equippedGear.leftArm.name}}"/>
+              <div class="equipped-item-info">
+                <span class="equipped-item-name">{{equippedGear.leftArm.name}}</span>
+                {{#if (eq equippedGear.leftArm.type "weapon")}}
+                <span class="equipped-item-detail">{{equippedGear.leftArm.system.weaponType}}</span>
+                <span class="equipped-item-health">HP: {{equippedGear.leftArm.system.damagePoints}}/{{equippedGear.leftArm.system.maxDamagePoints}}</span>
+                {{/if}}
+                {{#if (eq equippedGear.leftArm.type "armor")}}
+                <span class="equipped-item-detail">{{equippedGear.leftArm.system.armorType}}</span>
+                <span class="equipped-item-health">HP: {{equippedGear.leftArm.system.damagePoints}}/{{equippedGear.leftArm.system.maxDamagePoints}}</span>
+                {{/if}}
+              </div>
+              <a class="equipped-item-unequip" title="Unequip">✕</a>
+            </div>
+            {{else}}
+            <span class="empty-slot">Empty</span>
+            {{/if}}
+          </div>
+
+          {{!-- Head --}}
+          <div class="gear-slot">
+            <label>Head</label>
+            {{#if equippedGear.head}}
+            <div class="equipped-item" data-item-id="{{equippedGear.head.id}}">
+              <img src="{{equippedGear.head.img}}" class="equipped-item-img" title="{{equippedGear.head.name}}"/>
+              <div class="equipped-item-info">
+                <span class="equipped-item-name">{{equippedGear.head.name}}</span>
+              </div>
+              <a class="equipped-item-unequip" title="Unequip">✕</a>
+            </div>
+            {{else}}
+            <span class="empty-slot">Empty</span>
+            {{/if}}
+          </div>
+
+          {{!-- Torso --}}
+          <div class="gear-slot">
+            <label>Torso</label>
+            {{#if equippedGear.torso}}
+            <div class="equipped-item" data-item-id="{{equippedGear.torso.id}}">
+              <img src="{{equippedGear.torso.img}}" class="equipped-item-img" title="{{equippedGear.torso.name}}"/>
+              <div class="equipped-item-info">
+                <span class="equipped-item-name">{{equippedGear.torso.name}}</span>
+                {{#if (eq equippedGear.torso.type "armor")}}
+                <span class="equipped-item-detail">{{equippedGear.torso.system.armorType}}</span>
+                <span class="equipped-item-health">HP: {{equippedGear.torso.system.damagePoints}}/{{equippedGear.torso.system.maxDamagePoints}}</span>
+                <span class="equipped-item-dodge">Dodge: {{#if (gt equippedGear.torso.system.dodgeBonus 0)}}+{{/if}}{{equippedGear.torso.system.dodgeBonus}}d10</span>
+                {{/if}}
+              </div>
+              <a class="equipped-item-unequip" title="Unequip">✕</a>
+            </div>
+            {{else}}
+            <span class="empty-slot">Empty</span>
+            {{/if}}
+          </div>
+
+          {{!-- Legs --}}
+          <div class="gear-slot">
+            <label>Legs</label>
+            {{#if equippedGear.legs}}
+            <div class="equipped-item" data-item-id="{{equippedGear.legs.id}}">
+              <img src="{{equippedGear.legs.img}}" class="equipped-item-img" title="{{equippedGear.legs.name}}"/>
+              <div class="equipped-item-info">
+                <span class="equipped-item-name">{{equippedGear.legs.name}}</span>
+              </div>
+              <a class="equipped-item-unequip" title="Unequip">✕</a>
+            </div>
+            {{else}}
+            <span class="empty-slot">Empty</span>
+            {{/if}}
+          </div>
+
+          {{!-- Necklace --}}
+          <div class="gear-slot">
+            <label>Necklace</label>
+            {{#if equippedGear.necklace}}
+            <div class="equipped-item" data-item-id="{{equippedGear.necklace.id}}">
+              <img src="{{equippedGear.necklace.img}}" class="equipped-item-img" title="{{equippedGear.necklace.name}}"/>
+              <div class="equipped-item-info">
+                <span class="equipped-item-name">{{equippedGear.necklace.name}}</span>
+              </div>
+              <a class="equipped-item-unequip" title="Unequip">✕</a>
+            </div>
+            {{else}}
+            <span class="empty-slot">Empty</span>
+            {{/if}}
+          </div>
+
+          {{!-- Rings --}}
+          <div class="gear-slot">
+            <label>Rings</label>
+            {{#if equippedGear.rings}}
+            <div class="equipped-item" data-item-id="{{equippedGear.rings.id}}">
+              <img src="{{equippedGear.rings.img}}" class="equipped-item-img" title="{{equippedGear.rings.name}}"/>
+              <div class="equipped-item-info">
+                <span class="equipped-item-name">{{equippedGear.rings.name}}</span>
+              </div>
+              <a class="equipped-item-unequip" title="Unequip">✕</a>
+            </div>
+            {{else}}
+            <span class="empty-slot">Empty</span>
+            {{/if}}
+          </div>
+
         </div>
       </div>
 

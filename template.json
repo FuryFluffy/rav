@@ -337,13 +337,13 @@
         }
       },
       "gear": {
-        "rightArm": "",
-        "leftArm": "",
-        "head": "",
-        "torso": "",
-        "legs": "",
-        "necklace": "",
-        "rings": ""
+        "rightArm": null,
+        "leftArm": null,
+        "head": null,
+        "torso": null,
+        "legs": null,
+        "necklace": null,
+        "rings": null
       }
     },
     "npc": {

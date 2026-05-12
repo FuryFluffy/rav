@@ -2,7 +2,7 @@
   "id": "rav",
   "title": "Rise of Arcane and Valor",
   "description": "A unique d10+ dice pool system set in the world of Tõus, drawing on Estonian mythology.",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
@@ -27,6 +27,22 @@
     }
   ],
   "socket": false,
+  "packs": [
+    {
+      "name": "weapons",
+      "label": "RAV Weapons",
+      "path": "packs/weapons.db",
+      "type": "Item",
+      "system": "rav"
+    },
+    {
+      "name": "armor",
+      "label": "RAV Armor & Shields",
+      "path": "packs/armor.db",
+      "type": "Item",
+      "system": "rav"
+    }
+  ],
   "url": "https://github.com/FuryFluffy/rav",
   "license": "https://github.com/FuryFluffy/rav/blob/main/LICENSE",
   "manifest": "https://raw.githubusercontent.com/FuryFluffy/rav/main/system.json",
